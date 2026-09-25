@@ -66,6 +66,13 @@ SOURCES = {
 WORD = re.compile(r"^[a-záàâãéêíóôõúüç]+$")
 LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"]
 BANDS = [(800, "A1"), (2000, "A2"), (4000, "B1"), (7000, "B2"), (10000, "C1"), (13000, "C2")]
+VERBISH = re.compile(r"(ei|ou|amos|aram|ava|avam|ando|ado|ada|ados|adas|emos|eram|eu|ia|iam|endo|ido|ida|"
+                     r"imos|iram|iu|indo|rei|rá|rão|ria|riam|sse|ssem)$")
+# Letters and the English and Spanish that the subtitles let through: never
+# a Portuguese lemma with a level.
+NOT_PT = set("b c d f g h j k l m n p q r s t v w x y z".split()) | {
+    "us", "to", "in", "is", "the", "you", "and", "it", "of", "my", "yes", "no", "el", "los", "las",
+    "unos", "hola", "gracias", "señor", "okay", "ok", "hey", "wow", "baby", "man", "go", "oh", "uh"}
 WORD_POS = {"interrogativo": "pr", "preposizione": "p", "contrazione": "p", "avverbio": "r",
             "congiunzione": "c", "pronome": "pr", "tempo": "r", "quantità": "d", "numero": "num",
             "espressione": "i"}
@@ -89,6 +96,16 @@ FORCE = {
     "feito": "fazer", "dito": "dizer", "visto": "ver", "posto": "pôr", "aberto": "aberto",
     "vocês": "você", "senhores": "senhor", "senhoras": "senhora", "meninas": "menina",
     "melhor": "melhor", "pior": "pior", "maior": "maior", "menor": "menor",
+    "os": "o", "as": "a", "uma": "um", "umas": "um", "uns": "um", "sua": "seu", "suas": "seu",
+    "seus": "seu", "minhas": "meu", "meus": "meu", "nossos": "nosso", "nossas": "nosso",
+    "tua": "teu", "tuas": "teu", "teus": "teu", "essa": "esse", "essas": "esse", "esses": "esse",
+    "esta": "este", "estas": "este", "estes": "este", "aquela": "aquele", "aquelas": "aquele",
+    "aqueles": "aquele", "toda": "todo", "todas": "todo", "outra": "outro", "outras": "outro",
+    "outros": "outro", "alguma": "algum", "algumas": "algum", "alguns": "algum", "nenhuma": "nenhum",
+    "muitos": "muito", "muitas": "muito", "muita": "muito", "poucos": "pouco", "poucas": "pouco",
+    "pouca": "pouco", "quanta": "quanto", "quantos": "quanto", "quantas": "quanto", "duas": "dois",
+    "tanta": "tanto", "tantos": "tanto", "tantas": "tanto", "ambas": "ambos", "várias": "vários",
+    "minha": "meu", "todos": "todo",
 }
 
 # Paradigms of the most frequent irregular verbs (forms beyond what the
@@ -283,7 +300,7 @@ def load_bank():
         if " " in k or not WORD.match(k):
             continue
         # a function word of the bank is a lemma of its own (como, para)
-        lemmas[k] = (WORD_POS.get(w[2], ""), w[3])
+        lemmas.setdefault(k, (WORD_POS.get(w[2], ""), w[3]))
     return lemmas, forms
 
 
@@ -324,7 +341,7 @@ def main():
     def portuguese(w):
         if w in bank or w in bank_forms or w in FORCE:
             return True
-        if w in names:
+        if w in names or w in NOT_PT:
             return False
         return bool(dic and dic.lookup(w))
 
@@ -347,7 +364,20 @@ def main():
 
     verb_stems = set()
     form_to_lemma = {}
-    for w in counts:
+
+    def singular(w):
+        """Candidate singulars of a plural-looking form, most specific first."""
+        out = []
+        for suf, rep in (("ões", "ão"), ("ães", "ão"), ("ãos", "ão"), ("ns", "m"), ("éis", "el"),
+                         ("óis", "ol"), ("ais", "al"), ("uis", "ul"), ("res", "r"), ("zes", "z"),
+                         ("ses", "s"), ("s", "")):
+            if w.endswith(suf) and len(w) > len(suf) + 1:
+                out.append(w[: -len(suf)] + rep)
+        return [c for c in out if c in counts]
+
+    def resolve(w, depth=0):
+        if w in form_to_lemma:
+            return form_to_lemma[w]
         if w in FORCE:
             lemma = FORCE[w]
         elif w in bank:
@@ -356,16 +386,26 @@ def main():
             lemma = max(bank_forms[w], key=lambda l: (freq(l), l))
         else:
             lemma = w
-            cand = {s for s in stems(w) if s != w}
-            cand = {s for s in cand if s in counts or s in bank}
+            cand = {c for c in stems(w) if c != w and (c in counts or c in bank)}
             if cand:
-                # a word that is a root of its own in the dictionary keeps it
-                # when it is more frequent than the other lemma (sentido, sentir)
                 best = max(cand, key=lambda l: (freq(l), l))
-                if not (w in stems(w) and freq(w) > freq(best)):
-                    lemma = best
-                    if re.search(r"(ar|er|ir|or|ôr)$", best):
+                verbish = re.search(r"(ar|er|ir)$", best) and w != best
+                if (re.search(r"(ado|ada|ido|ida)$", w) and w in stems(w) and freq(w) > freq(best)):
+                    pass            # a noun of its own, more frequent (sentido / sentir, pedido)
+                elif verbish and freq(best) * 20 < freq(w):
+                    # hunspell files many nouns under a verb (drogas → drogar,
+                    # soldados → soldar): a verb whose infinitive is that rare
+                    # is not the lemma of so frequent a form
+                    sg = singular(w)
+                    if sg and depth < 2:
+                        lemma = resolve(sg[0], depth + 1)
+                else:
+                    # the root may itself be a form (novos → novo)
+                    lemma = resolve(best, depth + 1) if depth < 3 and best in counts else best
+                    if verbish and VERBISH.search(w):
                         verb_stems.add(best)
+            elif singular(w) and depth < 2 and not dic:
+                lemma = resolve(singular(w)[0], depth + 1)
             if lemma == w:
                 # diminutives and superlatives: cafezinho → café, lindíssimo → lindo
                 for suf, reps in (("zinho", ("",)), ("zinha", ("",)), ("inho", ("o", "")), ("inha", ("a", "")),
@@ -374,10 +414,15 @@ def main():
                         for r in reps:
                             c = w[: -len(suf)] + r
                             if c in bank or (c in counts and freq(c) > freq(w)):
-                                lemma = c
+                                lemma = resolve(c, depth + 1) if depth < 2 else c
                                 break
                         break
-        form_to_lemma[w] = lemma
+        if depth == 0 or w not in form_to_lemma:
+            form_to_lemma[w] = lemma
+        return lemma
+
+    for w in sorted(counts, key=lambda x: -counts[x]):
+        resolve(w)
 
     oral = {}
     for w, n in counts.items():

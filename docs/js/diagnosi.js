@@ -191,8 +191,7 @@
       CONTR["n" + p] = ["em", p];
     });
     ["aquele", "aquela", "aqueles", "aquelas", "aquilo"].forEach(function (p) { CONTR["à" + p.slice(1)] = ["a", p]; });
-    CONTR.daqui = ["de", "aqui"]; CONTR.dali = ["de", "ali"]; CONTR.daí = ["de", "aí"]; CONTR.donde = ["de", "onde"];
-    CONTR.aonde = ["a", "onde"];
+    CONTR.daqui = ["de", "aqui"]; CONTR.dali = ["de", "ali"]; CONTR.daí = ["de", "aí"];
     delete CONTR.doutro; delete CONTR.doutra; delete CONTR.doutros; delete CONTR.doutras;   // rarísimas en Brasil
   })();
 
@@ -223,7 +222,7 @@
     uruguai: "m", paraguai: "m", "méxico": "m", "canadá": "m", equador: "m", nordeste: "m", sul: "m", norte: "m",
     argentina: "f", bahia: "f", "itália": "f", "frança": "f", espanha: "f", alemanha: "f", inglaterra: "f",
     "amazônia": "f", europa: "f", "áfrica": "f", "ásia": "f", "américa": "f", bolívia: "f", colômbia: "f", venezuela: "f",
-    china: "f", "índia": "f", angola: "f", "moçambique": "m", "cabo": "m", "estados": "m", eua: "m" });
+    china: "f", "índia": "f", "estados": "m", eua: "m" });
   var PLACE_NOART = /^(portugal|lisboa|são|sao|salvador|brasília|brasilia|curitiba|florianópolis|manaus|belém|fortaleza|natal|niterói|paraty|petrópolis|búzios|olinda|ouro|buenos|rosario|córdoba|cordoba|mendoza|montevidéu|madri|paris|londres|roma|cuba|israel|angola|moçambique)$/;
 
   /* Disparadores del subjuntivo presente e imperfecto. */
@@ -2237,7 +2236,28 @@
     VIDX = null;   // rebuild with the new verbs on first use
   }
 
+  /* El cuaderno del portuñol: las interferencias del español que más se
+     fosilizan (Almeida Filho 1995; Grannier 2002; Durão 1999), con una
+     línea que las recuerda. */
+  var PORTUNOL = [
+    ["espanol", "palabras del español: tengo, pero, muy, hasta, también"],
+    ["contraccion", "contracciones: no, na, do, dele, pelo (nunca «em o»)"],
+    ["gostar", "gostar de: eu gosto de café (el que gusta es el sujeto)"],
+    ["muito", "muito, nunca «muy»: muito bonito, muitas pessoas"],
+    ["a_personal", "sin «a» personal: vi o João, visitei meus avós"],
+    ["perfeito_composto", "«he comido» = comi; tenho comido = vengo comiendo"],
+    ["futuro_subj", "futuro do subjuntivo: quando eu for, se eu tiver"],
+    ["inf_pessoal", "infinitivo pessoal: para eles saberem"],
+    ["genero", "heterogenéricos: o leite, a árvore, a viagem, o nariz"],
+    ["crase", "crase: vou à praia, às três"],
+    ["nasal", "nasales: não, mãe, bom, também"],
+    ["falso_amigo", "falsos amigos: esquisito, polvo, borracha, oficina"],
+    ["regencia", "verbo + preposición: pensar em, sonhar com, namorar alguém"],
+    ["pronome", "pronombres: para mim, comigo, eu o vi / vi ele"]
+  ];
+
   var api = {
+    PORTUNOL: PORTUNOL,
     tokens: tokens,
     align: align,
     diagnose: diagnose,
