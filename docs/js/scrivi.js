@@ -709,6 +709,7 @@
   function lint(text, week) {
     week = week || 52;
     var tk = toks(text), out = [];
+    var srcT = String(text || "").normalize("NFC").replace(/[’‘`´]/g, "'");
     var push = function (i, n, cat, msg, soft) {
       var over = out.filter(function (f) { return i < f.i + f.n && f.i < i + (n || 1); });
       if (over.length && (soft || over.some(function (f) { return !f.soft; }))) return;
@@ -851,15 +852,16 @@
       if (/^(em|de|a|por|en)$/.test(w) && ni === i + 1 && !tk[ni].cap) {
         var pw = w === "en" ? "em" : w;
         var cf = U.contract ? U.contract(pw, n) : null;
+        var quoted = /["“”«»']/.test(srcT.slice(t.at + t.len, tk[ni].at));
         var infAhead = [n2, W(wi(wi(ni, 1), 1)), W(wi(wi(wi(ni, 1), 1), 1))].some(function (x) { return isInf(x) || V(x).some(function (v) { return v.tense === "infPessoal" && /(rem|rmos|res)$/.test(x); }); });
-        if (cf && !(/^(ele|ela|eles|elas|este|esta|esse|essa|aquele|aquela|o|a|os|as)$/.test(n) && infAhead && /^(de|em)$/.test(pw)) && !(pw === "a" && /^(o|os)$/.test(n) && isVerb(n2)) && !(pw === "a" && n === "a" && isVerb(n2)) &&
+        if (cf && !quoted && !(/^(ele|ela|eles|elas|este|esta|esse|essa|aquele|aquela|o|a|os|as)$/.test(n) && infAhead && /^(de|em)$/.test(pw)) && !(pw === "a" && /^(o|os)$/.test(n) && isVerb(n2)) && !(pw === "a" && n === "a" && isVerb(n2)) &&
             !(pw === "em" && /^(um|uma|uns|umas)$/.test(n)) && !(pw === "de" && /^(um|uma|uns|umas)$/.test(n)) && !(pw === "de" && /^(o|a|os|as)$/.test(n) && isInf(n2))) {
           if (cf.charAt(0) === "à") return push(i, 2, "crase", it(w + " " + n) + " se funden con acento grave: " + it(cf) + " (crase).");
           return push(i, 2, "contraccion", it(w + " " + n) + " se contrae: " + it(cf) + (w === "en" ? " (y *en* es español)" : "") + ".");
         }
       }
       // em / de / a + país con artículo: em Brasil → no Brasil
-      if (/^(em|de|para)$/.test(w) && nxt && nxt.cap && U.PLACE_ART && U.PLACE_ART[n] && !/^(recife|porto)$/.test(n) && !(n === "rio" && W(wi(ni, 1)) === "de" && false)) {
+      if (/^(em|de|para)$/.test(w) && nxt && nxt.cap && U.PLACE_ART && U.PLACE_ART[n] && !/^(recife|porto)$/.test(n) && !/^(nome|chamada|chamado|apelido|título|cidade|palavra|expressão)$/.test(p) && !(n === "rio" && W(wi(ni, 1)) === "de" && false)) {
         if (!(n === "rio" && /^(grande|negro|branco|madeira|são)$/.test(n2))) {
           var ga = U.PLACE_ART[n] === "f" ? "a" : "o";
           var cf2 = w === "para" ? "para " + ga : U.contract(w, ga);
@@ -871,7 +873,8 @@
       var artW = ART.test(w) ? w : (U.CONTR && U.CONTR[w] && ART.test(U.CONTR[w][1]) ? U.CONTR[w][1] : null);
       if (artW && ni === i + 1 && !tk[ni].cap && !(/^(o|a|os|as)$/.test(w) && (finite(n) || isInf(n))) && !COMMON_G.test(n)) {
         var gn = nounGN(n);
-        if (gn && w === "a" && gn.g === "m") gn = null;   // «a pé», «vou a Copacabana»: the preposition
+        // «a pé», «vou a Copacabana»: the preposition, not the article
+        if (gn && w === "a" && gn.g === "m" && (!(t.clause || (U.HETERO && U.HETERO[n])) || /^(pé|cavalo|lápis|gás|vapor|prazo|respeito|partir|seguir|caráter|tempo|dia)$/.test(n))) gn = null;
         var A = U.ARTICLES && U.ARTICLES[artW];
         if (gn && A && gn.g !== A[0] && !isAdj(n) && !V(n).length) {
           var want = { m: { o: "o", a: "o", os: "os", as: "os", um: "um", uma: "um", uns: "uns", umas: "uns" }, f: { o: "a", a: "a", os: "as", as: "as", um: "uma", uma: "uma", uns: "umas", umas: "umas" } }[gn.g][artW];
@@ -902,7 +905,7 @@
         var gw = W(gk);
         var objLike = gw && (ART.test(gw) || POSS.test(gw) || DEM.test(gw) || isInf(gw) || isNoun(gw) || (tk[gk] && tk[gk].cap && !tk[gk].start) || /^(ele|ela|eles|elas|você|vocês|isso|isto|tudo|nada|mim|ti)$/.test(gw) || (!V(gw).length && !PREPS.test(gw) && !isAdj(gw) && !/^(desde|quando|porque|muito|demais|bastante|nada|também|não|já|ainda|agora|hoje|ontem|sempre|nunca|mais|menos|bem|mal|então|assim|aqui|lá|daqui|dali|tanto|pouco)$/.test(gw) && known(gw)));
         if (gk >= 0 && objLike && !/^(de|do|da|dos|das|disso|disto|daquilo|deste|desta|desse|dessa|daquele|daquela|dele|dela|deles|delas|dum|duma|que|quando|se|e|mas|porque|ou)$/.test(gw) && !(tk[gk - 1] && tk[gk - 1].p && gk - 1 > i) && !/^(me|te|se|nos|lhe)$/.test(gw))
-          push(i, gk - i + 1, "gostar", it("Gostar") + " lleva siempre " + it("de") + ": " + it(w + " " + (ART.test(gw) && /^(o|a|os|as)$/.test(gw) ? { o: "do", a: "da", os: "dos", as: "das" }[gw] : "de " + gw)) + ".");
+          push(i, 1, "gostar", it("Gostar") + " lleva siempre " + it("de") + ": " + it(w + " " + (ART.test(gw) && /^(o|a|os|as)$/.test(gw) ? { o: "do", a: "da", os: "dos", as: "das" }[gw] : "de " + gw)) + ".");
         if (/^(me|te|lhe|nos)$/.test(p) && /^(gosta|gostam)$/.test(w)) push(pi, 2, "gostar", it(p + " " + w) + " es un calco de «me gusta»: " + it("eu gosto de…") + " (la persona es el sujeto).");
       }
 
@@ -915,7 +918,7 @@
       /* 8. perfeito composto con un pasado cerrado; «he comido» */
       if (/^(tenho|tens|tem|temos|têm)$/.test(w) && PP(n) && !/^(que|de)$/.test(n)) {
         var sw = sentence(i);
-        var closed = sw.some(function (x, k) { return TIME_DONE.test(x) || /^(1[89]\d\d|20\d\d)$/.test(x) || (x === "há" && /^(\d+|um|uma|dois|duas|três|muito|pouco|alguns|algumas|anos|meses)$/.test(sw[k + 1] || "")); }) ||
+        var closed = sw.some(function (x, k) { return (TIME_DONE.test(x) && !(/^passad[oa]$/.test(x) && !/^(semana|mês|ano|sábado|domingo|fim|verão|inverno|século|dia|vez|noite)$/.test(sw[k - 1] || ""))) || /^(1[89]\d\d|20\d\d)$/.test(x) || (x === "há" && /^(\d+|um|uma|dois|duas|três|muito|pouco|alguns|algumas|anos|meses)$/.test(sw[k + 1] || "")); }) ||
           /(^| )(esta manhã|hoje de manhã|uma vez)( |$)/.test(sw.join(" ")) || [p, p2, n2].indexOf("hoje") >= 0;
         if (closed) {
           var pf2 = conjForm(PP(n), "perfeito", { tenho: 0, tens: 1, tem: 2, temos: 3, "têm": 5 }[w]);
@@ -925,6 +928,12 @@
 
       /* 9. futuro do subjuntivo: se eu ter, quando eu chego (…vou) */
       var condSe = w === "se" && (t.clause || /^(e|mas|ou|que|porque|mesmo|só|nem|como|pois)$/.test(p)) && !(pi >= 0 && PREPS.test(p));
+      if (condSe && ni === i + 1 && finite(n) && !SUBJ_PRON.hasOwnProperty(n)) {
+        // «se veste e sai»: reflexive, unless a main clause follows after a comma
+        var commaAfter = false;
+        for (var qc = ni + 1; qc < tk.length && !(tk[qc].p && /[.!?]/.test(tk[qc].p)); qc++) if (tk[qc].p === ",") { commaAfter = true; break; }
+        if (!commaAfter) condSe = false;
+      }
       var qInterr = w === "quando" && (t.clause || p === "e") && sentEnd(i) === "?";
       if ((/^(quando|assim|logo|enquanto|sempre|depois|caso)$/.test(w) || condSe) && !qInterr && week >= 17 &&
           !(w === "se" && pi >= 0 && lemmas(p).some(function (l) { return /^(saber|perguntar|ver|descobrir|imaginar|entender)$/.test(l); }))) {
@@ -957,7 +966,8 @@
         for (var q10 = i - 2; q10 >= 0 && !(tk[q10].p && /[.!?]/.test(tk[q10].p)); q10--) if (tk[q10].w === "que" && SUBJ_TRIG.test(W(wi(q10, -1)))) { trig10 = true; break; }
       }
       var embora10 = w === "embora" && !(pi >= 0 && lemmas(p).indexOf("ir") >= 0) && !(pi >= 0 && /^(vou|vai|vamos|vão|foi|fui|foram|ir|irmos|irem)$/.test(p));
-      if (week >= 23 && (trig10 || /^(talvez|tomara|caso)$/.test(w) || embora10)) {
+      var caso10 = w === "caso" && !(pi >= 0 && /^(nesse|neste|naquele|no|em|o|um|nenhum|qualquer|esse|este|cada|do|pelo|seu|meu|nosso|deste|desse|num)$/.test(p));
+      if (week >= 23 && (trig10 || /^(talvez|tomara)$/.test(w) || caso10 || embora10)) {
         var trigW = w === "que" ? (p === "e" ? "que" : p) : w;
         var past10 = w === "que" && V(p).some(function (v) { return /^(perfeito|imperfeito|condicional)$/.test(v.tense); }) && !/^(quero|espero)$/.test(p);
         var sv10 = subjectAndVerb(w === "tomara" && n === "que" ? ni : i), sk = sv10.k, sp2 = sv10.p;
@@ -1127,7 +1137,7 @@
       if (/^(em|en)$/.test(w) && /^(metrô|ônibus|bicicleta|bike|barca|barco|táxi|carro|avião|trem|moto|uber|bondinho|bonde)$/.test(n) && ni === i + 1 && motionNear)
         push(i, 1, "preposicion", "Los medios de transporte van con *de*: " + it("de " + n) + " (de metrô, de ônibus).");
       if (/^(de|em)$/.test(w) && n === "pé" && ni === i + 1 && !/^(de|em)$/.test(n2) && (lemmas(p).some(function (l) { return /^(ir|vir|voltar|chegar|andar)$/.test(l); }) || /^(vou|vai|vamos|volto|venho)$/.test(p2))) push(i, 1, "preposicion", "Caminando es " + it("a pé") + ".");
-      if (w === "a" && nxt && nxt.cap && ni === i + 1 && lemmas(p).some(function (l) { return /^(morar|viver|trabalhar)$/.test(l); }) && !finite(n2)) push(i, 1, "preposicion", "Para dónde vivís o estás: " + it("em " + nxt.o) + " (moro em Botafogo).");
+      if (w === "a" && nxt && nxt.cap && ni === i + 1 && lemmas(p).some(function (l) { return /^(morar|viver|trabalhar)$/.test(l); }) && !finite(n2) && !isNoun(p) && !(pi >= 1 && (ART.test(p2) || (U.prepInfo && U.prepInfo(p2)))) && !/^(onde|que|quem|como)$/.test(p2)) push(i, 1, "preposicion", "Para dónde vivís o estás: " + it("em " + nxt.o) + " (moro em Botafogo).");
       if (w === "a" && n === "casa" && ni === i + 1 && lemmas(p).some(function (l) { return /^(voltar|ir)$/.test(l); }) && !isInf(p) && (!tk[ni + 1] || tk[ni + 1].p || /^(de|cedo|tarde|agora)$/.test(n2))) push(i, 1, "preposicion", "En Brasil se dice " + it("para casa") + " (volto para casa).");
 
       /* 24. más crase */

@@ -60,7 +60,7 @@
     return d;
   }
 
-  var DATA = { esPt: dict(), esIt: null, falsi: dict(), spelling: [], lex: dict(), adj: dict(), nouns: dict(), nounsByPlural: dict() };
+  var DATA = { esPt: dict(), esIt: null, falsi: dict(), spelling: [], lex: dict(), adj: dict(), nouns: dict(), nounsByPlural: dict(), verbs: dict() };
 
   /* ------------------------------------------------------- herramientas */
 
@@ -221,7 +221,8 @@
     uruguai: "m", paraguai: "m", "méxico": "m", "canadá": "m", equador: "m", nordeste: "m", sul: "m", norte: "m",
     argentina: "f", bahia: "f", "itália": "f", "frança": "f", espanha: "f", alemanha: "f", inglaterra: "f",
     "amazônia": "f", europa: "f", "áfrica": "f", "ásia": "f", "américa": "f", bolívia: "f", colômbia: "f", venezuela: "f",
-    china: "f", "índia": "f", "estados": "m", eua: "m" });
+    china: "f", "índia": "f", "estados": "m", eua: "m", amazonas: "m", "ceará": "m", "espírito": "m", "pará": "m", "paraná": "m",
+    "maranhão": "m", "piauí": "m", acre: "m", "amapá": "m", tocantins: "m", mato: "m", distrito: "m", pantanal: "m", "sertão": "m" });
   var PLACE_NOART = /^(portugal|lisboa|são|sao|salvador|brasília|brasilia|curitiba|florianópolis|manaus|belém|fortaleza|natal|niterói|paraty|petrópolis|búzios|olinda|ouro|buenos|rosario|córdoba|cordoba|mendoza|montevidéu|madri|paris|londres|roma|cuba|israel|angola|moçambique)$/;
 
   /* Disparadores del subjuntivo presente e imperfecto. */
@@ -309,9 +310,7 @@
   function isInfinitive(w) {
     if (!LIDX) buildVerbIndex();
     if (!/(ar|er|ir|or|ôr)$/.test(w)) return false;
-    if (LIDX[w]) return true;
-    var gl = DATA.lex[w] ? String(DATA.lex[w]).split(/[,;\/(]/)[0].trim() : "";
-    return /(ar|er|ir)(se)?$/.test(gl);
+    return !!(LIDX[w] || DATA.verbs[w]);
   }
   function isVerbish(w) { return !!(w && (verbForms(w).length || participleOf(w) || gerundOf(w) || isInfinitive(w))); }
   function finite(w) {
@@ -794,10 +793,20 @@
       hint: "¿Pasado o futuro?",
       explain: it(e) + " (futuro, tónica en -ão); " + it(g) + " es otro tiempo (átona en -am)." };
 
+    if (g === "no" && e === "não") return { cat: "espanol", slip: false,
+      hint: "¿Es la negación o *em + o*?",
+      explain: "La negación es *não*: " + it("não " + next) + ". *No* existe, pero es *em + o* (no Rio, no verão)." };
+
     // 4. Un verbo portugués con la h del haber español o un hecho español
     if (/^(ha|he|hay)$/.test(g) && e === "há") return { cat: "espanol", slip: false,
       hint: it(g) + " suena a español. ¿Cómo se dice en portugués?",
       explain: "El «hay» existencial y el «hace» de tiempo son *há* (há muita gente, há dois anos); en el habla, *tem*." };
+
+    // 4b. Una palabra del español que el diccionario conoce (mucho, tan, tengo)
+    var early = muitoRule(g, e, ctx);
+    if (early) return early;
+    var sw0 = spanishWord(g);
+    if (sw0 && (sw0.split(" / ").indexOf(e) >= 0 || sw0.split(" ").indexOf(e) >= 0)) return spanishExplain(g, e, sw0, ctx);
 
     // 5. Grafías del español (ñ, ll, -ción, -dad, -ble, -aje, -aba…)
     var SPELL = [
@@ -862,6 +871,15 @@
     if (pgA && pgA.base === "a" && pgA.art && ARTICLES[e] && pgA.art === e && doVerbBefore(ctx)) return { cat: "a_personal", slip: false,
       hint: "Hay una preposición que en español va y en portugués no.",
       explain: "El objeto directo de persona no lleva «a» en portugués: " + it(e + " " + capN(next, ctx)) + ", conheço o João, visitei os meus pais. (En *vi a Maria* la *a* es el artículo, no preposición.)" };
+
+    if (g === "a" && e === "o" && ctx.names && ctx.names.indexOf(next) >= 0 && doVerbBefore(ctx)) return { cat: "a_personal", slip: false,
+      hint: "Esa «a» delante del nombre, ¿es un artículo o la «a» personal del español?",
+      explain: "El objeto directo de persona no lleva «a» en portugués; delante de un nombre masculino va el artículo *o*: " + it("o " + capN(next, ctx)) + " (vi o Pedro, espero o Lucas). *A Maria* sí, porque ahí *a* es el artículo femenino." };
+    if (g === "desde" && e === "há") return { cat: "preposicion", slip: false,
+      hint: "¿Desde un momento o hace un tiempo?",
+      explain: "Para la duración hasta hoy: *há* + tiempo (moro aqui há três anos = hace tres años que vivo acá); *desde* va con un momento (desde 2020, desde criança)." };
+    if (/^(em|de|no)$/.test(g) && e === "a" && next === "pé") return { cat: "preposicion", slip: false,
+      hint: "¿Cómo se dice «a pie»?", explain: "Caminando es *a pé* (vou a pé). Los vehículos van con *de*: de ônibus, de carro." };
 
     // 8. Pronombres
     r = pronounRule(g, e, ctx);
@@ -1713,8 +1731,17 @@
     lexico: "Vocabulario"
   };
 
+  // Capitalized words: names.  At the start of a sentence only when the word
+  // is not a Portuguese word anyway (João chegou; not Ela, Hoje, Minha).
   function names(s) {
-    return (String(s).match(/(^|[^a-zà-ÿA-ZÀ-Ý])[A-ZÀ-Ý][a-zà-ÿ]+/g) || []).map(function (w) { return w.replace(/^[^A-Za-zÀ-ÿ]/, "").toLowerCase(); });
+    var out = [], re = /(^|[^a-zà-ÿA-ZÀ-Ý'-])([A-ZÀ-Ý][a-zà-ÿ]+)/g, m, str = String(s);
+    while ((m = re.exec(str))) {
+      var w = m[2].toLowerCase(), before = str.slice(0, m.index + m[1].length).replace(/[\s«»"“”(—–-]+$/, "");
+      var initial = !before || /[.!?:]$/.test(before);
+      if (initial && isPortuguese(w)) continue;
+      out.push(w);
+    }
+    return out;
   }
 
   // Verbs interchangeable in everyday Brazilian Portuguese.
@@ -1821,6 +1848,14 @@
     return null;
   }
 
+  // A first name and its article: Maria, Bia, Ana take «a»; Pedro, Lucas, João take «o».
+  var FEM_NAMES = /^(bia|beatriz|carmen|raquel|isabel|inês|beth|luz|ester|ruth|rute|íris|iris|lis|nair|lurdes|mercedes|dolores|clarice|cecília|sofía|sofia)$/;
+  function nameAgrees(art, nm) {
+    if (!/^(o|a)$/.test(art)) return true;
+    var fem = /a$/.test(nm) || FEM_NAMES.test(nm);
+    if (/^(luca|nicola|andrea)$/.test(nm)) return true;
+    return (art === "a") === fem;
+  }
   function possAgrees(art, p) {
     var gn = /^(meu|teu|seu|nosso|vosso)$/.test(p) ? "o" : /^(minha|tua|sua|nossa|vossa)$/.test(p) ? "a" :
              /^(meus|teus|seus|nossos|vossos)$/.test(p) ? "os" : "as";
@@ -1833,8 +1868,7 @@
     for (i = 0; i < toks.length; i++) {
       t = toks[i];
       var sp = splitEnclitic(t);
-      if (sp) { out.push({ w: sp.v, cl: [sp.c], encl: true }); continue; }
-      if (t === "mais" && /^pequen[oa]s?$/.test(toks[i + 1] || "")) { out.push({ w: /s$/.test(toks[i + 1]) ? "menores" : "menor" }); i++; continue; }
+      if (sp) { out.push({ w: sp.v + (/-l(o|a|os|as)$/.test(t) ? "#" + t.split("-")[0] : ""), cl: [sp.c], encl: true }); continue; }
       if (/^(num|numa|nuns|numas)$/.test(t)) { out.push({ w: "em" }); out.push({ w: t.slice(1) }); continue; }
       if (/^(dum|duma|duns|dumas)$/.test(t)) { out.push({ w: "de" }); out.push({ w: t.slice(1) }); continue; }
       out.push({ w: t });
@@ -1859,10 +1893,11 @@
     for (i = 0; i < out.length; i++) {
       t = out[i].w;
       var nx = out[i + 1] ? out[i + 1].w : "";
-      if (/^(o|a|os|as)$/.test(t) && ((poss(nx) && possAgrees(t, nx)) || (person(nx) && !PLACE_ART[nx])) && !(out[i].cl)) {
+      var pvw = res.length ? res[res.length - 1].w : "";
+      if (/^(o|a|os|as)$/.test(t) && !/^(de|em|por|a)$/.test(pvw) && ((poss(nx) && possAgrees(t, nx)) || (person(nx) && !PLACE_ART[nx] && !PLACE_NOART.test(nx) && nameAgrees(t, nx))) && !(out[i].cl)) {
         if (!isVerbish(nx)) continue;
       }
-      if (CONTR[t] && ARTICLES[CONTR[t][1]] && /^(o|a|os|as)$/.test(CONTR[t][1]) && ((poss(nx) && possAgrees(CONTR[t][1], nx)) || person(nx))) { res.push({ w: CONTR[t][0] }); continue; }
+      if (CONTR[t] && ARTICLES[CONTR[t][1]] && /^(o|a|os|as)$/.test(CONTR[t][1]) && ((poss(nx) && possAgrees(CONTR[t][1], nx)) || (person(nx) && !PLACE_NOART.test(nx) && nameAgrees(CONTR[t][1], nx)))) { res.push({ w: CONTR[t][0] }); continue; }
       res.push(out[i]);
     }
     out = res;
@@ -1907,11 +1942,32 @@
   // The tokens without the subject pronouns that only repeat the verb's person.
   function stripSubj(toks) {
     return toks.filter(function (t, i) {
-      if (!SUBJ_P[t] || t === "você" || t === "vocês") return true;
+      if (!/^(eu|tu|nós|vós)$/.test(t)) return true;
       var k = i + 1;
       while (toks[k] && /^(não|já|também|sempre|nunca|me|te|se|nos|lhe|lhes|o|a|os|as|só|ainda)$/.test(toks[k])) k++;
       return !verbForms(toks[k] || "").some(function (v) { return SUBJ_P[t].indexOf(v.p) >= 0 && v.tense !== "infPessoal"; });
     });
+  }
+
+  // Enclitic forms that do not exist: comprar-o (comprá-lo), fiz-o (fi-lo),
+  // dão-o (dão-no), and enclisis on a participle or a future.
+  function badEnclForm(g) {
+    for (var i = 0; i < g.length; i++) {
+      var m = /^([a-zà-ÿ]+)-(o|a|os|as)$/.exec(g[i]);
+      if (m && /[rsz]$/.test(m[1])) {
+        var v = m[1], fix = v.replace(/ar$/, "á").replace(/er$/, "ê").replace(/ir$/, "i").replace(/or$/, "ô").replace(/(s|z)$/, "");
+        if (/^(fiz|fez|diz|faz|traz|quis)$/.test(v)) fix = v.slice(0, -1).replace(/e$/, "ê").replace(/a$/, "á");
+        return { i: i, cat: "pronome", fix: fix + "-l" + m[2], why: "Después de *-r, -s, -z* el pronombre es *-lo, -la, -los, -las* y la consonante cae: " + it(fix + "-l" + m[2]) + " (comprá-lo, fazê-lo, fi-lo)." };
+      }
+      if (m && /(am|em|ão|õe)$/.test(m[1])) return { i: i, cat: "pronome", fix: m[1] + "-n" + m[2], why: "Después de una nasal el pronombre es *-no, -na, -nos, -nas*: " + it(m[1] + "-n" + m[2]) + " (dão-no, põe-na)." };
+      var sp = splitEnclitic(g[i]);
+      if (sp && participleOf(sp.v) && !verbForms(sp.v).length) return { i: i, cat: "colocacao", why: "Nunca va el pronombre pegado al participio: " + it(sp.c + " " + (g[i - 1] || "tinha") + " " + sp.v).replace(/\*(\S+) (\S+) /, "*$2 $1 ") + " (eu já o tinha avisado)." };
+      if (sp && verbForms(sp.v).some(function (v) { return v.tense === "futuro" || v.tense === "condicional"; }) && g[i].split("-").length === 2 && !verbForms(sp.v).some(function (v) { return v.tense !== "futuro" && v.tense !== "condicional"; })) {
+        var st = sp.v.replace(/(ei|ás|á|emos|eis|ão|ia|ias|íamos|íeis|iam)$/, ""), end = sp.v.slice(st.length);
+        return { i: i, cat: "colocacao", why: "Con futuro y condicional no va ênclise: en lo formal, mesóclise (" + it(st + "-" + sp.c + "-" + end) + "); en lo corriente, el pronombre delante (" + it(sp.c + " " + sp.v) + ")." };
+      }
+    }
+    return null;
   }
 
   // Enclisis after a word that attracts the pronoun (não disse-me → não me disse).
@@ -1936,6 +1992,8 @@
       if (!c || etoks.indexOf(c) < 0) continue;
       // antes de ele chegar: the pronoun is the subject of an infinitive
       if (/^(ele|ela|eles|elas|este|esse|aquele)$/.test(w2) && isInfinitive(gtoks[i + 2] || "")) continue;
+      if (/^(o|a|os|as)$/.test(w2) && /^(de|em)$/.test(p) && [gtoks[i + 2], gtoks[i + 3], gtoks[i + 4]].some(function (x) {
+        return x && (isInfinitive(x) || verbForms(x).some(function (v) { return v.tense === "infPessoal" && /(rem|rmos|res)$/.test(x); })); })) continue;
       var art = ARTICLES[w2];
       var d = c.charAt(0) === "à" ? { cat: "crase", slip: false,
           hint: "Dos palabras marcadas se tienen que fundir en una.",
@@ -1989,7 +2047,8 @@
   }
 
   var COMP_IRR = dict({ grande: "maior", grandes: "maiores", bom: "melhor", boa: "melhor", bons: "melhores", boas: "melhores",
-    mau: "pior", "má": "pior", maus: "piores", "más": "piores", ruim: "pior", ruins: "piores" });
+    mau: "pior", "má": "pior", maus: "piores", "más": "piores", ruim: "pior", ruins: "piores",
+    pequeno: "menor", pequena: "menor", pequenos: "menores", pequenas: "menores" });
   // «mais grande» → maior, «mais bom» → melhor: the comparative made regular.
   function comparativeSwap(g, e) {
     for (var i = 0; i < g.length - 1; i++) {
@@ -1998,7 +2057,8 @@
       if (j < 0 || e.indexOf(g[i + 1]) >= 0) continue;
       return { gi: [i, i + 1], ei: [j], cat: "regularizacion",
         hint: "Ese comparativo no se forma con *mais*.",
-        explain: "Comparativos irregulares: *maior* (más grande), *melhor* (mejor), *pior* (peor), *menor* (más chico; *mais pequeno* también existe). Acá: " + it(want) + ". *Mais grande* está mal, igual que «más bueno» en lugar de «mejor»." };
+        explain: /^pequen/.test(g[i + 1]) ? "En Brasil el comparativo de *pequeno* es " + it(want) + " (*mais pequeno* se oye sobre todo en Portugal)."
+          : "Comparativos irregulares: *maior* (más grande), *melhor* (mejor), *pior* (peor), *menor* (más chico). Acá: " + it(want) + ". *Mais grande* está mal, igual que «más bueno» en lugar de «mejor»." };
     }
     return null;
   }
@@ -2022,7 +2082,11 @@
     var target0 = pickTarget(given, list) || list[0];
     var exp = expandGap(ctx.stem, given, list);
     if (exp) { given = exp.given; list = exp.targets; }
-    var target = pickTarget(given, list) || list[0];
+    // An uncontracted «em o», «de a»: compare with the variants that have the contraction.
+    var gT = tokens(given), withC = list.filter(function (v) { return uncontracted(gT, tokens(v)); });
+    if (withC.length && withC.length < list.length) list = withC.concat(list.filter(function (v) { return withC.indexOf(v) < 0; }));
+    if (withC.length) target0 = pickTarget(given, withC) || target0;
+    var target = (withC.length ? pickTarget(given, withC) : null) || pickTarget(given, list) || list[0];
     var g = tokens(given), e = tokens(target);
     var res = { cat: null, slip: false, hint: "", explain: "", target: target,
                 given: g.map(function (w) { return { w: w }; }),
@@ -2036,12 +2100,31 @@
     }
     if (g.join(" ") === e.join(" ")) { res.verdict = "giusto"; return res; }
     var nm = names(target).concat(ctx.names || []);
+    for (var lx = 0; lx < list.length; lx++) if (g.join(" ") === tokens(list[lx]).join(" ")) { res.verdict = "giusto"; return res; }
     // Free variants of Brazilian Portuguese.
+    var formalHit = null;
     for (var li = 0; li < list.length; li++) {
       var e2 = tokens(list[li]);
-      if (g.join(" ") === e2.join(" ")) { res.verdict = "giusto"; return res; }
+      if (deaccent(g.join(" ")) === deaccent(e2.join(" "))) continue;   // only accents differ: the rules see it
       var ce = canon(e2, names(list[li]).concat(ctx.names || [])), cg = canon(g, names(list[li]).concat(ctx.names || []));
       if (ce === cg) {
+        var bf = badEnclForm(g);
+        if (bf && !badEnclForm(e2)) {
+          res.cat = bf.cat; res.label = LABEL[bf.cat]; res.verdict = "sbagliato"; res.all = [bf.cat];
+          res.hint = bf.cat === "pronome" ? "Revisá la forma del pronombre pegado al verbo." : "Revisá dónde va el pronombre.";
+          res.explain = bf.why;
+          if (res.given[bf.i]) res.given[bf.i].bad = true;
+          res.fixed.forEach(function (w) { if (w.w.indexOf("-") > 0) w.fix = true; });
+          return res;
+        }
+        // Sentence or clause opened with an unstressed pronoun where the
+        // answer (formal writing) has it after the verb: close, not wrong.
+        var fm = /(^|[.,;:!?—]\s*)(me|te|se|lhe|lhes|nos)\s+([a-zà-ÿ]+)/i.exec(String(given));
+        if (fm && e2.some(function (x) { var sp2 = splitEnclitic(x); return sp2 && sp2.c === fm[2].toLowerCase() && sp2.v === fm[3].toLowerCase(); }) &&
+            !list.some(function (x) { return new RegExp("(^|[.,;:!?—]\\s*)" + fm[2] + "\\s+" + fm[3] + "\\b", "i").test(x); })) {
+          formalHit = formalHit || { c: fm[2].toLowerCase(), v: fm[3].toLowerCase() };
+          continue;
+        }
         var be = badEnclisis(g);
         if (be && !badEnclisis(e2)) {
           res.cat = "colocacao"; res.label = LABEL.colocacao; res.verdict = "sbagliato"; res.all = ["colocacao"];
@@ -2056,6 +2139,14 @@
       }
       var gS = stripSubj(g), eS = stripSubj(e2);
       if (genderFree(gS, eS, list[li]) || synonymFree(gS, eS)) { res.verdict = "giusto"; return res; }
+    }
+    if (formalHit) {
+      res.cat = "colocacao"; res.label = LABEL.colocacao; res.verdict = "quasi"; res.slip = true; res.all = ["colocacao"];
+      res.hint = "En el habla está bien; en lo escrito formal, ¿se empieza con un pronombre átono?";
+      res.explain = "En la escritura formal no se empieza una oración (ni una parte después de coma) con pronombre átono: " + it(formalHit.v + "-" + formalHit.c) + ". En el habla de Brasil, *" + formalHit.c + " " + formalHit.v + "* es lo normal.";
+      res.given.forEach(function (w) { if (w.w === formalHit.c) w.bad = true; });
+      res.fixed.forEach(function (w) { if (w.w === formalHit.v + "-" + formalHit.c) w.fix = true; });
+      return res;
     }
 
     // The whole answer in Spanish: one finding, not five.
@@ -2162,7 +2253,7 @@
       while (e[k] && /^(não|já|também|sempre|nunca|me|te|se|nos|lhe|lhes|o|a|os|as|só)$/.test(e[k])) k++;
       if (verbForms(e[k] || "").some(function (v) { return SUBJ_P[w].indexOf(v.p) >= 0; })) return true;
     }
-    if (/^(o|a|os|as)$/.test(w) && ((POSSESSIVE.indexOf(next) >= 0 && possAgrees(w, next)) || (nm.indexOf(next) >= 0 && !PLACE_ART[next]))) return true;
+    if (/^(o|a|os|as)$/.test(w) && !/^(de|em|por|a)$/.test(e[o.ei - 1] || "") && ((POSSESSIVE.indexOf(next) >= 0 && possAgrees(w, next)) || (nm.indexOf(next) >= 0 && !PLACE_ART[next] && !PLACE_NOART.test(next) && nameAgrees(w, next)))) return true;
     return false;
   }
   function canonExtraOk(w, g, e, o, nm) {
@@ -2172,7 +2263,7 @@
       while (g[k] && /^(não|já|também|sempre|nunca|me|te|se|nos|lhe|lhes|o|a|os|as|só)$/.test(g[k])) k++;
       if (verbForms(g[k] || "").some(function (v) { return SUBJ_P[w].indexOf(v.p) >= 0; })) return true;
     }
-    if (/^(o|a|os|as)$/.test(w) && ((POSSESSIVE.indexOf(next) >= 0 && possAgrees(w, next)) || (nm.indexOf(next) >= 0 && !PLACE_ART[next] && !PLACE_NOART.test(next)))) return true;
+    if (/^(o|a|os|as)$/.test(w) && !/^(de|em|por|a)$/.test(g[o.gi - 1] || "") && ((POSSESSIVE.indexOf(next) >= 0 && possAgrees(w, next)) || (nm.indexOf(next) >= 0 && !PLACE_ART[next] && !PLACE_NOART.test(next) && nameAgrees(w, next)))) return true;
     return false;
   }
 
@@ -2234,8 +2325,10 @@
       if (k && !DATA.lex[k] && k.indexOf(" ") < 0) DATA.lex[k] = w[1];
     });
     var K = C();
+    DATA.verbs = dict();
     (bank.verbs || []).forEach(function (v) {
       if (!v || !v[0]) return;
+      DATA.verbs[String(v[0]).replace(/-se$/, "")] = true;
       if (K && typeof K.register === "function" && !v[4]) { try { K.register(v[0], { es: v[1] }); } catch (e) { /* */ } }
       DATA.lex[v[0]] = v[1];
     });

@@ -2495,7 +2495,7 @@
  {
   "week": 45,
   "text": "O meu apelido é González e o meu nome é Diego. Trabalho numa oficina no Centro, com computador e reuniões. Ontem o meu chefe ficou borracho na festa da firma.",
-  "corrected": "O meu sobrenome é González e o meu nome é Diego. Trabalho numa escritório no Centro, com computador e reuniões. Ontem o meu chefe ficou bêbado na festa da firma.",
+  "corrected": "O meu sobrenome é González e o meu nome é Diego. Trabalho num escritório no Centro, com computador e reuniões. Ontem o meu chefe ficou bêbado na festa da firma.",
   "errors": [
    {
     "wrong": "apelido é",
@@ -2503,8 +2503,8 @@
     "cat": "falso_amigo"
    },
    {
-    "wrong": "oficina",
-    "right": "escritório",
+    "wrong": "numa oficina",
+    "right": "num escritório",
     "cat": "falso_amigo"
    },
    {

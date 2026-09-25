@@ -71,11 +71,11 @@ VERBISH = re.compile(r"(ei|ou|amos|aram|ava|avam|ando|ado|ada|ados|adas|emos|era
                      r"imos|iram|iu|indo|rei|rá|rão|ria|riam|sse|ssem)$")
 # Endings that only a verb has (a lemma absent from the list is accepted
 # for them only: melodia is not a form of «melodiar»).
-STRONG_VERB = re.compile(r"(ou|ei|ava|avam|ávamos|ando|endo|indo|aram|eram|iram|asse|assem|esse|essem|isse|"
-                         r"issem|aremos|eremos|iremos|arão|erão|irão|aria|eria|iria|ariam|eriam|iriam)$")
+STRONG_VERB = re.compile(r"(ou|ei|ava|avam|ávamos|aram|eram|iram|asse|assem|esse|essem|isse|"
+                         r"issem|aremos|eremos|iremos|arão|erão|irão|ariam|eriam|iriam)$")
 # Letters and the English and Spanish that the subtitles let through: never
 # a Portuguese lemma with a level.
-NOT_PT = set("b c d f g h j k l m n p q r s t v w x y z".split()) | {
+NOT_PT = set("b c d f g h i j k l m n p q r s t u v w x y z".split()) | {
     "us", "to", "in", "is", "the", "you", "and", "it", "of", "my", "yes", "no", "el", "los", "las",
     "unos", "hola", "gracias", "señor", "okay", "ok", "hey", "wow", "baby", "man", "go", "oh", "uh"}
 WORD_POS = {"interrogativo": "pr", "preposizione": "p", "contrazione": "p", "avverbio": "r",
@@ -104,7 +104,7 @@ FORCE = {
     "desta": "deste", "daquela": "daquele", "daquelas": "daquele", "daqueles": "daquele",
     "nesses": "nesse", "nessa": "nesse", "nessas": "nesse", "nestes": "neste", "nesta": "neste",
     "nestas": "neste", "naquela": "naquele", "naqueles": "naquele", "naquelas": "naquele",
-    "deus": "deus", "antes": "antes", "depois": "depois", "atrás": "atrás", "jesus": "jesus",
+    "saia": "sair", "saiam": "sair", "deus": "deus", "antes": "antes", "depois": "depois", "atrás": "atrás", "jesus": "jesus",
     "melhor": "melhor", "pior": "pior", "maior": "maior", "menor": "menor",
     "os": "o", "as": "a", "uma": "um", "umas": "um", "uns": "um", "sua": "seu", "suas": "seu",
     "seus": "seu", "minhas": "meu", "meus": "meu", "nossos": "nosso", "nossas": "nosso",
@@ -401,12 +401,16 @@ def main():
             ls = bank_forms[w]
             nominal = [l for l in ls if bank.get(l, ("",))[0] in ("n", "a")]
             lemma = max(nominal or ls, key=lambda l: (freq(l), l))
+        elif w.endswith("mente") and len(w) > 7:
+            lemma = w                       # adverbs in -mente are lemmas of their own
         else:
             lemma = w
             # hunspell also strips prefixes (revelou → velar, desmaiou → maiar):
             # a lemma must start like its form
             cand = {c for c in stems(w) if c != w and plain(c[:2]) == plain(w[:2]) and (
                 c in counts or c in bank or (re.search(r"(ar|er|ir)$", c) and STRONG_VERB.search(w)))}
+            # a feminine noun is not a form of a masculine one (linha ≠ linho)
+            cand = {c for c in cand if not (w.endswith("a") and c == w[:-1] + "o" and freq(w) >= freq(c))}
             if cand:
                 best = max(cand, key=lambda l: (freq(l), l))
                 verbish = re.search(r"(ar|er|ir)$", best) and w != best
