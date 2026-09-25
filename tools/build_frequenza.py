@@ -95,6 +95,10 @@ FORCE = {
     "morto": "morto", "morta": "morto", "mortos": "morto", "mortas": "morto",
     "feito": "fazer", "dito": "dizer", "visto": "ver", "posto": "pôr", "aberto": "aberto",
     "vocês": "você", "senhores": "senhor", "senhoras": "senhora", "meninas": "menina",
+    "desses": "desse", "dessas": "desse", "dessa": "desse", "destes": "deste", "destas": "deste",
+    "desta": "deste", "daquela": "daquele", "daquelas": "daquele", "daqueles": "daquele",
+    "nesses": "nesse", "nessa": "nesse", "nessas": "nesse", "nestes": "neste", "nesta": "neste",
+    "nestas": "neste", "naquela": "naquele", "naqueles": "naquele", "naquelas": "naquele",
     "deus": "deus", "antes": "antes", "depois": "depois", "atrás": "atrás", "jesus": "jesus",
     "melhor": "melhor", "pior": "pior", "maior": "maior", "menor": "menor",
     "os": "o", "as": "a", "uma": "um", "umas": "um", "uns": "um", "sua": "seu", "suas": "seu",
@@ -195,15 +199,15 @@ IRREG = {
 }
 
 TENSE_ENDS = {
-    "ar": "o as a amos ais am ei aste ou astes aram ava avas ávamos áveis avam ara aras áramos áreis "
-          "arei arás ará aremos areis arão aria arias aríamos aríeis ariam e es emos eis em "
-          "asse asses ássemos ásseis assem ar ares armos ardes arem ando ado ada ados adas",
-    "er": "o es e emos eis em i este eu estes eram ia ias íamos íeis iam era eras êramos êreis "
-          "erei erás erá eremos ereis erão eria erias eríamos eríeis eriam a as amos ais am "
-          "esse esses êssemos êsseis essem er eres ermos erdes erem endo ido ida idos idas",
-    "ir": "o es e imos is em i iste iu istes iram ia ias íamos íeis iam ira iras íramos íreis "
-          "irei irás irá iremos ireis irão iria irias iríamos iríeis iriam a as amos ais am "
-          "isse isses íssemos ísseis issem ir ires irmos irdes irem indo ido ida idos idas",
+    "ar": "o as a amos am ei aste ou aram ava avas ávamos avam ara aras áramos "
+          "arei arás ará aremos arão aria arias aríamos ariam e es emos em "
+          "asse asses ássemos assem ar ares armos arem ando ado ada ados adas",
+    "er": "o es e emos em i este eu eram ia ias íamos iam era eras êramos "
+          "erei erás erá eremos erão eria erias eríamos eriam a as amos am "
+          "esse esses êssemos essem er eres ermos erem endo ido ida idos idas",
+    "ir": "o es e imos em i iste iu iram ia ias íamos iam ira iras íramos "
+          "irei irás irá iremos irão iria irias iríamos iriam a as amos am "
+          "isse isses íssemos issem ir ires irmos irem indo ido ida idos idas",
 }
 
 
@@ -392,15 +396,19 @@ def main():
             if cand:
                 best = max(cand, key=lambda l: (freq(l), l))
                 verbish = re.search(r"(ar|er|ir)$", best) and w != best
+                base = w
+                if verbish and w.endswith("s") and singular(w) and not VERBISH.search(w):
+                    base = singular(w)[0]           # drogas → droga
+                # BR hardly uses the tu forms in -s: a form whose plural is
+                # frequent is a noun or an adjective (arma / armas, fundo /
+                # fundos), not the verb hunspell files it under
+                nouny = verbish and not VERBISH.search(base) and counts.get(base + "s", 0) * 10 >= counts.get(base, 1)
                 if (re.search(r"(ado|ada|ido|ida)$", w) and w in stems(w) and freq(w) > freq(best)):
                     pass            # a noun of its own, more frequent (sentido / sentir, pedido)
-                elif verbish and freq(best) * 20 < freq(w) and w.endswith("s") and singular(w):
-                    # hunspell files many nouns under a verb (drogas → drogar,
-                    # soldados → soldar): a verb whose infinitive is that rare
-                    # is not the lemma of so frequent a form
-                    sg = singular(w)
-                    if sg and depth < 2:
-                        lemma = resolve(sg[0], depth + 1)
+                elif nouny or (verbish and not VERBISH.search(w) and (
+                        not freq(best) or freq(best) * (20 if w.endswith("s") else 100) < freq(w))):
+                    if base != w and depth < 2:
+                        lemma = resolve(base, depth + 1)
                 else:
                     # the root may itself be a form (novos → novo)
                     lemma = resolve(best, depth + 1) if depth < 3 and best in counts else best

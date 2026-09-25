@@ -1,12 +1,16 @@
 /*
- * La banca: migliaia di esercizi generati da data/bank.json (parole, frasi,
- * errori tipici).  Ogni esercizio porta con sé la regola che mette alla
- * prova, così la diagnosi può spiegare l'errore invece di mostrare solo la
- * risposta giusta.
+ * El banco: miles de ejercicios generados a partir de data/bank.json
+ * (palabras, oraciones, errores típicos del hispanohablante).  Cada ejercicio
+ * lleva la regla que pone a prueba, así el diagnóstico puede explicar el
+ * error en lugar de mostrar solo la respuesta correcta.
  *
- * Tipi: parole (in entrambe le direzioni, con l'articolo), articoli,
- * plurali, preposizioni articolate, accordo dell'aggettivo, traduzione,
- * verbo nel contesto, trova l'errore, e la clinica degli errori personali.
+ * Tipos: palabras (en las dos direcciones, con el artículo), artículos,
+ * plurales, contracciones (em + o = no, de + a = da, a + o = ao, por + o =
+ * pelo, em + um = num), concordancia del adjetivo, traducción, verbo en
+ * contexto, encontrá el error y la clínica de los errores personales.
+ *
+ * Esquema de bank.json: el mismo del curso de italiano (las claves «it» de
+ * las oraciones y «esIt» de las interferencias conservan el nombre).
  */
 (function (root) {
   "use strict";
@@ -16,8 +20,8 @@
   var Conj = root.Conj ||
     (typeof require === "function" ? require("./conjugator.js") : null);
 
-  var B = null;          // la banca caricata
-  var IDX = {};          // indici derivati
+  var B = null;          // el banco cargado
+  var IDX = {};          // índices derivados
 
   var LEVELS = ["A1", "A2", "B1", "B2", "C1"];
 
@@ -44,14 +48,15 @@
 
   function loaded() { return !!B; }
 
-  /* Il livello del percorso decide cosa è alla portata. */
+  /* El nivel del recorrido decide qué está al alcance (tools/curriculo.py:
+     A1 semanas 1-8, A2 9-16, B1 17-27, B2 28-40, C1 41-52). */
   function levelOf(state) {
     var w = (state && state.unlocked) || 1;
-    return w <= 8 ? "A1" : w <= 18 ? "A2" : w <= 30 ? "B1" : w <= 42 ? "B2" : "C1";
+    return w <= 8 ? "A1" : w <= 16 ? "A2" : w <= 27 ? "B1" : w <= 40 ? "B2" : "C1";
   }
-  /* E la settimana del corso decide la grammatica: build_bank.py segna in
-     «w» (tradurre) e «wg» (completare) da quale settimana una frase usa
-     solo tempi già spiegati. */
+  /* Y la semana del curso decide la gramática: cada oración y cada error
+     traen en «w» (traducir, encontrar el error) y «wg» (completar) la
+     primera semana en la que todo lo que usan ya se explicó. */
   function weekOf(state) { return (state && state.unlocked) || 1; }
   function taught(x, state, key) { return (x[key || "w"] || 1) <= weekOf(state); }
   function within(lvl, max) { return LEVELS.indexOf(lvl) <= LEVELS.indexOf(max); }
@@ -60,44 +65,28 @@
     return a <= b && a >= b - 1;
   }
 
-  /* --------------------------------------------------------- articoli */
+  /* -------------------------------------------------------- artículos */
 
-  function soundOf(w) {
-    if (/^(s[bcdfghklmnpqrstvz]|z|gn|ps|pn|x|y)/.test(w)) return "sz";
-    if (/^[aeiouàèéìòù]/.test(w) || /^h[aeiou]/.test(w)) return "v";
-    return "c";
-  }
-
+  // En portugués el artículo no depende del sonido inicial: o / a / os / as.
   function defArt(word, g, plural) {
-    var s = soundOf(word);
-    if (word === "dei" && plural) return "gli";
-    if (!plural) {
-      if (g === "m") return s === "sz" ? "lo" : s === "v" ? "l'" : "il";
-      return s === "v" ? "l'" : "la";
-    }
-    if (g === "m") return s === "c" ? "i" : "gli";
-    return "le";
+    return g === "m" ? (plural ? "os" : "o") : (plural ? "as" : "a");
   }
 
-  function indefArt(word, g) {
-    var s = soundOf(word);
-    if (g === "m") return s === "sz" ? "uno" : "un";
-    return s === "v" ? "un'" : "una";
+  function indefArt(word, g, plural) {
+    return g === "m" ? (plural ? "uns" : "um") : (plural ? "umas" : "uma");
   }
 
-  // Irregular plurals change gender (il braccio → le braccia).
-  function pluralGender(n) {
-    return n[1] === "m" && /a$/.test(n[2]) && !/a$/.test(n[0]) ? "f" : n[1];
-  }
+  // El género no cambia en plural (o ovo → os ovos).
+  function pluralGender(n) { return n[1]; }
 
-  function withArt(art, word) { return /'$/.test(art) ? art + word : art + " " + word; }
+  function withArt(art, word) { return art + " " + word; }
 
   function nounWithArt(n) { return withArt(defArt(n[0], n[1], false), n[0]); }
 
-  /* ----------------------------------------------------------- parole */
+  /* ---------------------------------------------------------- palabras */
 
   function vocabChoice(n, kind) {
-    // Italian → Spanish, recognising the word (new words start here).
+    // Portugués → español, reconocer la palabra (las nuevas empiezan acá).
     var pool, stem, ans, id;
     if (kind === "n") {
       stem = nounWithArt(n); ans = n[3]; id = "b:voc:" + n[0];
@@ -126,31 +115,31 @@
 
   function kindNote(n, kind) {
     if (kind === "n") {
-      var extra = n[2] !== n[0] ? "Plural: " + withArt(defArt(n[2], pluralGender(n), true), n[2]) + "." : "Invariable en plural.";
+      var extra = n[2] !== n[0] ? "Plural: " + withArt(defArt(n[2], pluralGender(n), true), n[2]) + "." : "No cambia en plural.";
       return (n[6] ? n[6] + " " : "") + extra;
     }
-    if (kind === "v") return (n[6] || "") + (n[2] === "essere" ? " Pasado con essere." : "");
+    if (kind === "v") return (n[6] || "") + (n[4] && !/irregular/i.test(n[6] || "") ? " Irregular." : "");
     if (kind === "a") return n[6] || (n[0] + " · " + n[1] + " · " + n[2] + " · " + n[3]);
     return n[4] || "";
   }
 
   function vocabWrite(n, kind) {
-    // Spanish → Italian, producing it (nouns with their article: that is
-    // where gender errors show up).
+    // Español → portugués, producirla (los sustantivos con su artículo: ahí
+    // aparecen los errores de género, o leite, a árvore).
     var ans, prompt, stem;
     if (kind === "n") {
       ans = nounWithArt(n);
-      prompt = "Escribilo en italiano, con el artículo determinado (il, lo, la, l'…)";
+      prompt = "Escribilo en portugués, con el artículo (o, a)";
       stem = n[3];
-    } else if (kind === "v") { ans = n[0]; prompt = "Escribí el infinitivo en italiano"; stem = n[1]; }
+    } else if (kind === "v") { ans = n[0]; prompt = "Escribí el infinitivo en portugués"; stem = n[1]; }
     else if (kind === "a") { ans = n[0]; prompt = "Escribí el adjetivo (masculino singular)"; stem = n[4]; }
-    else { ans = n[0]; prompt = "¿Cómo se dice en italiano?"; stem = n[1]; }
-    return { id: "b:voc:" + (kind === "a" ? n[0] : n[0]), src: "banca", bank: "voc", type: "typed",
+    else { ans = n[0]; prompt = "¿Cómo se dice en portugués?"; stem = n[1]; }
+    return { id: "b:voc:" + n[0], src: "banca", bank: "voc", type: "typed",
              prompt: prompt, stem: stem, answer: ans, accept: [ans],
              note: kindNote(n, kind), diag: true, say: ans };
   }
 
-  // The frequency layer (docs/js/frequenza.js), when the app loaded it.
+  // La capa de frecuencia (docs/js/frequenza.js), si la app la cargó.
   function Freq() { return root.Freq && root.Freq.loaded() ? root.Freq : null; }
 
   function vocabSession(state, size) {
@@ -161,13 +150,13 @@
     B.adjectives.forEach(function (a) { if (within(a[5], lvl)) pool.push([a, "a"]); });
     B.words.forEach(function (w) { if (within(w[3], lvl)) pool.push([w, "w"]); });
     var fresh = shuffle(pool.filter(function (x) { return !cards["b:voc:" + x[0][0]]; }));
-    // The most frequent unknown words first (Nation 2006): a shuffle within
-    // the same band keeps the sessions varied.
+    // Primero las palabras desconocidas más frecuentes (Nation 2006); el
+    // orden al azar dentro de la misma franja mantiene las sesiones variadas.
     var F = Freq();
     if (F) fresh.sort(function (a, b) { return Math.round(F.zipf(b[0][0]) * 2) - Math.round(F.zipf(a[0][0]) * 2); });
     var seen = shuffle(pool.filter(function (x) { return cards["b:voc:" + x[0][0]]; }));
     var out = [];
-    // New words: recognise first; known words: produce (desirable difficulty).
+    // Palabras nuevas: reconocer; conocidas: producir (dificultad deseable).
     fresh.slice(0, 6).forEach(function (x) { out.push(vocabChoice(x[0], x[1])); });
     seen.slice(0, (size || 12) - out.length).forEach(function (x) { out.push(vocabWrite(x[0], x[1])); });
     if (out.length < (size || 12)) {
@@ -176,8 +165,9 @@
     return shuffle(out);
   }
 
-  /* A session on given lemmas (the frequent words the learner lacks, from
-     the coverage meter): the bank entries that match, recognised first. */
+  /* Una sesión sobre lemas dados (las palabras frecuentes que le faltan al
+     alumno, del medidor de cobertura): las entradas del banco, primero para
+     reconocer. */
   function vocabSessionFor(state, lemmas, size) {
     var cards = state.cards || {}, out = [];
     (lemmas || []).forEach(function (l) {
@@ -187,38 +177,38 @@
     });
     return out;
   }
-  // Is a lemma in the bank at all (so the coverage meter can offer it)?
+  // ¿Está el lema en el banco (para que el medidor de cobertura lo ofrezca)?
   function hasWord(l) { return !!(IDX.noun[l] || IDX.verb[l] || IDX.adj[l] || IDX.word[l]); }
 
-  /* ------------------------------------------------------------ forme */
+  /* ------------------------------------------------------------ formas */
+
+  var ART_SET = ["o", "a", "os", "as"];
 
   function articleItem(n, plural) {
     var word = plural ? n[2] : n[0];
     var g = plural ? pluralGender(n) : n[1];
     var ans = defArt(word, g, plural);
-    var set = plural ? ["i", "gli", "le"] : ["il", "lo", "l'", "la"];
-    if (!plural && ans !== "la") set = ["il", "lo", "l'", "la"];
     return { id: "b:art:" + n[0] + (plural ? ":p" : ":s"), src: "banca", bank: "forme",
              type: "choice", prompt: "Elegí el artículo" + (plural ? " (plural)" : ""),
-             stem: "___ " + word + "  (" + n[3] + ")", options: set, answer: ans, accept: [ans],
+             stem: "___ " + word + "  (" + n[3] + ")", options: ART_SET.slice(), answer: ans, accept: [ans],
              choiceDiag: { before: "", after: " " + word },
              note: artNote(word, g, plural, n), say: withArt(ans, word) };
   }
 
   function artNote(word, g, plural, n) {
-    var s = soundOf(word);
-    var why = s === "sz" ? "Empieza con s + consonante, z, gn o ps: lo / gli."
-            : s === "v" ? "Empieza con vocal: l' (y gli en plural masculino)."
-            : g === "m" ? "Masculino con consonante normal: il / i." : "Femenino: la / le.";
+    var why = g === "m" ? "Masculino: o, os." : "Femenino: a, as.";
+    if (/agem$/.test(n[0])) why = "Las palabras en -agem son femeninas: a viagem, a mensagem.";
+    else if (/ção$|são$|dade$|tude$/.test(n[0])) why = "Las terminadas en -ção, -são, -dade y -tude son femeninas.";
+    else if (/ma$/.test(n[0]) && g === "m") why = "Muchas en -ma son masculinas, como en español: o problema, o sistema.";
     return why + (n[6] ? " " + n[6] : "");
   }
 
-  // Nouns that live in the singular (la fame, il sangue, i mesi): their
-  // plural is grammar trivia, not something to drill.
-  var MONTHS = /^(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)$/;
+  // Sustantivos que viven en singular (a fome, o sangue, os meses): su plural
+  // es un dato de gramática, no algo para ejercitar.
+  var MONTHS = /^(janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)$/;
   function countable(n) {
-    return !/singular/i.test(n[6] || "") && !MONTHS.test(n[0]) &&
-      !/^(fame|sete|sangue|salute|latte|frutta|pepe|sale|miele|ossigeno|pazienza|coraggio|fortuna|gente|roba|mezzanotte|mezzogiorno)$/.test(n[0]);
+    return !/(solo|sólo|siempre|se usa) (en |en el )?singular|no tiene plural|sin plural/i.test(n[6] || "") && !MONTHS.test(n[0]) &&
+      !/^(fome|sede|sangue|saúde|leite|pimenta|sal|mel|oxigênio|paciência|coragem|sorte|gente|meio-dia|meia-noite|saudade|lixo|dinheiro|grana|arroz|feijão|açúcar|café da manhã|calor|frio|trânsito|poeira|pó)$/.test(n[0]);
   }
 
   function pluralItem(n) {
@@ -226,34 +216,61 @@
     var artP = defArt(n[2], g, true);
     return { id: "b:pl:" + n[0], src: "banca", bank: "forme", type: "typed",
              prompt: "Escribí el plural", stem: nounWithArt(n) + " → " + artP + " ___",
-             answer: n[2], accept: [n[2]], note: n[6] || "", diag: true,
+             answer: n[2], accept: [n[2]], note: pluralNote(n), diag: true,
              say: withArt(artP, n[2]) };
   }
 
-  var PREPS = ["a", "di", "da", "in", "su"];
-  var CONTR = {
-    a: { il: "al", lo: "allo", "l'": "all'", la: "alla", i: "ai", gli: "agli", le: "alle" },
-    di: { il: "del", lo: "dello", "l'": "dell'", la: "della", i: "dei", gli: "degli", le: "delle" },
-    da: { il: "dal", lo: "dallo", "l'": "dall'", la: "dalla", i: "dai", gli: "dagli", le: "dalle" },
-    in: { il: "nel", lo: "nello", "l'": "nell'", la: "nella", i: "nei", gli: "negli", le: "nelle" },
-    su: { il: "sul", lo: "sullo", "l'": "sull'", la: "sulla", i: "sui", gli: "sugli", le: "sulle" }
-  };
-
-  function prepItem(n, prep, plural) {
-    var word = plural ? n[2] : n[0], g = plural ? pluralGender(n) : n[1];
-    var art = defArt(word, g, plural), ans = CONTR[prep][art];
-    return { id: "b:prep:" + prep + ":" + n[0] + (plural ? ":p" : ""), src: "banca", bank: "forme",
-             type: "typed", prompt: "Uní la preposición con el artículo",
-             stem: "(" + prep + " + " + art + ") " + word + " → ___ " + word,
-             answer: ans, accept: [ans], diag: true,
-             note: "*" + prep + " + " + art + "* = *" + ans + "*.", say: withArt(ans, word) };
+  function pluralNote(n) {
+    var s = n[0], p = n[2], why = "";
+    if (/ão$/.test(s)) why = /ões$/.test(p) ? "-ão → -ões (la mayoría): limão, limões." :
+      /ães$/.test(p) ? "-ão → -ães en algunas: pão, pães; cão, cães; alemão, alemães." :
+      /ãos$/.test(p) ? "-ão → -ãos en algunas: mão, mãos; irmão, irmãos; cidadão, cidadãos." : "";
+    else if (/[aeou]l$/.test(s)) why = "-l → -is: animal, animais; papel, papéis; espanhol, espanhóis.";
+    else if (/il$/.test(s)) why = /is$/.test(p) && !/eis$/.test(p) ? "-il tónico → -is: barril, barris." : "-il átono → -eis: fóssil, fósseis.";
+    else if (/m$/.test(s)) why = "-m → -ns: homem, homens; jardim, jardins.";
+    else if (/[rz]$/.test(s)) why = "-r y -z → -es: mar, mares; luz, luzes.";
+    else if (s === p) why = "No cambia en plural (como o ônibus, o lápis).";
+    return why + (n[6] ? (why ? " " : "") + n[6] : "");
   }
 
-  var GENERIC_ADJ = ["nuovo", "vecchio", "bello", "grande", "piccolo", "bianco", "rosso", "nero",
-                     "giallo", "verde", "azzurro", "caro", "economico", "moderno", "antico",
-                     "pulito", "sporco", "famoso", "italiano", "lungo", "corto", "pesante",
-                     "leggero", "comodo", "elegante", "semplice", "strano", "perfetto", "pieno", "vuoto"];
-  var CONCRETE = { casa: 1, città: 1, vestiti: 1, cibo: 1, viaggio: 1, negozi: 1, tecnologia: 1, scuola: 1 };
+  /* Contracciones de preposición y artículo: obligatorias en portugués.
+     «a + a = à» es la crase: se ejercita desde que se ven las preposiciones
+     de movimiento (CRASE_WEEK); la regla completa de la crase es de la
+     semana 36. */
+  var PREPS = ["em", "de", "a", "por"];
+  var CONTR = {
+    em: { o: "no", a: "na", os: "nos", as: "nas", um: "num", uma: "numa", uns: "nuns", umas: "numas" },
+    de: { o: "do", a: "da", os: "dos", as: "das" },
+    a: { o: "ao", a: "à", os: "aos", as: "às" },
+    por: { o: "pelo", a: "pela", os: "pelos", as: "pelas" }
+  };
+  var CRASE_WEEK = 9;
+
+  function prepItem(n, prep, plural, indef) {
+    var word = plural ? n[2] : n[0], g = plural ? pluralGender(n) : n[1];
+    if (!CONTR[prep]) return null;
+    var art = indef && prep === "em" ? indefArt(word, g, plural) : defArt(word, g, plural), ans = CONTR[prep][art];
+    if (!ans) return null;
+    var note = "*" + prep + " + " + art + "* = *" + ans + "*" +
+      (ans === "à" || ans === "às" ? " (con acento grave: es la crase)." :
+       prep === "em" && indef ? " (también se escribe *em " + art + "*)." : ".") +
+      (prep === "em" && indef ? "" : " En portugués la contracción es obligatoria.");
+    return { id: "b:prep:" + prep + ":" + n[0] + (plural ? ":p" : indef ? ":u" : ""), src: "banca", bank: "forme",
+             type: "typed", prompt: "Uní la preposición con el artículo",
+             stem: "(" + prep + " + " + art + ") " + word + " → ___ " + word,
+             answer: ans, accept: prep === "em" && indef ? [ans, "em " + art] : [ans], diag: true,
+             note: note, say: withArt(ans, word) };
+  }
+
+  var GENERIC_ADJ = ["novo", "velho", "bonito", "grande", "pequeno", "branco", "vermelho", "preto",
+                     "amarelo", "verde", "azul", "caro", "barato", "moderno", "antigo",
+                     "limpo", "sujo", "famoso", "brasileiro", "comprido", "curto", "pesado",
+                     "leve", "confortável", "simples", "estranho", "perfeito", "cheio", "vazio",
+                     "lindo", "quente", "frio"];
+  // Temas del banco de sustantivos con cosas concretas (los nombres de tema
+  // pueden venir del banco italiano o traducidos).
+  var CONCRETE = { casa: 1, "città": 1, cidade: 1, vestiti: 1, roupa: 1, roupas: 1, cibo: 1, comida: 1,
+                   viaggio: 1, viagem: 1, negozi: 1, lojas: 1, compras: 1, tecnologia: 1, scuola: 1, escola: 1 };
 
   function agreeItem(n, adjKey, plural) {
     var a = IDX.adj[adjKey];
@@ -261,7 +278,7 @@
     var g = plural ? pluralGender(n) : n[1];
     var word = plural ? n[2] : n[0];
     var form = plural ? (g === "m" ? a[2] : a[3]) : (g === "m" ? a[0] : a[1]);
-    var art = plural ? defArt(word, g, true) : indefArt(word, g);
+    var art = plural ? defArt(word, g, true) : indefArt(word, g, false);
     return { id: "b:agr:" + n[0] + ":" + adjKey + (plural ? ":p" : ""), src: "banca", bank: "forme",
              type: "typed", prompt: "Concordá el adjetivo «" + a[0] + "» (" + a[4] + ")",
              stem: withArt(art, word) + " ___", answer: form, accept: [form], diag: true,
@@ -272,43 +289,54 @@
 
   function formsSession(state, size, focus) {
     if ((state.unlocked || 1) < FORME_WEEK) return [];
-    var lvl = levelOf(state);
+    var lvl = levelOf(state), wk = state.unlocked || 1;
     var nouns = B.nouns.filter(function (n) { return within(n[5], lvl); });
-    var special = nouns.filter(function (n) { return soundOf(n[0]) !== "c" || n[6]; });
+    if (!nouns.length) return [];
+    // Los que más enseñan: plurales irregulares, heterogenéricos (con nota).
+    var special = nouns.filter(function (n) { return n[6] || /(ão|l|m)$/.test(n[0]) || n[2] === n[0]; });
     var out = [];
-    var kinds = focus ? [focus] : ["art", "art", "pl", "prep", "agr"];
+    var kinds = focus ? [focus] : ["art", "art", "pl", "prep", "prep", "agr"];
     for (var i = 0; i < (size || 12) * 3 && out.length < (size || 12); i++) {
       var k = pick(kinds), n = pick(Math.random() < 0.6 && special.length ? special : nouns);
-      var x = k === "art" ? articleItem(n, Math.random() < 0.4)
-            : k === "pl" ? (countable(n) && (n[2] !== n[0] || Math.random() < 0.3) ? pluralItem(n) : null)
-            : k === "prep" ? prepItem(n, pick(PREPS), Math.random() < 0.3)
-            : CONCRETE[n[4]] ? agreeItem(n, pick(GENERIC_ADJ), Math.random() < 0.4) : null;
+      var x = null;
+      if (k === "art") x = articleItem(n, Math.random() < 0.4);
+      else if (k === "pl") x = countable(n) && (n[2] !== n[0] || Math.random() < 0.3) ? pluralItem(n) : null;
+      else if (k === "prep") {
+        var pl = Math.random() < 0.3, prep = pick(PREPS);
+        var g = pl ? pluralGender(n) : n[1];
+        if (prep === "a" && g === "f" && wk < CRASE_WEEK) prep = pick(["em", "de", "por"]);
+        x = prepItem(n, prep, pl, prep === "em" && !pl && Math.random() < 0.25);
+      }
+      else x = CONCRETE[n[4]] ? agreeItem(n, pick(GENERIC_ADJ), Math.random() < 0.4) : null;
       if (x && !out.some(function (y) { return y.id === x.id; })) out.push(x);
     }
     return out;
   }
 
-  /* ------------------------------------------------------------ frasi */
+  /* ---------------------------------------------------------- oraciones */
 
+  // Con o sin pronombre sujeto: el portugués de Brasil lo dice más que el
+  // español, pero omitirlo no es error (salvo con você y a gente, que
+  // cambiarían el sentido).
   function variants(s) {
     var out = s.it.slice();
     s.it.forEach(function (v) {
-      var m = v.match(/^(Io|Tu|Lui|Lei|Noi|Voi|Loro) (.+)$/);
-      if (m) out.push(m[2].charAt(0).toUpperCase() + m[2].slice(1));
+      var m = v.match(/^(Eu|Tu|Nós|Ele|Ela|Eles|Elas) (.+)$/);
+      if (m && !/^(e|é|me|se|te|nos|o|a)\b/i.test(m[2])) out.push(m[2].charAt(0).toUpperCase() + m[2].slice(1));
     });
-    return out;
+    return out.filter(function (x, i) { return out.indexOf(x) === i; });
   }
 
   function translateItem(i) {
     var s = B.sentences[i];
     return { id: "b:tr:" + i, src: "banca", bank: "tr", type: "translate",
-             prompt: "Traducí al italiano", stem: s.es, answer: s.it[0], accept: variants(s),
+             prompt: "Traducí al portugués", stem: s.es, answer: s.it[0], accept: variants(s),
              note: s.note, tags: s.tags, lvl: s.lvl, diag: true, say: s.it[0] };
   }
 
-  // Alternative answers for a gap, read off the other accepted sentences.
-  // Where the gap form stands as a whole word (not inside another word:
-  // «è» inside «caffè»).
+  // Otras respuestas para el hueco, leídas de las demás variantes aceptadas.
+  // Dónde está la forma como palabra entera (no dentro de otra: «é» dentro
+  // de «café»).
   function wordAt(text, form) {
     var re = new RegExp("(^|[^A-Za-zÀ-ÿ])" + form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![A-Za-zÀ-ÿ])");
     var m = re.exec(text);
@@ -344,7 +372,7 @@
   function errorItem(i) {
     var e = B.errors[i];
     return { id: "b:err:" + i, src: "banca", bank: "err", type: "fixerr",
-             prompt: "Trova l'errore: tocá la palabra que está mal", stem: e.wrong,
+             prompt: "Encontrá el error: tocá la palabra que está mal", stem: e.wrong,
              answer: e.right, accept: [e.right], bad: e.bad, good: e.good, goodAlt: e.alt || [],
              cat: e.cat, note: e.why, lvl: e.lvl, say: e.right };
   }
@@ -358,7 +386,7 @@
   }
 
   function prefer(state, ids, prefix) {
-    // Due items first, then unseen, then the rest.
+    // Primero las vencidas, después las nuevas, después el resto.
     var cards = state.cards || {}, now = Date.now();
     var due = ids.filter(function (i) { var c = cards[prefix + i]; return c && c.due <= now; });
     var fresh = ids.filter(function (i) { return !cards[prefix + i]; });
@@ -366,9 +394,8 @@
     return shuffle(due).concat(shuffle(fresh), shuffle(rest));
   }
 
-  /* Translating needs articles and a verb behind you; the forms drill needs
-     the articles.  Before that the bank is a wall of possessives and plurals
-     nobody explained (audit, 1.3). */
+  /* Traducir necesita artículos y un verbo detrás; las formas, los
+     artículos y las contracciones (semana 3). */
   var TR_WEEK = 5, GAP_WEEK = 5, FORME_WEEK = 3;
 
   function translateSession(state, size, tagFilter) {
@@ -387,8 +414,8 @@
     return prefer(state, ids, "b:gap:").slice(0, size || 10).map(gapItem).filter(Boolean);
   }
 
-  /* Spotting a mistake needs a sentence you can already read: before week 5
-     (presente regular behind you) there is nothing to compare it with. */
+  /* Encontrar un error necesita una oración que ya se pueda leer: antes de
+     la semana 5 (presente regular) no hay con qué compararla. */
   var ERR_WEEK = 5;
 
   function errorSession(state, size, cats) {
@@ -403,49 +430,52 @@
     return prefer(state, ids, "b:err:").slice(0, size || 8).map(errorItem);
   }
 
-  /* ---------------------------------------------------------- clinica */
+  /* ------------------------------------------------------------ clínica */
 
-  // Which exercises cure which error.
+  // Qué ejercicios curan qué error (las claves son las categorías de
+  // errori_banca.py y de Diagnosi.LABEL; tags, las etiquetas de las
+  // oraciones; forms, el ejercicio de formas que corresponde).
   var CURE = {
-    ausiliare: { tags: ["passato_prossimo", "ausiliare_essere"], err: ["ausiliare", "participio_accordo"] },
-    participio_accordo: { tags: ["participio_accordo", "ausiliare_essere"], err: ["participio_accordo", "ausiliare"] },
-    a_personale: { tags: ["a_personale"], err: ["a_personale"] },
-    preposizione: { tags: ["preposizioni", "preposizioni_articolate", "da_tempo"], err: ["preposizione", "preposizione_articolata"], forms: "prep" },
-    preposizione_articolata: { tags: ["preposizioni_articolate"], err: ["preposizione_articolata", "preposizione"], forms: "prep" },
-    articolo: { tags: ["articoli"], err: ["articolo", "articolo_possessivo"], forms: "art" },
-    articolo_possessivo: { tags: ["possessivi"], err: ["articolo_possessivo"] },
-    genere: { tags: ["articoli", "accordo"], err: ["genere", "accordo"], forms: "art" },
-    accordo: { tags: ["accordo", "plurali"], err: ["accordo", "genere", "plurale"], forms: "agr" },
-    plurale: { tags: ["plurali"], err: ["plurale"], forms: "pl" },
-    persona_verbale: { tags: ["presente"], err: ["persona_verbale"] },
-    tempo_verbale: { tags: ["imperfetto_vs_pp", "futuro", "imperfetto"], err: ["tempo_verbale"] },
-    irregolare: { tags: ["presente", "passato_prossimo"], err: ["irregolare"] },
-    congiuntivo: { tags: ["congiuntivo_presente", "congiuntivo_imperfetto"], err: ["congiuntivo"] },
-    condizionale: { tags: ["condizionale"], err: ["condizionale"] },
-    periodo_ipotetico: { tags: ["periodo_ipotetico"], err: ["periodo_ipotetico", "condizionale"] },
-    pronome: { tags: ["pronomi_diretti", "pronomi_indiretti", "pronomi_combinati"], err: ["pronome", "posizione_pronome"] },
-    posizione_pronome: { tags: ["pronomi_diretti", "pronomi_combinati"], err: ["posizione_pronome", "pronome"] },
-    ci_ne: { tags: ["ci", "ne"], err: ["ci_ne"] },
-    parola_spagnola: { tags: ["lessico"], err: ["parola_spagnola", "falso_amico"], vocab: true },
-    falso_amico: { tags: ["falsi_amici"], err: ["falso_amico"], vocab: true },
-    lessico: { tags: ["lessico"], err: ["lessico"], vocab: true },
-    doppie: { err: ["doppie", "ortografia"], vocab: true },
-    accento: { err: ["accento"], vocab: true },
-    ortografia: { err: ["ortografia", "doppie"], vocab: true },
-    comparativo: { tags: ["comparativi", "superlativi"], err: ["comparativo"] },
-    piacere: { tags: ["piacere"], err: ["piacere"] },
-    ordine: { tags: ["pronomi_diretti", "connettivi"], err: ["ordine", "posizione_pronome"] },
-    parola_mancante: { tags: ["articoli", "preposizioni", "ci", "ne"], err: ["articolo", "preposizione", "ci_ne"] },
-    parola_in_piu: { tags: ["a_personale", "articoli", "possessivi"], err: ["a_personale", "articolo_possessivo"] }
+    contraccion: { tags: ["contracciones", "preposiciones"], err: ["contraccion", "preposicion"], forms: "prep" },
+    articulo: { tags: ["articulos", "contracciones"], err: ["articulo", "contraccion"], forms: "art" },
+    genero: { tags: ["genero", "concordancia"], err: ["genero", "concordancia"], forms: "art" },
+    plural: { tags: ["plurales"], err: ["plural"], forms: "pl" },
+    concordancia: { tags: ["concordancia", "plurales", "genero"], err: ["concordancia", "genero", "plural"], forms: "agr" },
+    preposicion: { tags: ["preposiciones", "contracciones"], err: ["preposicion", "contraccion", "regencia"], forms: "prep" },
+    regencia: { tags: ["regencia", "gostar"], err: ["regencia", "preposicion", "gostar"] },
+    muito: { tags: ["muito", "comparativos", "indefinidos"], err: ["muito"] },
+    gostar: { tags: ["gostar"], err: ["gostar", "regencia"] },
+    a_personal: { tags: ["a_personal"], err: ["a_personal"] },
+    perfeito_composto: { tags: ["perfeito_composto", "perfeito"], err: ["perfeito_composto", "tempo"] },
+    subjuntivo: { tags: ["subjuntivo", "conjunciones", "subj_imperfeito"], err: ["subjuntivo"] },
+    futuro_subj: { tags: ["futuro_subj"], err: ["futuro_subj", "subjuntivo"] },
+    inf_pessoal: { tags: ["inf_pessoal"], err: ["inf_pessoal"] },
+    pronome: { tags: ["pronombres", "colocacao"], err: ["pronome", "colocacao"] },
+    colocacao: { tags: ["colocacao", "pronombres"], err: ["colocacao", "pronome"] },
+    crase: { tags: ["crase", "horas"], err: ["crase", "contraccion"], forms: "prep" },
+    ortografia: { err: ["ortografia"], vocab: true },
+    tilde: { err: ["ortografia"], vocab: true },
+    nasal: { tags: ["plurales"], err: ["ortografia", "plural"], vocab: true },
+    espanol: { tags: ["lexico", "muito"], err: ["espanol", "falso_amigo", "muito"], vocab: true },
+    falso_amigo: { tags: ["falsos_amigos"], err: ["falso_amigo", "espanol"], vocab: true },
+    lexico: { tags: ["lexico", "falsos_amigos"], err: ["falso_amigo", "espanol"], vocab: true },
+    tempo: { tags: ["perf_imperf", "imperfeito", "perfeito", "futuro", "condicional"], err: ["tempo", "perfeito_composto"] },
+    persona: { tags: ["presente", "irregulares"], err: ["persona"] },
+    participio: { tags: ["participio", "pasiva"], err: ["participio", "concordancia"] },
+    verbo_irregular: { tags: ["irregulares", "perfeito"], err: ["verbo_irregular", "participio"] },
+    regularizacion: { tags: ["irregulares", "perfeito"], err: ["verbo_irregular", "participio"] },
+    orden: { tags: ["colocacao", "pronombres", "conectores"], err: ["colocacao", "pronome"] },
+    faltante: { tags: ["articulos", "contracciones", "regencia"], err: ["articulo", "contraccion", "regencia"] },
+    sobrante: { tags: ["a_personal", "ir_inf", "gostar"], err: ["a_personal", "preposicion", "gostar"] }
   };
 
-  // The learner's weakest areas, recent errors weighing more.
+  // Las áreas más flojas del alumno; los errores recientes pesan más.
   function weakest(state, n) {
     var errs = (state && state.errs) || {}, now = Date.now();
     return Object.keys(errs).map(function (k) {
       var e = errs[k], age = (now - (e.last || 0)) / 86400000;
       return { cat: k, score: (e.n - (e.fixed || 0) * 0.5) * Math.pow(0.9, age) };
-    // A pattern, not a one-off: at least a couple of recent errors.
+    // Un patrón, no un error suelto: al menos un par de errores recientes.
     }).filter(function (x) { return x.score >= 1.8 && CURE[x.cat]; })
       .sort(function (a, b) { return b.score - a.score; })
       .slice(0, n || 3);
@@ -470,7 +500,7 @@
     return shuffle(out).slice(0, size);
   }
 
-  /* ------------------------------------------------------ ripasso */
+  /* ------------------------------------------------------------ repaso */
 
   function item(id) {
     if (!B) return null;
@@ -486,7 +516,7 @@
     }
     if (p[1] === "art" && IDX.noun[p[2]]) return articleItem(IDX.noun[p[2]], p[3] === "p");
     if (p[1] === "pl" && IDX.noun[p[2]]) return pluralItem(IDX.noun[p[2]]);
-    if (p[1] === "prep" && IDX.noun[p[3]]) return prepItem(IDX.noun[p[3]], p[2], p[4] === "p");
+    if (p[1] === "prep" && IDX.noun[p[3]]) return prepItem(IDX.noun[p[3]], p[2], p[4] === "p", p[4] === "u");
     if (p[1] === "agr" && IDX.noun[p[2]]) return agreeItem(IDX.noun[p[2]], p[3], p[4] === "p");
     if (p[1] === "tr" && B.sentences[+p[2]]) return translateItem(+p[2]);
     if (p[1] === "gap" && B.sentences[+p[2]]) return gapItem(+p[2]);
@@ -494,7 +524,7 @@
     return null;
   }
 
-  // One item for the coffee break: a sentence at the learner's level.
+  // Un ítem para la pausa del café: una oración al nivel del alumno.
   function pausaItem(state) {
     var r = Math.random();
     if (r < 0.4) return translateSession(state, 1)[0];
@@ -532,7 +562,7 @@
     errorItem: errorItem,
     errorSession: errorSession,
     ERR_WEEK: ERR_WEEK,
-    TR_WEEK: TR_WEEK, GAP_WEEK: GAP_WEEK, FORME_WEEK: FORME_WEEK,
+    TR_WEEK: TR_WEEK, GAP_WEEK: GAP_WEEK, FORME_WEEK: FORME_WEEK, CRASE_WEEK: CRASE_WEEK,
     weakest: weakest,
     clinicaSession: clinicaSession,
     CURE: CURE,
