@@ -773,7 +773,13 @@
     "leite": "leche", "oito": "ocho", "feito": "hecho", "direito": "derecho",
     "cidade": "ciudad", "ano": "año", "pão": "pan", "mão": "mano", "irmão": "hermano",
     "pequeno": "pequeño", "senhor": "señor", "senhora": "señora", "há": "hay", "aqui": "acá",
-    "lá": "allá"
+    "lá": "allá", "aceita": "acepta", "aceitam": "aceptan", "receita": "receta",
+    "dois": "dos", "quatro": "cuatro", "sete": "siete", "nove": "nueve", "dez": "diez",
+    "meio": "medio", "quilo": "kilo", "uns": "unos", "umas": "unas", "ajuda": "ayuda",
+    "escreve": "escribe", "escrever": "escribir", "quer": "quiere", "dizer": "decir",
+    "diz": "dice", "saúde": "salud", "aquela": "aquella", "aquele": "aquel", "deus": "dios",
+    "esquisita": "exquisita", "esquisito": "exquisito", "vai": "va", "foi": "fue",
+    "goste": "guste", "ou": "o", "morte": "muerte", "se": "si", "pães": "panes"
   };
   // The contraction undone the Spanish way.
   var CONTR = {
@@ -801,6 +807,8 @@
     if (/agem$/.test(low)) out.push(low.replace(/agem$/, "aje"));
     if (/eir[oa]s?$/.test(low) && low.length > 5) out.push(low.replace(/eir([oa]s?)$/, "er$1"));
     if (/íssim[oa]s?$/.test(low)) out.push(low.replace(/íssim/, "ísim"));
+    // ch- where Spanish has ll- (chegar → llegar, chamar → llamar, chover → llover)
+    if (/^ch(eg|am|ov|or|ei)/.test(low)) out.push(low.replace(/^ch/, "ll"));
     return out;
   }
   // Looser slips: ss → s, final -m → -n, ç → z.
@@ -809,6 +817,9 @@
     if (/ss/.test(low) && low.length > 4) out.push(low.replace("ss", "s"));
     if (/[aeiouãõ]m$/.test(low) && low.length > 2) out.push(low.slice(0, -1) + "n");
     if (/ç/.test(low)) out.push(low.replace("ç", "z"));
+    // the Spanish preterite ending: ficou → ficó, partiu → partió, valeu → valió
+    if (/[^aeiou]ou$/.test(low) && low.length > 3) out.push(low.slice(0, -2) + "ó");
+    if (/[^aeiou][ie]u$/.test(low) && low.length > 3) out.push(low.slice(0, -2) + "ió");
     return out;
   }
 

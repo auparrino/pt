@@ -350,7 +350,7 @@ Frasi.ALL.forEach(function (f) {
 var fresh = Frasi.sceneSession("ideias", {}, {});
 ok(fresh[0].type === "guess" && fresh[1].type === "intro", "pretest antes de la frase nueva");
 
-/* ----------------------------------- serie, scudi, obiettivo, forziere */
+/* ----------------------------------- racha, escudos, meta, cofre */
 
 function day(y, m, d, h) { return new Date(y, m - 1, d, h || 12); }
 
@@ -358,32 +358,32 @@ var s = Engine.blankSave();
 Engine.touchStreak(s, day(2026, 3, 1));
 Engine.touchStreak(s, day(2026, 3, 2));
 Engine.touchStreak(s, day(2026, 3, 2, 20));
-ok(s.streak === 2, "due giorni di fila: " + s.streak);
-ok(s.shields === 1, "si parte con uno scudo");
-Engine.touchStreak(s, day(2026, 3, 4));       // saltato il 3
-ok(s.streak === 3 && s.shields === 0, "lo scudo salva la serie: " + s.streak + "/" + s.shields);
-Engine.touchStreak(s, day(2026, 3, 7));       // saltati 5 e 6, niente scudi
-ok(s.streak === 1, "senza scudi la serie riparte");
+ok(s.streak === 2, "dos días seguidos: " + s.streak);
+ok(s.shields === 1, "se empieza con un escudo");
+Engine.touchStreak(s, day(2026, 3, 4));       // se saltea el 3
+ok(s.streak === 3 && s.shields === 0, "el escudo salva la racha: " + s.streak + "/" + s.shields);
+Engine.touchStreak(s, day(2026, 3, 7));       // se saltean el 5 y el 6, sin escudos
+ok(s.streak === 1, "sin escudos la racha vuelve a empezar");
 for (var d = 8; d <= 13; d++) Engine.touchStreak(s, day(2026, 3, d));
-ok(s.streak === 7 && s.shields === 1, "7 giorni regalano uno scudo: " + s.shields);
+ok(s.streak === 7 && s.shields === 1, "7 días regalan un escudo: " + s.shields);
 Engine.touchStreak(s, day(2026, 3, 31));
 Engine.touchStreak(s, day(2026, 4, 1));
-ok(s.streak === 2, "la serie attraversa il cambio di mese");
+ok(s.streak === 2, "la racha cruza el cambio de mes");
 
 var g = Engine.blankSave();
 g.goal = 50;
 var now = day(2026, 5, 10);
-ok(Engine.addXp(g, 30, now) === false, "sotto l'obiettivo");
-ok(Engine.openChest(g, null, now) === null, "forziere chiuso prima dell'obiettivo");
-ok(Engine.addXp(g, 25, now) === true, "obiettivo raggiunto una volta");
-ok(Engine.addXp(g, 25, now) === false, "e non si ripete nello stesso giorno");
-ok(Engine.todayXp(g, now) === 80 && g.xp === 80, "xp del giorno e totale");
+ok(Engine.addXp(g, 30, now) === false, "debajo de la meta");
+ok(Engine.openChest(g, null, now) === null, "cofre cerrado antes de la meta");
+ok(Engine.addXp(g, 25, now) === true, "meta alcanzada una vez");
+ok(Engine.addXp(g, 25, now) === false, "y no se repite el mismo día");
+ok(Engine.todayXp(g, now) === 80 && g.xp === 80, "xp del día y total");
 var before = g.xp;
 var prize = Engine.openChest(g, function () { return 0.9; }, now);
-ok(prize && prize.xp > 0 && g.xp === before + prize.xp, "il forziere paga");
-ok(Engine.openChest(g, null, now) === null, "un forziere al giorno");
-ok(Engine.lastDays(g, 28, now).length === 28, "calendario di 28 giorni");
-ok(Engine.lastDays(g, 28, now)[27].xp === 80, "oggi è l'ultimo giorno del calendario");
+ok(prize && prize.xp > 0 && g.xp === before + prize.xp, "el cofre paga");
+ok(Engine.openChest(g, null, now) === null, "un cofre por día");
+ok(Engine.lastDays(g, 28, now).length === 28, "calendario de 28 días");
+ok(Engine.lastDays(g, 28, now)[27].xp === 80, "hoy es el último día del calendario");
 
 ok(Engine.rankFor(1) === Engine.RANKS[0][1] && Engine.rankFor(60) === Engine.RANKS[Engine.RANKS.length - 1][1], "grados");
 
@@ -404,31 +404,31 @@ var weird = Engine.sanitize({ xp: "abc", cards: null, days: "x", badges: {}, tot
   unlocked: 999, streak: -3, errs: { a: null, b: { n: "x" }, ausiliare: { n: 3 } }, errLog: {}, letture: 7,
   best: null, goal: "mucho", shields: 99 });
 ok(weird.xp === 0 && weird.unlocked === 52 && weird.streak === 0 && weird.shields === 3,
-   "numeri riportati nei limiti");
-ok(weird.goal === 200 && Array.isArray(weird.badges) && Array.isArray(weird.errLog), "tipi ripristinati");
-ok(Object.keys(weird.errs).join() === "ausiliare", "voci d'errore rotte eliminate");
-ok(typeof weird.totals === "object" && weird.totals.right === 0, "totali ricostruiti");
-ok(Engine.sanitize(null).xp === 0 && Engine.sanitize([1, 2]).xp === 0, "salvataggio non oggetto");
+   "números devueltos a sus límites");
+ok(weird.goal === 200 && Array.isArray(weird.badges) && Array.isArray(weird.errLog), "tipos restaurados");
+ok(Object.keys(weird.errs).join() === "ausiliare", "entradas de error rotas eliminadas");
+ok(typeof weird.totals === "object" && weird.totals.right === 0, "totales reconstruidos");
+ok(Engine.sanitize(null).xp === 0 && Engine.sanitize([1, 2]).xp === 0, "partida que no es un objeto");
 var goodSave = Engine.blankSave();
-goodSave.xp = 1234; goodSave.cards["frase:bar:1"] = Engine.schedule(null, 2);
+goodSave.xp = 1234; goodSave.cards["frase:boteco:1"] = Engine.schedule(null, 2);
 var kept = Engine.sanitize(JSON.parse(JSON.stringify(goodSave)));
-ok(kept.xp === 1234 && kept.cards["frase:bar:1"].interval === goodSave.cards["frase:bar:1"].interval && kept.cards["frase:bar:1"].s === goodSave.cards["frase:bar:1"].s, "un salvataggio sano non si tocca");
+ok(kept.xp === 1234 && kept.cards["frase:boteco:1"].interval === goodSave.cards["frase:boteco:1"].interval && kept.cards["frase:boteco:1"].s === goodSave.cards["frase:boteco:1"].s, "una partida sana no se toca");
 
 var fdg = Frasi.ofTheDay(day(2026, 6, 1));
-ok(fdg === Frasi.ofTheDay(day(2026, 6, 1, 23)), "la frase del giorno non cambia nel giorno");
+ok(fdg === Frasi.ofTheDay(day(2026, 6, 1, 23)), "la frase del día no cambia en el día");
 
 // Clock moved back a day: the streak survives.
 var sb = Engine.blankSave(); sb.streak = 10; sb.lastPlayed = Engine.dayKey(day(2026, 9, 23));
 Engine.touchStreak(sb, day(2026, 9, 22));
-ok(sb.streak === 10, "l'orologio indietro non azzera la serie");
+ok(sb.streak === 10, "el reloj atrasado no borra la racha");
 Engine.touchStreak(sb, day(2026, 9, 24));
-ok(sb.streak === 11, "e il giorno dopo la serie continua");
+ok(sb.streak === 11, "y al día siguiente la racha sigue");
 // Calendar strip: every day once, also across a DST change.
 [day(2026, 3, 30, 0), day(2026, 10, 26, 23), day(2026, 3, 29, 12)].forEach(function (d) {
   var ks = Engine.lastDays({}, 7, d).map(function (x) { return x.key; });
   var uniq = ks.filter(function (k, i) { return ks.indexOf(k) === i; });
-  ok(uniq.length === 7 && ks[6] === Engine.dayKey(d), "7 giorni distinti fino a oggi: " + ks.join(" "));
+  ok(uniq.length === 7 && ks[6] === Engine.dayKey(d), "7 días distintos hasta hoy: " + ks.join(" "));
 });
 
-console.log("\ncontrolli: " + checks + "   errori: " + fails);
+console.log("\ncontroles: " + checks + "   errores: " + fails);
 process.exit(fails ? 1 : 0);

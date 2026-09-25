@@ -97,46 +97,80 @@
   }
   var WEIGHTED = [0, 0, 0, 2, 2, 2, 2, 3, 3, 3, 5, 5, 5, 1];
 
-  /* A verb that takes two participles (pagar: pagado / pago) has two right
-     compound forms (tinha pagado / tinha pago): the conjugator may give the
-     other set as conjugate(inf, tense, { alt: true }).  Nothing otherwise. */
-  function otherAux(verb, tense) {
-    if (!Conj || (Conj.SIMPLE_TENSES || []).indexOf(tense) >= 0) return null;
+  /* The conjugator (docs/js/conjugator.js) knows:
+     - defective verbs (reaver): conjugate(inf, t, { partial: true }) gives
+       null in the persons that do not exist, and throws without partial;
+     - info(inf).persons: the persons that make sense (chover: [2];
+       custar, acontecer, doer: [2, 5]);
+     - accepted(inf, t): the six lists of right answers (double participles:
+       tinha pagado / tinha pago, and the like).
+     Everything is read defensively, so the drills also run on an older
+     conjugator. */
+  function infoOf(verb) { try { return Conj.info(verb) || {}; } catch (e) { return {}; } }
+  function conjForms(verb, tense) {
+    if (tense === "imperativo" && Conj.imperative && !(Conj.TENSE_LABELS || {}).imperativo) {
+      // imperative(inf): { tu, você, nós, vós, vocês } or null (poder, caber)
+      var im = Conj.imperative(verb);
+      if (!im) throw new Error("sin imperativo: " + verb);
+      return [null, im.tu || null, im["você"] || null, im["nós"] || null, im["vós"] || null, im["vocês"] || null];
+    }
+    try { return Conj.conjugate(verb, tense, { partial: true }); }
+    catch (e) { return Conj.conjugate(verb, tense); }
+  }
+  var EXTRA_LABELS = { imperativo: "imperativo", gerundio: "gerúndio", participio: "particípio" };
+  function tenseLabel(t) { return (Conj.TENSE_LABELS || {})[t] || EXTRA_LABELS[t] || t; }
+  function acceptedFor(verb, tense, p, answer) {
+    var out = [answer];
     try {
-      var info = Conj.info(verb) || {};
-      if (info.aux === "both") return Conj.conjugate(verb, tense, { aux: "alt" });
-      if (!info.pp2 && !info.ppAlt) return null;
-      var alt = Conj.conjugate(verb, tense, { alt: true });
-      var main = Conj.conjugate(verb, tense);
-      return alt && alt.join() !== main.join() ? alt : null;
-    } catch (e) { return null; }
+      var acc = Conj.accepted ? Conj.accepted(verb, tense) : null;
+      if (acc && acc[p]) [].concat(acc[p]).forEach(function (x) { if (x && out.indexOf(x) < 0) out.push(x); });
+    } catch (e) { /* sin variantes */ }
+    return out;
+  }
+  // The persons that can be asked: the week's (persons), the verb's
+  // (info.persons) and the ones the tense has (a defective verb), never vós.
+  function personsFor(verb, forms, persons) {
+    var own = infoOf(verb).persons;
+    return [0, 1, 2, 3, 5].filter(function (p) {
+      return forms[p] && (!persons || !persons.length || persons.indexOf(p) >= 0) && (!own || own.indexOf(p) >= 0);
+    });
+  }
+  function labelFor(verb, p) {
+    var own = infoOf(verb).persons;
+    if (own && own.length === 1) return "";                    // chover: impersonal
+    if (own && own.indexOf(0) < 0) return p === 2 ? "isso" : p === 5 ? "elas" : personLabel(p);   // custar, doer
+    return personLabel(p);
   }
 
   /* known: the tenses already taught (week.known).  Distractors come only
      from those, so a week-6 learner never sees a subjuntivo as an option. */
-  // persons: which persons make sense (gostar de chuva: only ele and eles…);
-  // vós is never asked, tu seldom.
-  function pickPerson(persons) {
-    var pool = persons && persons.length ? WEIGHTED.filter(function (p) { return persons.indexOf(p) >= 0; }) : WEIGHTED;
-    if (!pool.length) pool = (persons || []).filter(function (p) { return p !== 4; });
-    if (!pool.length) pool = [0, 2, 3, 5];
+  // vós is never asked, tu seldom (WEIGHTED).
+  function pickPerson(allowed) {
+    var pool = WEIGHTED.filter(function (p) { return allowed.indexOf(p) >= 0; });
+    if (!pool.length) pool = allowed;
+    if (!pool.length) throw new Error("sin personas para conjugar");
     return pool[Math.floor(Math.random() * pool.length)];
   }
-  // The forms of the table as the note shows them (vós aside).
-  function formsNote(verb, tense, forms, alt) {
-    var said = forms.filter(function (f, i) { return i !== 4; });
-    return verb + " · " + Conj.TENSE_LABELS[tense] + ": " + said.join(", ") +
-      (alt ? " (también: " + alt.filter(function (f, i) { return i !== 4; }).join(", ") + ")" : "");
+  // The forms of the table as the note shows them (vós and the missing ones aside).
+  function formsNote(verb, tense, forms) {
+    var said = forms.filter(function (f, i) { return i !== 4 && f; });
+    return verb + " · " + tenseLabel(tense) + ": " + said.join(", ");
   }
   function esOf(verb) {
-    try { var i = Conj.info(verb); return i && i.es ? " (" + i.es + ")" : ""; } catch (e) { return ""; }
+    var i = infoOf(verb);
+    return i.es ? " (" + i.es + ")" : "";
+  }
+  function stemOf(verb, p, tail, tense) {
+    if (tense === "imperativo") return "(" + ["eu", "tu", "você", "nós", "vós", "vocês"][p] + ") ___!" + (tail || "");
+    var l = labelFor(verb, p);
+    return (l ? l + " " : "") + "___" + (tail || "");
   }
 
   function conjugationDrill(verb, tense, known, persons) {
-    var forms = Conj.conjugate(verb, tense);
-    var alt = otherAux(verb, tense);
-    var p = pickPerson(persons);
+    var forms = conjForms(verb, tense);
+    var p = pickPerson(personsFor(verb, forms, persons));
     var answer = forms[p];
+    var accept = acceptedFor(verb, tense, p, answer);
 
     // Distractors: the same verb in other persons, then the same person in
     // other tenses — the mistakes a learner actually makes.  Several persons
@@ -144,24 +178,27 @@
     // or the same option shows up twice.  The vós form is never an option.
     var pool = [];
     function add(f) {
-      if (f && f !== answer && pool.indexOf(f) < 0 &&
-          !(alt && alt.indexOf(f) >= 0)) pool.push(f);
+      if (f && f !== answer && pool.indexOf(f) < 0 && accept.indexOf(f) < 0) pool.push(f);
     }
     forms.forEach(function (f, i) { if (i !== 4) add(f); });
     var tenses = known && known.length ? known : Conj.ALL_TENSES;
     shuffle(tenses).forEach(function (t) {
       if (t === tense || pool.length >= 8) return;
-      try { add(Conj.conjugate(verb, t)[p]); } catch (e) { /* no se conjuga en ese tiempo */ }
+      try { add(conjForms(verb, t)[p]); } catch (e) { /* no se conjuga en ese tiempo */ }
     });
     // Last resort: other persons of other tenses, so we always reach 4 options.
     shuffle(tenses).forEach(function (t) {
       if (pool.length >= 3) return;
       try {
-        Conj.conjugate(verb, t).forEach(function (f, i) { if (i !== 4) add(f); });
+        conjForms(verb, t).forEach(function (f, i) { if (i !== 4) add(f); });
       } catch (e) { /* no se conjuga en ese tiempo */ }
     });
     // Still short (a verb with few distinct forms): the vós form after all.
     if (pool.length < 3) add(forms[4]);
+    if (pool.length < 3) shuffle(Conj.ALL_TENSES).forEach(function (t) {
+      if (pool.length >= 3) return;
+      try { conjForms(verb, t).forEach(add); } catch (e) { /* */ }
+    });
 
     var options = shuffle(sample(pool, 3).concat([answer]));
     // «src: coniugatore» and «topic: coniugazione» are the tokens the other
@@ -172,30 +209,29 @@
       type: "choice",
       topic: "coniugazione",
       prompt: "Conjugá «" + verb + "»" + esOf(verb) + " — " +
-              Conj.TENSE_LABELS[tense],
-      stem: personLabel(p) + " ___",
+              tenseLabel(tense),
+      stem: stemOf(verb, p, "", tense),
       options: options,
       answer: answer,
-      accept: alt ? [answer, alt[p]] : [answer],
-      note: formsNote(verb, tense, forms, alt)
+      accept: accept,
+      note: formsNote(verb, tense, forms)
     };
   }
 
   function conjugationTyped(verb, tense, persons) {
-    var forms = Conj.conjugate(verb, tense);
-    var alt = otherAux(verb, tense);
-    var p = pickPerson(persons);
+    var forms = conjForms(verb, tense);
+    var p = pickPerson(personsFor(verb, forms, persons));
     return {
       id: "conjw:" + verb + ":" + tense + ":" + p,
       src: "coniugatore",
       type: "cloze",
       topic: "coniugazione",
       prompt: "Escribí la forma de «" + verb + "»" + esOf(verb) + " — " +
-              Conj.TENSE_LABELS[tense],
-      stem: personLabel(p) + " ___ (" + verb + ")",
+              tenseLabel(tense),
+      stem: stemOf(verb, p, " (" + verb + ")", tense),
       answer: forms[p],
-      accept: alt ? [forms[p], alt[p]] : [forms[p]],
-      note: formsNote(verb, tense, forms, alt)
+      accept: acceptedFor(verb, tense, p, forms[p]),
+      note: formsNote(verb, tense, forms)
     };
   }
 
@@ -346,7 +382,7 @@
       (Conj.ALL_TENSES || Conj.SIMPLE_TENSES).forEach(function (t) {
         if (forms) return;
         try {
-          var f = Conj.conjugate(inf, t);
+          var f = conjForms(inf, t).map(function (x) { return x || ""; });
           if (f.some(function (x) { return norm(x) === norm(answer) || norm(x.split(" ").slice(1).join(" ")) === norm(answer) || norm(x.split(" ").pop()) === norm(answer); }))
             forms = f.filter(function (x, i) { return i !== 4; });      // never the vós form
         } catch (e) { /* */ }
@@ -361,7 +397,7 @@
       if (vf) { try { addForms(Conj.conjugate(vf.lemma, vf.tense).filter(function (x, i) { return i !== 4; }), answer.trim().split(/\s+/).length); } catch (e) { /* */ } }
     }
     function addForms(forms, multi) {
-      if (forms) shuffle(forms).forEach(function (x) {
+      if (forms) shuffle(forms.filter(Boolean)).forEach(function (x) {
         var xs = x.split(" ");
         if (opts.length < 3) add(xs.length > multi ? xs.slice(xs.length - multi).join(" ") : x);
       });
@@ -370,7 +406,7 @@
     if (it.src === "coniugatore" && Conj) {
       var m = /^conjw?:([^:]+):([^:]+):(\d)$/.exec(it.id);
       if (m) {
-        try { shuffle(Conj.conjugate(m[1], m[2]).filter(function (x, i) { return i !== 4; })).forEach(add); } catch (e) { /* no */ }
+        try { shuffle(conjForms(m[1], m[2]).filter(function (x, i) { return i !== 4 && x; })).forEach(add); } catch (e) { /* no */ }
       }
     }
     // 2. the typical errors on the answer itself

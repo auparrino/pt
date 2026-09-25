@@ -4134,7 +4134,7 @@
                ["lessico", "Léxico", "📚"], ["scrittura", "Produção escrita", "✍️"]];
   function proveName(id) { var p = PROVE.filter(function (x) { return x[0] === id; })[0]; return p ? p[1] : id; }
   // The rubric of the written texts (esame_data.js, the AI's «punteggi»).
-  var RUBRIC = [["contexto", "Adecuación al contexto"], ["discursiva", "Discursiva"], ["linguistica", "Lingüística"], ["lexico", "Léxico"]];
+  var RUBRIC = [["contexto", "Adequação ao contexto"], ["discursiva", "Adequação discursiva"], ["linguistica", "Adequação linguística"], ["lexico", "Léxico"]];
   function kindName(k) { return k === "argomentativo" ? "Texto argumentativo" : "Carta formal"; }
   var es = null;   // transient state of the prova on screen
   function esameSet(prova, ok, n) {

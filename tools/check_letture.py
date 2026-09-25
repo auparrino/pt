@@ -73,12 +73,11 @@ CONSTR = {
 FIXED = {"tomara": 23, "chamo-me": 1, "chama-se": 1, "pudera": 41}
 # Palabras que coinciden con una forma verbal tardía pero acá no lo son.
 NOT_VERBS = set("""
-fora sobre entre tarde livre conforme segundo cara caso canto sede vira
-meio medo nada passo casa como pena rede sorte parte janta porta volta
-certo junto vale base corte ante saia venda verão sério nossa graça pé
-gente jogo baixo alto fundo espera mesa custa conta toca olha leve fale
-deve pede cedo fecho acordo chefe prova marco batida suma letra sente
-vindo pois morro combinado passados prezados falta vista
+fora sobre entre tarde livre conforme segundo cara caso canto sede meio medo nada passo
+casa como pena rede sorte parte janta porta volta certo junto vale base corte ante saia
+venda verão sério nossa graça pé gente jogo baixo alto fundo espera mesa conta cedo acordo
+chefe prova marco batida suma letra vindo pois morro combinado passados prezados falta
+vista verdes
 """.split())
 FIXED_CONNECTORS = {"seja": 26}   # «ou seja», «seja como for»: fórmulas
 
@@ -107,6 +106,8 @@ SER = {"sou", "és", "é", "somos", "são", "era", "eram", "foi", "foram", "fui"
 IR_PRES = {"vou", "vais", "vai", "vamos", "vão"}
 BETWEEN = {"não", "já", "nunca", "sempre", "também", "ainda", "muito", "bem", "se", "me",
            "te", "lhe", "nos", "o", "a", "os", "as", "mesmo", "até", "só"}
+SUBJ_PRON = {"eu", "tu", "você", "ele", "ela", "nós", "eles", "elas", "vocês", "gente"}
+ADVS = {"não", "já", "nunca", "sempre", "também", "ainda", "muito", "bem", "mesmo", "só", "logo"}
 POSS = re.compile(r"^(meu|minha|meus|minhas|teu|tua|teus|tuas|seu|sua|seus|suas|nosso|nossa|nossos|nossas)$")
 DEM_CONTR = re.compile(r"^(n|d)(este|esta|estes|estas|esse|essa|esses|essas|isto|isso|aquele|aquela|aqueles|aquelas|aquilo)$")
 ENCL_OBJ = re.compile(r"^[a-zà-ú]+-(o|a|os|as|lo|la|los|las|no|na|nos|nas|lhe|lhes)$")
@@ -559,6 +560,34 @@ class Lexicon:
             self.verb_of.setdefault("pôr" if v == "pôr" else v, set()).add(v)
         for f, ts in node_conj_forms(verbs).items():
             self.forms.setdefault(f, set()).update(ts)
+        # El léxico de formas del proyecto (tools/sillabo.py → forms_lexicon.js),
+        # si está: más verbos y sus lemas.
+        try:
+            import sillabo
+            fl = sillabo.lexicon()
+        except Exception:
+            fl = {}
+        lemmas = fl.get("lemmas", {})
+        for f, ts in fl.get("simple", {}).items():
+            ts = set(ts)
+            if f in lemmas.get(f, []):            # el infinitivo no es un tiempo
+                ts -= {"subjFuturo", "infPessoal"}
+            if ts:
+                self.forms.setdefault(f, set()).update(ts)
+        for f in fl.get("imperatives", []):
+            self.forms.setdefault(f, set()).add("imperativo")
+        for f in fl.get("gerunds", []):
+            self.forms.setdefault(f, set()).add("gerundio")
+        for f, vs in lemmas.items():
+            self.verb_of.setdefault(f, set()).update(vs)
+        for f, vs in fl.get("participles", {}).items():
+            self.pp_of.setdefault(f, set()).update(vs)
+            self.verb_of.setdefault(f, set()).update(vs)
+        # Un infinitivo (levantar, de levantar-se) no es futuro do subjuntivo.
+        for f, ts in self.forms.items():
+            if f in self.verb_of.get(f, ()) or (f + "-se") in self.verb_of.get(f, ()):
+                ts -= {"subjFuturo", "infPessoal"}
+        self.forms = {f: ts for f, ts in self.forms.items() if ts}
         # Una forma de subjuntivo presente también se lee como imperativo
         # (fale, vá, faça): cuenta desde la semana del imperativo.
         for f, ts in self.forms.items():
@@ -668,10 +697,31 @@ def grammar(text, lex):
             put("mais-que-perfeito composto", CONSTR["mais-que-perfeito composto"])
         if head in TER_LATE and is_pp:
             put("tempos compostos do subjuntivo e condicional", CONSTR["tempos compostos do subjuntivo e condicional"])
-        if head in SER and is_pp:
+        k = i + 1
+        while k < len(toks) and toks[k] in ADVS and k < i + 3:
+            k += 1
+        nxt_adv = toks[k] if k < len(toks) else ""
+        if head in SER and nxt_adv in lex.pp_of and nxt_adv not in ADJ_PP:
             put("voz passiva (ser + particípio)", CONSTR["voz passiva (ser + particípio)"])
         if head in IR_PRES and re.search(r"(ar|er|ir|pôr)$", nxt) and nxt in lex.verb_of:
             put("ir + infinitivo", CONSTR["ir + infinitivo"])
+    # Lo que la forma sola no dice: «quando você chegar» (futuro do subjuntivo
+    # regular = infinitivo) y «que você venha» (subjuntivo, no imperativo).
+    for i, t in enumerate(toks):
+        j = i + 1
+        if t in ("que", "talvez", "embora", "caso") or (t == "se" and j < len(toks) and toks[j] in SUBJ_PRON) \
+                or t in ("quando", "enquanto"):
+            while j < len(toks) and (toks[j] in SUBJ_PRON or toks[j] in ADVS or toks[j] in ("me", "te", "se", "nos", "lhe", "o", "a")) and j < i + 4:
+                j += 1
+            if j >= len(toks):
+                continue
+            v = toks[j]
+            if t in ("que", "talvez", "embora", "caso") and "subjPresente" in lex.forms.get(v, ()) \
+                    and v not in NOT_VERBS and not (lex.forms.get(v, set()) & {"presente", "perfeito", "imperfeito"}):
+                put("subjuntivo (que / talvez / embora + verbo)", TW["subjPresente"])
+            if t in ("se", "quando", "enquanto") and v in lex.verb_of.get(v, ()) and v in lex.verb_of \
+                    and re.search(r"(ar|er|ir|pôr)$", v):
+                put("futuro do subjuntivo (quando / se + infinitivo)", TW["subjFuturo"])
     if re.search(r"\b(mais|menos|tão)\b(\s+\S+){1,4}?\s+(do que|que|quanto|como)\b", low) or \
             re.search(r"\b(maior|menor|melhor|pior)(es)?\s+(do\s+)?que\b", low) or \
             re.search(r"\b(o|a|os|as)\s+(mais|menos)\s+\w+\s+(d[oa]s?|de)\b", low):

@@ -46,7 +46,8 @@ def _add(part, typ, prompt, stem, answer, note, alt=None, **kw):
     _S["n"] += 1
     d = dict(id="s3-%d-%02d" % (_S["w"], _S["n"]), w=_S["w"], part=part,
              level=_S["level"], type=typ, topic=_S["topic"], prompt=prompt,
-             stem=stem, answer=answer, alt=list(alt or []), note=note)
+             stem=stem, answer=answer, note=note,
+             alt=[a for i, a in enumerate(alt or []) if a != answer and a not in (alt or [])[:i]])
     d.update(kw)
     ITEMS.append(d)
     return d
@@ -1718,3 +1719,197 @@ cb(1, "Os meteorologistas preveem chuva. Leve guarda-chuva. (já que)",
 cb(2, "A mala é pequena. Não cabe tudo. (por isso)", "A mala é pequena, por isso não cabe tudo.",
    "Consecuencia con por isso; caber → cabe.",
    alt=["A mala é pequena; por isso, não cabe tudo.", "A mala é pequena e por isso não cabe tudo."])
+
+
+# ============================================================================
+# Semana 38 — Português falado do Brasil
+# partes: 0 reducciones, marcadores y reacciones · 1 cadê y ter por haver ·
+#         2 pronombres del habla y registro
+# ============================================================================
+wk(38, "B2", "português falado")
+
+_HB = "Elegí cómo se dice en el habla de Brasil."
+ch(0, "«Vou para o Arpoador», dicho rápido:", ["Vou pro Arpoador.", "Vou pra o Arpoador.", "Vou po Arpoador."], "Vou pro Arpoador.",
+   "para o → pro; para a → pra. «Pra o» no se dice.", prompt=_HB)
+ch(0, "«Estoy llegando» en un chat:", ["Tô chegando.", "Tá chegando.", "Estô chegando."], "Tô chegando.",
+   "estou → tô; está → tá. «Tá chegando» = está llegando (él, ella, vos).", prompt=_HB)
+ch(0, "«Es para vos.»", ["É pra você.", "É pra cê.", "É pa cê."], "É pra você.",
+   "«cê» no va después de preposición ni al final: é pra você, com você.", prompt=_HB)
+ch(0, "Tá quente hoje, ___?", ["né", "no", "não é que"], "né",
+   "«né» (de não é) pide acuerdo, como «¿no?». «No» en portugués es «en el».", prompt=_HB)
+ch(0, "— O aluguel tá caro, né? — ___. Tá tudo caro.", ["Pois é", "Pois não", "Então é"], "Pois é",
+   "«pois é» = y sí, así es. Ojo: «pois não» significa «¿en qué lo ayudo?» o «¡cómo no!».", prompt=_HB)
+ch(0, "«Qué sé yo.»", ["Sei lá.", "Que sei eu.", "O que sei."], "Sei lá.",
+   "«sei lá» = qué sé yo, ni idea.", prompt=_HB)
+ch(1, "«¿Dónde está mi celular?»", ["Cadê meu celular?", "Cadê está meu celular?", "Onde cadê meu celular?"], "Cadê meu celular?",
+   "«cadê» ya incluye el verbo: cadê meu celular?", prompt=_HB)
+ch(1, "«Había mucha gente en el bloco.»", ["Tinha muita gente no bloco.", "Tinham muita gente no bloco.", "Estava muita gente no bloco."],
+   "Tinha muita gente no bloco.",
+   "En el habla, ter por haver, siempre en singular: tinha muita gente.", prompt=_HB)
+ch(1, "«Hay muchas personas acá.»", ["Tem muitas pessoas aqui.", "Têm muitas pessoas aqui.", "Estão muitas pessoas aqui."],
+   "Tem muitas pessoas aqui.",
+   "«tem» existencial no concuerda: tem muitas pessoas (como «hay»).", prompt=_HB)
+ch(2, "Você sabe que eu ___ amo.", ["te", "lhe", "ti"], "te",
+   "En el habla de Brasil se mezcla você con te: eu te amo. En la norma, você → o / a.", prompt=_HB)
+ch(2, "¿Cuál va en un mail formal?", ["Estou a caminho.", "Tô chegando, pera aí.", "Tô indo, beleza?"], "Estou a caminho.",
+   "Las reducciones (tô, pera aí) y los marcadores (beleza) son del habla y los chats; en un mail formal, forma plena.",
+   prompt="Elegí la opción adecuada para el registro formal.")
+ch(2, "«¡Qué show copado!» (carioca)", ["Que show maneiro!", "Que show copado!", "Que show manero!"], "Que show maneiro!",
+   "«maneiro» = copado, en el habla carioca. «Copado» no existe en portugués.", prompt=_HB)
+
+_RD = "Escribí la forma reducida del habla."
+cl(0, "Eu ___ (estou) cansado.", "tô", "estou → tô.", prompt=_RD)
+cl(0, "Ela ___ (está) na praia.", "tá", "está → tá.", prompt=_RD)
+cl(0, "Vou ___ (para o) Leblon.", "pro", "para o → pro.", prompt=_RD)
+cl(0, "Vamos ___ (para a) Lapa?", "pra", "para a → pra.", prompt=_RD)
+cl(0, "___ (você) vem hoje?", "Cê", "você → cê, solo delante del verbo.", prompt=_RD)
+cl(0, "___ (espera aí), já volto!", "Pera aí", "espera aí → pera aí (también se escribe peraí).",
+   alt=["Peraí"], prompt=_RD)
+cl(1, "___ (onde está) a Bia?", "Cadê", "onde está → cadê, sin verbo.", prompt=_RD)
+cl(1, "Não ___ (há) problema.", "tem", "En el habla, ter reemplaza a haver: não tem problema.", prompt=_RD)
+cl(1, "Ontem ___ (havia) muita gente no Aterro.", "tinha", "havia → tinha (ter por haver).", prompt=_RD)
+cl(2, "Eu ___ (estava) no metrô quando cê ligou.", "tava", "estava → tava.", prompt=_RD)
+cl(2, "Tô ___ (em um) bar em Botafogo.", "num", "em um → num, muy frecuente también en la escritura informal.", prompt=_RD)
+cl(2, "«Tô chegando» → ___ chegando.", "Estou",
+   "En registro formal, forma plena: estou chegando (o estou a caminho).",
+   prompt="Escribí la forma plena del registro formal.")
+
+trv(0, "(Habla) Estoy cansado, ¿viste?",
+    "estou → tô; «¿viste?, ¿no?» = né.",
+    ["Tô cansado", "Estou cansado", "Tô cansada", "Estou cansada"], ", né")
+trv(0, "(Habla) Voy a la playa, ¿venís?",
+    "para a → pra; você → cê delante del verbo.",
+    ["Vou pra praia", "Tô indo pra praia", "Vou à praia", "Vou para a praia"], ", ", ["cê vem", "você vem", "vem"])
+trv(0, "(Habla) Qué sé yo, creo que viene.",
+    "«qué sé yo» = sei lá; «creo que» = acho que.",
+    "Sei lá, ", ["acho que ele vem", "acho que ela vem", "acho que vem"])
+trv(1, "(Habla) ¿Dónde están las llaves?",
+    "cadê = ¿dónde está / están?",
+    ["Cadê as chaves", "Onde estão as chaves", "Onde tão as chaves"])
+trv(1, "(Habla) Hay un bar buenísimo en la esquina.",
+    "«hay» = tem en el habla.",
+    "Tem um ", ["boteco", "bar"], " ", ["ótimo", "muito bom", "maneiro", "excelente", "incrível"], " na esquina")
+trv(1, "(Habla) No hay problema.",
+    "não tem problema (habla) / não há problema (escrito).",
+    ["Não tem problema", "Sem problema", "Não há problema", "Tem problema não"])
+trv(2, "(Habla) Lo vi en la playa ayer.",
+    "En el habla: vi ele. En la escritura: vi-o.",
+    ["Vi ele na praia ontem", "Eu vi ele na praia ontem", "Vi ele ontem na praia", "Eu vi ele ontem na praia",
+     "Eu o vi na praia ontem", "Vi-o na praia ontem"])
+trv(2, "(Formal) Estoy en camino.",
+    "Registro formal: forma plena.",
+    ["Estou a caminho", "Já estou a caminho", "Estou chegando"])
+
+fx(1, "Cadê está o meu carregador?", "Cadê está", "Cadê",
+   "Cadê o meu carregador?", "espanol",
+   "«cadê» ya significa «¿dónde está?»: no lleva verbo. El calco de «¿dónde está?» mete el está.")
+fx(1, "Têm muitas pessoas na fila do Cristo.", "Têm", "Tem",
+   "Tem muitas pessoas na fila do Cristo.", "concordancia",
+   "«tem» existencial (= hay) no concuerda: tem muitas pessoas.")
+fx(0, "Esse presente é pra cê.", "pra cê", "pra você",
+   "Esse presente é pra você.", "pronome",
+   "«cê» solo va antes del verbo (cê vem?); después de preposición, você: pra você.")
+fx(2, "Vi ele na reunião de ontem.", "Vi ele", "Vi-o",
+   "Vi-o na reunião de ontem.", "pronome",
+   "En el habla se dice vi ele, pero en una carta formal el objeto directo es o: vi-o.")["prompt"] = \
+    "Carta formal. Encontrá el error de registro: tocá la palabra que está mal y corregila."
+
+_L38 = [["estou", "tô"], ["está", "tá"], ["você", "cê"]]
+_GP38 = "Mirá las tres reducciones del habla y completá la cuarta."
+gd(0, _L38, "para o → ___", "pro", "pra o",
+   "para o se funde en pro (y para a en pra). «Pra o» no se dice.", prompt=_GP38)
+gd(0, _L38, "para os → ___", "pros", "pra os",
+   "para os → pros; para as → pras.", prompt=_GP38)
+gd(2, _L38, "estava → ___", "tava", "taba",
+   "estava → tava, con v: el imperfeito de estar es estava, no «estaba».", prompt=_GP38)
+
+sc(0, ["Tá quente hoje, né?", "Você vem, né?", "Ele é carioca, né?", "Tá caro, né?", "A gente vai amanhã, né?",
+       "Isso é seu, né?"],
+   "¿Para qué sirve «né» al final de la frase?",
+   ["Para pedir acuerdo al que escucha, como «¿no?» o «¿viste?».",
+    "Para negar lo que se acaba de decir.",
+    "Para hacer una pregunta formal de sí o no."],
+   "Para pedir acuerdo al que escucha, como «¿no?» o «¿viste?».",
+   "Regla: né (de não é) es una muletilla de acuerdo. No niega nada.")
+sc(1, ["Cadê o Rafa?", "Cadê meu celular?", "Cadê vocês?", "Cadê as chaves?", "Cadê a Bia?", "Cadê o biscoito?"],
+   "¿Qué significa «cadê» y cómo se usa?",
+   ["«¿Dónde está / están?», sin verbo, en singular o plural.",
+    "«¿Cuándo?», con verbo conjugado.",
+    "«¿Qué es?», solo con cosas."],
+   "«¿Dónde está / están?», sin verbo, en singular o plural.",
+   "Regla: cadê + sustantivo o pronombre, sin verbo. Es del habla; por escrito formal, onde está.")
+
+ty(0, "Escribí la reducción de «para o».", "para o → ___", "pro",
+   "para o → pro.")
+ty(1, "Escribí en una palabra «¿dónde está?» (habla).", "___ o Rafa?", "Cadê",
+   "cadê = ¿dónde está?")
+
+cb(0, "Fui no bar. Encontrei o Rafa. (aí)", "Fui no bar, aí encontrei o Rafa.",
+   "«aí» hace avanzar el relato en el habla: y entonces.",
+   alt=["Fui no bar e aí encontrei o Rafa.", "Fui no bar aí encontrei o Rafa.", "Fui ao bar, aí encontrei o Rafa."])
+cb(0, "Tava chovendo. A gente ficou em casa. (então)", "Tava chovendo, então a gente ficou em casa.",
+   "«então» introduce la consecuencia, muy frecuente en el habla.",
+   alt=["Estava chovendo, então a gente ficou em casa.", "Tava chovendo então a gente ficou em casa."])
+cb(2, "Não fui no bloco. Tava cansado. (porque)", "Não fui no bloco porque tava cansado.",
+   "Causa con porque; en el habla, tava y ir no.",
+   alt=["Não fui no bloco porque estava cansado.", "Não fui ao bloco porque estava cansado.",
+        "Não fui ao bloco porque tava cansado."])
+
+
+# ============================================================================
+# Semana 39 — CHEFÃO B2: 20 ítems mixtos de toda la estación
+# partes: 0 subjuntivos, condicionales, discurso indirecto ·
+#         1 regencia, crase, conectores, pasiva y pronombres
+# ============================================================================
+wk(39, "B2", "chefão B2")
+
+ch(0, "Quando você ___ a Bia, avisa que eu cheguei.", ["vir", "ver", "vier"], "vir",
+   "Futuro do subjuntivo de ver: vir (viram → vir). «Vier» es de vir (venir).")
+ch(0, "Se eu ___ tempo, iria ao Museu Nacional.", ["tivesse", "tiver", "teria"], "tivesse",
+   "Hipótesis del presente: se + imperfeito do subjuntivo, consecuencia en futuro do pretérito.")
+ch(0, "Se a ditadura não ___ censurado a imprensa, muitas histórias teriam sido contadas antes.",
+   ["tivesse", "teria", "tiver"], "tivesse",
+   "Hipótesis sobre el pasado: se + tivesse + participio; consecuencia con teria + participio.")
+cl(0, "É bom vocês ___ (fazer) a reserva com antecedência.", "fazerem",
+   "Infinitivo pessoal: sale del infinitivo, fazerem (no fizerem).")
+cl(0, "«Não saia!» → Minha mãe pediu que eu não ___ (sair).", "saísse",
+   "Imperativo reportado en pasado → imperfeito do subjuntivo: saísse.")
+cl(0, "«Eu quero votar para presidente!» → Nas Diretas Já (1984), o povo dizia que ___ (querer) votar para presidente.", "queria",
+   "Presente reportado desde el pasado → imperfeito: queria. «Diretas Já» fue la campaña por elecciones presidenciales directas.")
+trv(0, "Si hubiera sabido, habría ido.",
+    "se + tivesse sabido; consecuencia teria ido (habla: tinha ido).",
+    ["Se eu tivesse sabido", "Se tivesse sabido"], ", ", ["teria ido", "eu teria ido", "tinha ido", "eu tinha ido"])
+trv(0, "Cuando llegue a Lisboa, te llamo.",
+    "«Cuando llegue» = quando eu chegar (futuro do subjuntivo).",
+    ["Quando eu chegar", "Quando chegar"], " ", ["a Lisboa", "em Lisboa"], ", ",
+    ["te ligo", "eu te ligo", "ligo pra você", "ligo para você", "vou te ligar"])
+fx(0, "Se eu poderia, viajaria para Angola e Moçambique.", "poderia", "pudesse",
+   "Se eu pudesse, viajaria para Angola e Moçambique.", "subjuntivo",
+   "Tras «se», nunca condicional: se eu pudesse.")
+ty(0, "Escribí el infinitivo pessoal (nós) de «ir».", "É hora de ___, galera!", "irmos",
+   "ir → irmos.")
+
+ch(1, "Assisti ___ show do Caetano no Circo Voador.", ["ao", "o", "no"], "ao",
+   "Norma culta: assistir a (ver): assisti ao show.", prompt="Elegí la forma de la norma culta.")
+ch(1, "Vou ___ Urca ver o Pão de Açúcar.", ["à", "a", "na"], "à",
+   "A Urca lleva artículo (volto da Urca): vou à Urca.")
+ch(1, "Choveu a tarde inteira; ___, o bloco saiu.", ["no entanto", "portanto", "inclusive"], "no entanto",
+   "Contraste: no entanto (= sin embargo).")
+cl(1, "___ (precisar) de guias bilíngues.", "Precisa-se",
+   "Con preposición, singular: precisa-se de.", prompt="Completá el cartel con la pasiva con se.")
+cl(1, "___ (disse + me) que não viria.", "Disse-me",
+   "Escritura formal, verbo al inicio: ênclise.", prompt="Uní verbo y pronombre en registro formal.")
+trv(1, "Prefiero el samba al funk.",
+    "preferir X a Y.",
+    "Prefiro ", ["samba a funk", "o samba ao funk"])
+trv(1, "Todavía no leí Os Lusíadas.",
+    "«todavía» = ainda. «Os Lusíadas» (1572) es la epopeya de Camões.",
+    ["Ainda não li", "Eu ainda não li"], " Os Lusíadas")
+fx(1, "A Bia namora com um português de Coimbra.", "namora com", "namora",
+   "A Bia namora um português de Coimbra.", "regencia",
+   "namorar alguém, sin «com».")
+fx(1, "Vou à Ipanema depois do trabalho.", "à Ipanema", "a Ipanema",
+   "Vou a Ipanema depois do trabalho.", "crase",
+   "Volto de Ipanema (sin artículo) → vou a Ipanema, sin crase.")
+ty(1, "Escribí el conector formal de una palabra que empieza con «c» y significa «sin embargo».", "sin embargo → ___", "contudo",
+   "contudo = sin embargo, como porém, todavia y no entanto.")

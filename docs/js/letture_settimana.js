@@ -161,17 +161,17 @@
       grammar: "números, horas e datas",
       text:
         "Hoje é segunda-feira, quinze de janeiro, e a semana da Sofía está cheia. " +
-        "Às nove e meia, ela tem uma reunião on-line com uma empresa de Rosário.\n\n" +
-        "Na terça-feira, às duas da tarde, tem aula de português: a aula custa oitenta reais. " +
+        "Às nove e meia, ela tem uma reunião com uma empresa de Rosário.\n\n" +
+        "Na terça, às duas da tarde, tem aula de português: custa oitenta reais. " +
         "Na quarta, a Bia faz trinta e um anos. A Sofía liga para a padaria " +
         "e pede um bolo: \"Dois, meia, quatro, sete...\"\n\n" +
-        "O sábado, vinte de janeiro, é feriado no Rio: é o dia de São Sebastião, o padroeiro da cidade. " +
+        "O sábado, vinte de janeiro, é feriado: é o dia de São Sebastião, o padroeiro do Rio. " +
         "Na sexta à noite, as duas vão a um show na Lapa: o ingresso custa cento e vinte reais.\n\n" +
         "Que horas são? Dez para as dez. A Sofía está atrasada!",
-      gloss: { reunião: "reunión", aniversário: "cumpleaños", liga: "llama (por teléfono)",
+      gloss: { reunião: "reunión", liga: "llama (por teléfono)",
                meia: "seis (al decir un número)", bolo: "torta", feriado: "feriado", padroeiro: "santo patrono",
                ingresso: "entrada", atrasada: "atrasada, llegando tarde", "segunda-feira": "lunes",
-               "terça-feira": "martes", quarta: "miércoles (quarta-feira)", sexta: "viernes (sexta-feira)" },
+               terça: "martes (terça-feira)", quarta: "miércoles (quarta-feira)", sexta: "viernes (sexta-feira)" },
       questions: [
         ["¿Cuánto cuesta la clase de portugués?", ["ochenta reales", "ciento veinte reales", "treinta reales", "veinte reales"], "ochenta reales"],
         ["¿Cuántos años cumple Bia?", ["treinta y uno", "veintinueve", "treinta", "cuarenta y uno"], "treinta y uno"],
@@ -196,7 +196,7 @@
         "— Porque o metrô é rápido e barato.\n" +
         "— Tá bom. Vou tomar um banho e vou comer alguma coisa. Onde é o encontro?\n" +
         "— Na saída do metrô. Estou esperando vocês lá!",
-      gloss: { ainda: "todavía", saindo: "saliendo", roda: "ronda (roda de samba)", graça: "gracia (de graça = gratis)",
+      gloss: { ainda: "todavía", depois: "después", hoje: "hoy", saindo: "saliendo", roda: "ronda (roda de samba)", graça: "gracia (de graça = gratis)",
                pé: "pie (a pé = a pie)", tá: "está (tá bom = está bien, coloquial)", banho: "baño (tomar banho = bañarse)",
                coisa: "cosa", encontro: "encuentro", saída: "salida", esperando: "esperando", oi: "hola" },
       questions: [
@@ -418,7 +418,7 @@
         "— Muito obrigada. Eu queria também o endereço do hotel, por favor.",
       gloss: { pois: "pues (pois não = cómo no)", solteiro: "single, individual", desconto: "descuento",
                nossa: "¡uy! (sorpresa)", quinhentos: "quinientos", seiscentos: "seiscientos",
-               endereço: "dirección", obrigada: "gracias (dicho por una mujer)", indicar: "recomendar" },
+               endereço: "dirección", obrigada: "gracias (dicho por una mujer)", indicar: "recomendar", perto: "cerca" },
       questions: [
         ["¿Para quién es la habitación?", ["para Lucas", "para Sofía", "para Bia", "para João"], "para Lucas"],
         ["¿Cuánto cuesta al final por noche?", ["quinientos reales, con desayuno", "seiscientos reales", "trescientos reales", "es gratis"], "quinientos reales, con desayuno"],
@@ -430,16 +430,16 @@
     { id: "w-19", week: 19, n: 19, level: "B1", emoji: "🏙️", title: "Rio ou São Paulo?",
       grammar: "comparativos e superlativos",
       text:
-        "O Lucas passou uma semana no Rio e três dias em São Paulo. São Paulo " +
+        "O Lucas passou três dias em São Paulo. São Paulo " +
         "é maior do que o Rio: é a maior cidade do Brasil, com mais de onze milhões de habitantes. " +
         "Tem mais museus e teatros, mas o trânsito é pior e o céu é menos azul.\n\n" +
-        "O Rio é menor, mas é lindíssimo: tem praia, montanha e floresta no meio da cidade. " +
+        "O Rio é menor, mas é lindíssimo: tem praia, calçadão e floresta no meio da cidade. " +
         "A Floresta da Tijuca é uma das maiores florestas urbanas do mundo.\n\n" +
-        "\"Os paulistanos trabalham tanto quanto os cariocas\", diz a Bia. O Lucas não concorda, " +
-        "mas acha que em São Paulo a pizza é melhor. \"E o pôr do sol do Arpoador é o mais bonito " +
+        "\"Os paulistanos trabalham tanto quanto os cariocas\", diz a Bia. O Lucas acha que " +
+        "em São Paulo a pizza é melhor. \"Mas o pôr do sol do Arpoador é o mais bonito " +
         "do mundo\", responde a Sofía.",
-      gloss: { floresta: "selva, bosque", meio: "medio (no meio = en el medio)", paulistanos: "los de la ciudad de São Paulo",
-               concorda: "está de acuerdo", lindíssimo: "lindísimo", milhões: "millones" },
+      gloss: { floresta: "selva", calçadão: "rambla", acha: "cree", meio: "medio (no meio = en el medio)",
+               paulistanos: "los de la ciudad de São Paulo", lindíssimo: "lindísimo", milhões: "millones" },
       questions: [
         ["¿Cuál es la ciudad más grande de Brasil?", ["São Paulo", "Río de Janeiro", "Brasilia", "Salvador"], "São Paulo"],
         ["¿Qué tiene Río en medio de la ciudad?", ["un bosque, la Floresta da Tijuca", "un lago", "un desierto", "un río enorme"], "un bosque, la Floresta da Tijuca"],
@@ -483,7 +483,7 @@
         "nunca tinha visto um março assim.\n\n" +
         "Beijos, e manda um abraço para o papai.\n" +
         "Sofía",
-      gloss: { querida: "querida", pousada: "posada, hotelito", jantar: "cena", chovido: "llovido",
+      gloss: { querida: "querida", ontem: "ayer", pousada: "posada, hotelito", jantar: "cena", chovido: "llovido",
                beijos: "besos", abraço: "abrazo", últimas: "últimas", estranho: "raro" },
       questions: [
         ["¿Qué viene haciendo Sofía?", ["trabaja y estudia mucho", "viaja por Brasil", "no hace nada", "busca trabajo"], "trabaja y estudia mucho"],
@@ -571,7 +571,7 @@
         "A Sofía, para quem a Bia contou tudo isso, quis ver o lugar em que tudo começou. " +
         "No bar, pediu um chope e cantou baixinho: \"Olha que coisa mais linda...\"",
       gloss: { letra: "letra (de una canción)", canção: "canción", cuja: "cuya", frequentavam: "frecuentaban",
-               moça: "chica", conhecida: "conocida", chope: "chopp (cerveza tirada)", baixinho: "bajito",
+               moça: "chica", "ninguém": "nadie", conhecida: "conocida", chope: "chopp (cerveza tirada)", baixinho: "bajito",
                quis: "quiso", resistia: "resistía" },
       questions: [
         ["¿Quién escribió la letra?", ["Vinicius de Moraes", "Tom Jobim", "Helô Pinheiro", "Sofía"], "Vinicius de Moraes"],
@@ -584,7 +584,7 @@
     { id: "w-26", week: 26, n: 26, level: "B1", emoji: "🌅", title: "Seis meses de Rio",
       grammar: "revisão B1",
       text:
-        "Faz seis meses que a Sofía chegou ao Rio. Quando desembarcou no Galeão, não entendia quase " +
+        "Faz seis meses que a Sofía chegou ao Rio. Quando desembarcou, não entendia quase " +
         "nada e tinha vergonha de falar. Hoje pede café na padaria, discute futebol no boteco e até " +
         "conta piadas.\n\n" +
         "Muita coisa tem mudado: ela tem ido à praia antes do trabalho. " +
@@ -593,7 +593,7 @@
         "\"Eu gostaria de ficar mais um ano\", diz. \"Talvez eu consiga um trabalho aqui.\" " +
         "A Bia espera que ela fique. Hoje à noite, as duas irão " +
         "ao Arpoador. Quem sabe o pôr do sol ajude a decidir.",
-      gloss: { desembarcou: "desembarcó", vergonha: "vergüenza", piadas: "chistes", falta: "falta (sentir falta = extrañar)",
+      gloss: { desembarcou: "desembarcó", quase: "casi", ainda: "todavía", vergonha: "vergüenza", piadas: "chistes", falta: "falta (sentir falta = extrañar)",
                inverno: "invierno", portenho: "porteño", consiga: "consiga", mudado: "cambiado", ajude: "ayude" },
       questions: [
         ["¿Qué le pasaba cuando llegó?", ["no entendía casi nada y le daba vergüenza hablar", "hablaba perfecto", "no quería salir", "estaba enferma"], "no entendía casi nada y le daba vergüenza hablar"],
@@ -892,7 +892,7 @@
       gloss: { "cê": "vos, usted (você, coloquial)", pra: "para (coloquial)", "né": "¿no?", "tô": "estoy (coloquial)",
                doida: "loca (tô doida pra = me muero por)", tipo: "como (muletilla: tipo)", pro: "para el (coloquial)",
                ouro: "oro", teto: "techo", canto: "rincón (em tudo que é canto = por todos lados)",
-               profetas: "profetas", pertinho: "cerquita", "pô": "¡che! (muletilla)", impostos: "impuestos",
+               profetas: "profetas", pertinho: "cerquita", escolheu: "eligió", "pô": "¡che! (muletilla)", impostos: "impuestos",
                enforcado: "ahorcado", "cadê": "¿dónde está?", relaxa: "tranqui" },
       questions: [
         ["¿Cómo se llamaba antes Ouro Preto?", ["Vila Rica", "Congonhas", "Tiradentes", "Minas Gerais"], "Vila Rica"],
@@ -1128,7 +1128,7 @@
         "dar um jeito. Em suma, talvez a pergunta não seja se o jeitinho é bom ou ruim, mas para quem ele " +
         "funciona.",
       gloss: { geram: "generan", jeitinho: "viveza para sortear reglas", contornar: "sortear, eludir", convém: "conviene",
-               passo: "paso", malandros: "pícaros", acima: "por encima", oscila: "oscila", resolva: "resuelva",
+               passo: "paso", malandros: "pícaros", diante: "frente a", ruim: "malo", consegue: "logra", acima: "por encima", oscila: "oscila", resolva: "resuelva",
                reforce: "refuerce", ingênuo: "ingenuo", jeito: "manera (dar um jeito = arreglárselas)",
                suma: "suma (em suma = en resumen)" },
       questions: [
@@ -1234,7 +1234,7 @@
       gloss: { serra: "sierra", quilombo: "comunidad de esclavos fugados", fugidas: "fugadas", sucessivas: "sucesivas",
                morto: "muerto", consciência: "conciencia", intelectual: "intelectual",
                amefricanidade: "amefricanidad (concepto de Lélia Gonzalez)", lançou: "lanzó", tragam: "traigan",
-               montar: "armar", verba: "fondos", lamentou: "lamentó" },
+               montar: "armar", verba: "fondos", lamentou: "lamentó", chegou: "llegó" },
       questions: [
         ["¿Qué era Palmares?", ["la mayor comunidad de fugados de la esclavitud", "un ingenio azucarero", "una ciudad portuguesa", "un puerto"], "la mayor comunidad de fugados de la esclavitud"],
         ["¿Por qué el 20 de noviembre es feriado?", ["es el día de Zumbi y de la Conciencia Negra", "es el día de la Abolición", "es el día de Tiradentes", "es la Independencia"], "es el día de Zumbi y de la Conciencia Negra"],

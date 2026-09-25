@@ -137,6 +137,10 @@
       if (!safe && PREP_SWAP[low] && nounNext) put(PREP_SWAP[low][Math.floor(rnd() * PREP_SWAP[low].length)]);
       if (!safe && week >= 16 && PRON_SWAP[low]) put(PRON_SWAP[low][Math.floor(rnd() * PRON_SWAP[low].length)]);
       if (SPAN[low]) put(SPAN[low]);
+      // the Spanish written accent: entendi → entendí, aqui → aquí, que → qué
+      if (/[^aeiouáéíóúâêôãõ]i$/.test(low) && low.length > 3) put(low.slice(0, -1) + "í");
+      if (i === 0 && (low === "que" || low === "como" || low === "quando" || low === "onde"))
+        put({ que: "qué", como: "cómo", quando: "cuándo", onde: "dónde" }[low]);
       // gosto de café → gosto café: gostar keeps its de
       if (/^gost(o|a|as|amos|am|ei|ou|ava|avam|aria|ariam)$/.test(low) && /^(de|do|da|dos|das)$/.test(next)) {
         var g = toks.slice(), nx = next === "de" ? null : next.slice(1);
