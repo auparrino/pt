@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0e7c5a"/>
+  <rect x="170" width="172" height="512" fill="#f4f1ec"/>
+  <path d="M342 0h58a112 112 0 0 1 112 112v288a112 112 0 0 1-112 112h-58z" fill="#c8362f"/>
+  <g transform="translate(256 250)">
+    <path d="M-150 -95a40 40 0 0 1 40-40h220a40 40 0 0 1 40 40v130a40 40 0 0 1-40 40h-120l-70 55v-55h-30a40 40 0 0 1-40-40z"
+          fill="#16181d" opacity=".92"/>
+    <text x="0" y="12" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+          font-weight="700" font-size="120" fill="#ffffff">Ciao</text>
+  </g>
+</svg>

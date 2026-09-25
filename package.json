@@ -1,0 +1,13 @@
+{
+  "name": "rumo-c1",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rumo C1: portugués de Brasil hasta C1 en un año, para hispanohablantes. Sitio estático sin dependencias.",
+  "scripts": {
+    "test": "node tools/test_conjugator.js && node tools/test_game.js && node tools/test_frasi.js && node tools/test_diagnosi.js && node tools/test_scrivi.js && node tools/test_memoria.js && node tools/test_suoni.js",
+    "build": "python3 tools/build_bank.py && python3 tools/build_course.py",
+    "sim": "node tools/sim_carriera.js",
+    "start": "cd docs && python3 -m http.server 8000"
+  },
+  "license": "UNLICENSED"
+}

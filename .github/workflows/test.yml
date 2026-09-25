@@ -1,0 +1,30 @@
+name: tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Tests de lógica y datos
+        run: npm test
+      - name: Los datos compilados coinciden con las fuentes
+        run: |
+          python3 tools/build_bank.py > /dev/null
+          python3 tools/build_course.py > /dev/null
+          git diff --stat --exit-code docs/data/ || (echo "docs/data no está al día con tools/: corré npm run build" && exit 1)
+      - name: La versión del service worker coincide con la de la app
+        run: |
+          a=$(grep -o 'VERSION = "rumoc1-v[0-9]*"' docs/sw.js | grep -o 'v[0-9]*')
+          b=$(grep -o 'APP_VERSION = "v[0-9]*"' docs/js/app.js | grep -o 'v[0-9]*')
+          test "$a" = "$b" || (echo "sw.js $a ≠ app.js $b" && exit 1)
