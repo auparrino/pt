@@ -1056,7 +1056,7 @@ LESSONS = {
        "Mismo sujeto: *antes de sair*, *sem dizer nada*.",
   "ex": [["Vamos embora *antes que* *chova*.", "Vámonos antes de que llueva."],
          ["Espera aqui *até que* eu *volte*.", "Esperá acá hasta que vuelva."],
-         ["Ele saiu *sem que* ninguém *visse*.", "Salió sin que nadie lo viera."],
+         ["Ele sai *sem que* ninguém *perceba*.", "Sale sin que nadie se dé cuenta."],
          ["Saiu *sem* dizer nada.", "Se fue sin decir nada."]],
   "warn": "«antes de que» se dice *antes que*, sin *de*. Con infinitivo sí "
           "va *de*: *antes de sair*.",
@@ -1153,7 +1153,7 @@ LESSONS = {
        "quem*. Sin antecedente, *quem* = «el que»: *quem avisa amigo é*.",
   "ex": [["A pessoa *de quem* te falei chegou.", "Llegó la persona de la que te hablé."],
          ["O amigo *com quem* viajei é gaúcho.", "El amigo con el que viajé es gaúcho."],
-         ["*Quem* chegar primeiro guarda o lugar.", "El que llegue primero guarda el lugar. (semana 27)"],
+         ["*Quem* chega primeiro guarda o lugar.", "El que llega primero guarda el lugar."],
          ["*Quem* sabe, sabe.", "El que sabe, sabe."]],
   "warn": "No borres la preposición del verbo: «la persona que hablé» es "
           "*a pessoa com quem falei*. *falar com*, *com quem*.",
@@ -1175,7 +1175,7 @@ LESSONS = {
        "que», *tudo o que*. *O que* también pregunta: *o que é isso?*",
   "ex": [["Não entendi *o que* ele disse.", "No entendí lo que dijo."],
          ["*O que* eu mais gosto no Rio é a praia.", "Lo que más me gusta de Río es la playa."],
-         ["Faz *tudo o que* você quiser.", "Hacé todo lo que quieras. (semana 27)"],
+         ["Fiz *tudo o que* você pediu.", "Hice todo lo que pediste."],
          ["Ele chegou tarde, *o que* é normal.", "Llegó tarde, lo que es normal."]],
   "warn": "Nunca «lo que»: es español puro. «Lo» no existe en portugués: "
           "*o que*, *o bom*, *o importante é...*",
@@ -1246,7 +1246,7 @@ LESSONS = {
   "warn": "*seu* en Brasil es «tuyo» (de *você*). Para «su» de un tercero, "
           "*dele / dela*: *a casa dela*.",
   "q": [{"prompt": "«Vení con nosotros.»", "stem": "Vem ___!",
-         "answer": "conosco", "options": ["conosco", "com nós", "connosco"]}]},
+         "answer": "conosco", "options": ["conosco", "com nós", "connós"]}]},
 
  {"h": "Futuro, condicional y cortesía",
   "r": "*farei, direi, trarei* / *faria, diria, traria*; lo demás, regular. "

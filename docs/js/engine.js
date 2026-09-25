@@ -31,6 +31,15 @@
   function deaccent(s) {
     return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
+  // The diacritics of a string, each as «letter position + mark» (the
+  // hyphen counts as a space, so «chama se» lines up with «chama-se»).
+  function marks(s) {
+    var out = [], d = String(s).replace(/-/g, " ").normalize("NFD"), k = 0;
+    for (var i = 0; i < d.length; i++) {
+      if (/[\u0300-\u036f]/.test(d[i])) out.push((k - 1) + d[i]); else k++;
+    }
+    return out;
+  }
 
   // Distance capped at 2 — enough to forgive a slip, not enough to accept a
   // different verb form.
@@ -88,10 +97,21 @@
     // Right word, missing accent or cedilla (voce for você, cabeca for
     // cabeça): worth partial credit and an explicit correction, never a
     // silent pass.  The hyphen of the enclitic (chama se for chama-se) too.
+    // Only a missing mark earns it: an accent in the wrong place or of the
+    // wrong kind is another word (avô for avó, é for ê), and the crase is
+    // grammar, not spelling: «a» for «à» (or «as» for «às», «aquele» for
+    // «àquele») is a rule error, never partial credit.
     var flat = function (x) { return deaccent(x).replace(/-/g, " "); };
+    var other = false;
     for (var k = 0; k < expanded.length; k++) {
-      if (deaccent(g) === deaccent(expanded[k]) || flat(g) === flat(expanded[k])) return VERDICT.CLOSE;
+      if (deaccent(g) === deaccent(expanded[k]) || flat(g) === flat(expanded[k])) {
+        var mg = marks(g), mw = marks(expanded[k]);
+        if (mg.every(function (m) { return mw.indexOf(m) >= 0; }) &&
+            mw.every(function (m) { return m.slice(-1) !== "\u0300" || mg.indexOf(m) >= 0; })) return VERDICT.CLOSE;
+        other = true;
+      }
     }
+    if (other) return VERDICT.WRONG;
 
     // Typo tolerance scales with length.  On a single word a one-letter
     // difference is usually the grammatical ending the drill is testing
