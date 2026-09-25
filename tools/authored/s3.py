@@ -1577,3 +1577,144 @@ cb(1, "Primeiro vou a Copacabana. Depois vou à Urca. (e depois)", "Primeiro vou
 cb(0, "A loja abre às nove. Fecha às seis. (e)", "A loja abre às nove e fecha às seis.",
    "Las horas determinadas llevan crase.",
    alt=["A loja abre às nove e fecha às seis horas.", "A loja funciona das nove às seis."])
+
+
+# ============================================================================
+# Semana 37 — Verbos irregulares e derivados
+# partes: 0 familias de ter y vir · 1 familias de pôr y ver ·
+#         2 -ear, -iar y los sueltos
+# ============================================================================
+wk(37, "B2", "verbos irregulares")
+
+ch(0, "Eles ___ a tradição do samba de roda.", ["mantêm", "mantém", "mantienem"], "mantêm",
+   "manter se conjuga como ter: eles têm → eles mantêm (circunflejo en plural, agudo en singular).")
+ch(0, "A equipe da Fiocruz ___ ótimos resultados com a vacina.", ["obteve", "obteu", "obtiu"], "obteve",
+   "obter como ter: teve → obteve. «Obteu» regulariza el verbo.")
+ch(0, "Palmares ___ a resistência por quase um século.", ["manteve", "manteu", "mantiu"], "manteve",
+   "manter → manteve, como teve. El quilombo de Palmares resistió en la sierra da Barriga durante buena parte del siglo XVII.")
+ch(0, "O governo ___ no porto.", ["interveio", "interviu", "interveu"], "interveio",
+   "intervir como vir: veio → interveio. «Interviu» es el error más común (lo confundís con ver).")
+ch(0, "___ chegar cedo ao cartório.", ["Convém", "Convêm", "Conviene"], "Convém",
+   "convir como vir: vem → convém (singular, con tilde aguda).")
+ch(1, "Depois do terremoto de 1755, Pombal ___ uma Lisboa nova.", ["propôs", "propuso", "propós"], "propôs",
+   "propor como pôr: pôs → propôs, con circunflejo. «Propuso» es español.")
+ch(1, "Tom Jobim ___ «Garota de Ipanema» com Vinicius de Moraes.", ["compôs", "compuso", "compós"], "compôs",
+   "compor como pôr: compôs.")
+ch(1, "Os cientistas ___ mais calor para o próximo verão.", ["preveem", "prevêem", "prevém"], "preveem",
+   "prever como ver: veem → preveem, sin circunflejo desde el Acuerdo de 1990.")
+ch(1, "Ninguém ___ a tempestade.", ["previu", "preveu", "previo"], "previu",
+   "prever como ver: viu → previu.")
+ch(2, "Eu ___ no calçadão todo domingo.", ["passeio", "passeo", "paseio"], "passeio",
+   "-ear: la e se vuelve ei en las formas acentuadas en la raíz: passeio.")
+ch(2, "Eu ___ acordar cedo.", ["odeio", "odio", "odeo"], "odeio",
+   "odiar es uno de los cinco -iar que van como -ear (MARIO): odeio.")
+ch(2, "Eu não ___ nessa roupa.", ["caibo", "cabo", "quepo"], "caibo",
+   "caber: eu caibo (y que eu caiba). «Quepo» es español.")
+
+cl(0, "Espero que ele ___ (manter) a promessa.", "mantenha",
+   "Subjuntivo presente como ter: tenha → mantenha.")
+cl(0, "Nós ___ (obter) o visto ontem.", "obtivemos",
+   "Perfeito como ter: tivemos → obtivemos.")
+cl(0, "Quando a polícia ___ (intervir), a briga acabou.", "interveio",
+   "Perfeito como vir: veio → interveio.")
+cl(0, "Espero que ninguém ___ (intervir).", "intervenha",
+   "Subjuntivo presente como vir: venha → intervenha.")
+cl(1, "Agora eu ___ (propor) um brinde aos noivos!", "proponho",
+   "Presente como pôr: ponho → proponho.")
+cl(1, "Se você ___ (supor) que é fácil, vai se enganar.", "supuser",
+   "Futuro do subjuntivo como pôr: puser → supuser.")
+cl(1, "Chico Buarque ___ (compor) canções contra a censura durante a ditadura.", "compôs",
+   "Perfeito como pôr: pôs → compôs. «Cálice» y «Apesar de você» son de esa época.")
+cl(1, "Espero que o aplicativo ___ (prever) o trânsito.", "preveja",
+   "Subjuntivo presente como ver: veja → preveja.")
+cl(2, "Eles ___ (passear) pelo Aterro do Flamengo.", "passeiam",
+   "-ear: passeiam (eles), pero passeamos (nós).")
+cl(2, "Quem ___ (mediar) o debate hoje?", "medeia",
+   "mediar es de los MARIO: medeia.")
+cl(2, "Não ___ (caber) tudo na mala ontem.", "coube",
+   "caber tiene perfeito irregular: coube.")
+cl(2, "Sempre ___ (perder) o metrô por um minuto.", "perco",
+   "perder: eu perco (y que eu perca).")
+
+trv(0, "Ellos mantienen la casa.",
+    "manter como ter: eles mantêm.",
+    ["Eles mantêm", "Mantêm", "Elas mantêm"], " a casa")
+trv(0, "El gobierno intervino.",
+    "intervir como vir: interveio.",
+    ["O governo interveio"])
+trv(1, "Ella propuso una solución.",
+    "propor como pôr: propôs.",
+    ["Ela propôs", "Propôs"], " uma solução")
+trv(1, "Los científicos prevén lluvia.",
+    "prever como ver: preveem.",
+    "Os cientistas preveem ", ["chuva", "chuvas"])
+trv(2, "Paseamos por la costanera.",
+    "-ear: nós passeamos (sin ei). Costanera = orla.",
+    ["Passeamos", "Nós passeamos", "A gente passeou", "A gente passeia", "Passeamos"], " pela orla")
+trv(2, "Odio el tránsito.",
+    "odiar → odeio.",
+    ["Odeio", "Eu odeio"], " o trânsito")
+trv(2, "No entró todo en la valija.",
+    "«entrar en» (caber) = caber; perfeito coube.",
+    ["Não coube tudo na mala"])
+trv(2, "Siempre pierdo las llaves.",
+    "perder → perco.",
+    ["Sempre perco", "Eu sempre perco", "Perco sempre"], " as chaves")
+
+fx(0, "A polícia interviu na briga.", "interviu", "interveio",
+   "A polícia interveio na briga.", "verbo_irregular",
+   "intervir se conjuga como vir (veio → interveio), no como ver (viu).")
+fx(1, "O deputado propuso uma nova lei.", "propuso", "propôs",
+   "O deputado propôs uma nova lei.", "espanol",
+   "propor como pôr: propôs. «Propuso» es la forma española.")
+fx(2, "Eu passeo com o cachorro na orla.", "passeo", "passeio",
+   "Eu passeio com o cachorro na orla.", "verbo_irregular",
+   "-ear: passeio, passeias, passeia, passeiam.")
+fx(0, "Eles mantém a tradição.", "mantém", "mantêm",
+   "Eles mantêm a tradição.", "concordancia",
+   "Singular mantém (agudo), plural mantêm (circunflejo), como tem / têm.")
+
+gd(0, [["comer", "comeu"], ["vender", "vendeu"], ["bater", "bateu"]], "manter → ele ___", "manteve", "manteu",
+   "manter no es regular: se conjuga como ter (teve → manteve).",
+   prompt="Mirá los tres perfeitos (ele) y completá el cuarto.")
+gd(2, [["copiar", "copio"], ["anunciar", "anuncio"], ["estudar", "estudo"]], "odiar → eu ___", "odeio", "odio",
+   "La mayoría de los -iar son regulares, pero odiar está entre los MARIO: odeio.",
+   prompt="Mirá los tres presentes (eu) y completá el cuarto.")
+gd(2, [["passar", "passo"], ["falar", "falo"], ["andar", "ando"]], "passear → eu ___", "passeio", "passeo",
+   "Los verbos en -ear agregan i: passeio. «Passeo» es la forma que te da el patrón y el español.",
+   prompt="Mirá los tres presentes (eu) y completá el cuarto.")
+
+sc(0, ["ter → tenho / manter → mantenho", "ter → teve / obter → obteve", "vir → veio / intervir → interveio",
+       "pôr → pôs / propor → propôs", "ver → vejo / prever → prevejo", "pôr → ponha / compor → componha"],
+   "¿Cómo se conjugan los derivados de ter, vir, pôr y ver?",
+   ["Exactamente como el verbo base, con el prefijo delante.",
+    "Como verbos regulares en -er / -ir.",
+    "Como el verbo base solo en presente."],
+   "Exactamente como el verbo base, con el prefijo delante.",
+   "Regla: manter, obter, conter (ter); intervir, convir (vir); propor, compor, supor (pôr); prever, rever (ver).")
+sc(2, ["passear → passeio", "frear → freio", "odiar → odeio", "mediar → medeio", "copiar → copio", "anunciar → anuncio"],
+   "¿Qué verbos toman -ei- en las formas acentuadas en la raíz?",
+   ["Todos los -ear y cinco -iar (mediar, ansiar, remediar, incendiar, odiar).",
+    "Todos los verbos en -iar.",
+    "Solo los verbos en -ear, y solo en la 1.ª persona."],
+   "Todos los -ear y cinco -iar (mediar, ansiar, remediar, incendiar, odiar).",
+   "Regla: -ear siempre (passeio); -iar regular (copio), salvo MARIO (odeio, medeio).")
+
+ty(1, "Escribí el perfeito (ele) de «supor».", "Ele ___ que era verdade.", "supôs",
+   "supor como pôr: supôs.")
+ty(2, "Escribí el presente (eu) de «medir».", "Eu ___ um metro e oitenta.", "meço",
+   "medir: eu meço, ele mede.")
+
+cb(0, "O pesquisador obteve os dados. Publicou o artigo. (assim que)",
+   "Assim que obteve os dados, o pesquisador publicou o artigo.",
+   "«assim que» con hechos pasados va con indicativo (obteve).",
+   alt=["O pesquisador publicou o artigo assim que obteve os dados.",
+        "Assim que o pesquisador obteve os dados, publicou o artigo."])
+cb(1, "Os meteorologistas preveem chuva. Leve guarda-chuva. (já que)",
+   "Já que os meteorologistas preveem chuva, leve guarda-chuva.",
+   "Causa conocida al inicio con já que; preveem sin circunflejo.",
+   alt=["Leve guarda-chuva, já que os meteorologistas preveem chuva.",
+        "Já que os meteorologistas preveem chuva, leva guarda-chuva."])
+cb(2, "A mala é pequena. Não cabe tudo. (por isso)", "A mala é pequena, por isso não cabe tudo.",
+   "Consecuencia con por isso; caber → cabe.",
+   alt=["A mala é pequena; por isso, não cabe tudo.", "A mala é pequena e por isso não cabe tudo."])
