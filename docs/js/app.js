@@ -389,7 +389,7 @@
     var strands = Engine.strandsLast(state, 7);
     var dailyDone = state.dailyDone === Engine.dayKey();
     var w = course.weeks[Math.min(state.unlocked, 52) - 1];
-    var f = Frasi.ofTheDay();
+    var f = Frasi.ofTheDay(new Date(), Math.min(state.unlocked || 1, 52));
     var known = Frasi.ALL.filter(function (x) { return state.cards[x.id]; }).length;
     var hour = new Date().getHours();
     var hello = hour < 12 ? "Bom dia! ☀️" : hour < 18 ? "Boa tarde! 🌴" : "Boa noite! 🌙";
@@ -494,7 +494,7 @@
 
     // Frase do dia
     html += '<div class="card fdg"><span class="muted">Frase do dia</span>' +
-      '<div class="fit">' + esc(f.it) + "</div>" +
+      '<div class="fit">' + esc(f.pt || f.it) + "</div>" +
       '<div class="fes">' + esc(f.es) + "</div>" +
       (f.note ? '<div class="note">' + mk(f.note) + "</div>" : "") +
       '<button class="tab" id="sayfdg">🔊 escuchar</button></div>';
@@ -3425,7 +3425,7 @@
     on("#lampo", function () { startLampo("frasi"); });
     on("#scena", function () { startRound("scene", Drills.nextScene(state).id); });
     on("#rev", function () { startRound("review"); });
-    on("#sayfdg", function () { speak(Frasi.ofTheDay().it, true); });
+    on("#sayfdg", function () { var fd = Frasi.ofTheDay(new Date(), Math.min(state.unlocked || 1, 52)); speak(fd.pt || fd.it, true); });
     on("#firstles", function () { view.week = 1; startLezione(); });
     on("#install", function () {
       if (!installPrompt) return;

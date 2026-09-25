@@ -500,7 +500,7 @@
         "de altura. O projeto foi desenvolvido pelo engenheiro brasileiro Heitor da Silva Costa, " +
         "e o rosto foi esculpido em Paris pelo escultor romeno Gheorghe Leonida, no ateliê do francês " +
         "Paul Landowski.\n\n" +
-        "A estátua foi construída de concreto armado e coberta por milhares de triângulos de pedra-sabão. " +
+        "A estátua foi construída em concreto armado e coberta por milhares de triângulos de pedra-sabão. " +
         "Tem 30 metros de altura, sem contar o pedestal. Em 2007, foi eleita uma das Sete Maravilhas " +
         "do Mundo Moderno.\n\n" +
         "A Sofía subiu de trem pela floresta, mas, quando chegou lá em cima, o Cristo estava coberto " +
