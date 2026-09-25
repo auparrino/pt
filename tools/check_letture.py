@@ -424,7 +424,7 @@ feliz triste cansado contente simpático fácil difícil caro barato quente frio
 branco preto vermelho azul verde amarelo cinza rosa marrom laranja
 brasileiro argentino português espanhol inglês francês alemão italiano carioca
 sim não olá oi tchau obrigado obrigada desculpa favor tudo bem
-real algum alguma alguns algumas papai mamãe
+real algum alguma alguns algumas papai mamãe esquina dever parecer
 coisa parte lado frente cima baixo meio fim ponto
 """,
 "A2": """
@@ -493,7 +493,7 @@ dedicar descrever europeu origem processo marcar devorar tupi filosofia fingir i
 absurdo ambíguo analisar burocracia comum hierarquia ignorar tema defender depender importar
 incluir organizar tensão distribuir vídeo áudio atribuir cuidar desastre maremoto redesenhar
 resumir tragédia conceito formar líder documento exame receita esculpir terminar contar voz
-língua assado turista surfista família foto show táxi hotel trânsito problema cultura natural
+logotipo engenheiro gravar língua assado turista surfista família foto show táxi hotel trânsito problema cultura natural
 """,
 }
 
@@ -507,7 +507,7 @@ TRANSPARENT = re.compile(
 def lemma_candidates(w):
     """Lemas posibles de una forma nominal o adjetiva."""
     out = {w}
-    rules = [("ões", "ão"), ("ães", "ão"), ("ãos", "ão"), ("ns", "m"), ("éis", "el"), ("eis", "il"),
+    rules = [("íveis", "ível"), ("áveis", "ável"), ("eses", "ês"), ("ões", "ão"), ("ães", "ão"), ("ãos", "ão"), ("ns", "m"), ("éis", "el"), ("eis", "il"),
              ("óis", "ol"), ("uis", "ul"), ("ais", "al"), ("is", "il"), ("ses", "s"), ("zes", "z"),
              ("res", "r"), ("es", ""), ("s", "")]
     for a, b in rules:
@@ -519,6 +519,8 @@ def lemma_candidates(w):
             more.add(x[:-1] + "o")
         if x.endswith("ã"):
             more.add(x[:-1] + "ão")
+        if x.endswith("eia"):
+            more.add(x[:-3] + "eu")
         if x.endswith("esa"):
             more.add(x[:-3] + "ês")
         if x.endswith("ora"):
@@ -577,12 +579,12 @@ class Lexicon:
                 continue      # todavía en italiano
             for ex in re.findall(r"\*([^*]+)\*", txt):
                 for t in words(ex):
-                    out.setdefault(t, w)
+                    out[t] = min(out.get(t, 99), w)
             for blk in les.get("blocks", []):
                 for pair in blk.get("ex", []) or []:
                     if pair:
                         for t in words(str(pair[0])):
-                            out.setdefault(t, w)
+                            out[t] = min(out.get(t, 99), w)
         return out
 
     def week_of(self, tok):
@@ -593,7 +595,7 @@ class Lexicon:
             cands |= self.verb_of.get(f, set())
         for c in cands:
             best = min(best, self.level.get(c, 99), self.lessons.get(c, 99))
-        if best == 99 and len(tok) >= 7 and TRANSPARENT.search(tok):
+        if len(tok) >= 7 and TRANSPARENT.search(tok):
             best = 1
         return best
 
@@ -740,6 +742,9 @@ def main():
         gloss = {k.lower(): v for k, v in ep.get("gloss", {}).items()}
         toks = words(text)
         names = names_in(text)
+        here = set()           # lemas de lo glosado en este mismo texto
+        for g in gloss:
+            here |= lemma_candidates(g) | lex.verb_of.get(g, set())
         unknown = []
         for t in toks:
             if t in gloss or t in names or t in FOREIGN:
@@ -752,7 +757,8 @@ def main():
                 continue
             if lex.week_of(t) <= week or seen_gloss.get(t, 99) < week:
                 continue
-            if any(seen_gloss.get(c, 99) < week for c in lemma_candidates(t) | lex.verb_of.get(t, set())):
+            cands = lemma_candidates(t) | lex.verb_of.get(t, set())
+            if any(seen_gloss.get(c, 99) < week or c in here for c in cands):
                 continue
             unknown.append(t)
         unk = sorted(set(unknown))

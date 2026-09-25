@@ -104,7 +104,7 @@
         "Ao lado, há uma família portuguesa: o pai é baixo e simpático, a mãe é loira " +
         "e tem um chapéu amarelo enorme. O mar está azul-escuro e a areia está branca e quente. " +
         "Um dia perfeito!",
-      gloss: { cheia: "llena", alemães: "alemanes", irmão: "hermano", magro: "flaco", cabelo: "pelo",
+      gloss: { cheia: "llena", alemães: "alemanes", chapéu: "sombrero", irmão: "hermano", magro: "flaco", cabelo: "pelo",
                comprido: "largo", olhos: "ojos", crespo: "enrulado", loira: "rubia", mãe: "madre",
                amarelo: "amarillo", areia: "arena", quente: "caliente", pouco: "poco" },
       questions: [
@@ -284,7 +284,7 @@
         "uns dez minutos. Quando a massa desgruda do fundo da panela, está pronta. Espere esfriar.\n\n" +
         "Depois, passe manteiga nas mãos, faça bolinhas e passe no chocolate granulado. " +
         "A Sofía se diverte e se suja toda. \"Não coma tudo antes da festa!\", diz a Bia.",
-      gloss: { doce: "dulce", panela: "olla", colher: "cuchara", colheres: "cucharas", manteiga: "manteca",
+      gloss: { brigadeiro: "bombón de chocolate", doce: "dulce", panela: "olla", colher: "cuchara", colheres: "cucharas", manteiga: "manteca",
                pó: "polvo (em pó = en polvo)", fogo: "fuego", mexa: "revolvé", massa: "masa",
                desgruda: "se despega", fundo: "fondo", pronta: "lista", esfriar: "enfriarse",
                bolinhas: "bolitas", granulado: "granas", suja: "ensucia", lata: "lata" },
@@ -688,7 +688,7 @@
         "A Sofía pensa na própria vida: \"Se eu não tivesse aceitado aquele trabalho remoto, nunca teria " +
         "vindo ao Rio.\" \"Espero que você não tenha se arrependido\", diz a Bia. \"Quando você tiver " +
         "terminado o curso, vai discutir tudo isso comigo em português.\"",
-      gloss: { margens: "orillas", riacho: "arroyo", gritado: "gritado", quadro: "cuadro", heroica: "heroica",
+      gloss: { cena: "escena", margens: "orillas", riacho: "arroyo", gritado: "gritado", quadro: "cuadro", heroica: "heroica",
                acontecido: "pasado, sucedido", vindo: "venido", dividido: "dividido", filho: "hijo",
                demorado: "tardado", aceitado: "aceptado", arrependido: "arrepentido", comigo: "conmigo" },
       questions: [
@@ -712,7 +712,7 @@
         "Outro aluno perguntou se ela tinha ficado rica. A Bia respondeu que não, que o sucesso tinha " +
         "durado pouco e que Carolina tinha morrido pobre, em 1977. Contou também que, hoje, ela era " +
         "lida em escolas do país inteiro.",
-      gloss: { despejo: "trastos (quarto de despejo = cuarto de los trastos)", catadora: "recolectora", achados: "encontrados",
+      gloss: { despejo: "trastos (quarto de despejo = cuarto de los trastos)", catadora: "recolectora", favela: "villa miseria", achados: "encontrados",
                lixo: "basura", dezenas: "decenas", exemplares: "ejemplares", línguas: "idiomas", lessem: "leyeran",
                trechos: "fragmentos", contassem: "contaran", preço: "precio", fome: "hambre", jogava: "tiraba",
                sucesso: "éxito", rica: "rica" },
@@ -837,7 +837,7 @@
         "que vai a Santa Teresa.\n\n" +
         "No bar, pediram bolinhos de bacalhau à moda portuguesa e ouviram choro até as duas da manhã. " +
         "A Sofía, que antes errava a crase, agora a vê em toda parte: à esquerda, à direita, às vezes.",
-      gloss: { choro: "choro (género musical)", escadaria: "escalinata", liga: "une", cobrir: "cubrir",
+      gloss: { crase: "acento grave (a + a = à)", fontes: "fuentes", choro: "choro (género musical)", escadaria: "escalinata", liga: "une", cobrir: "cubrir",
                degraus: "escalones", azulejos: "azulejos", peças: "piezas", abaixo: "abajo",
                aqueduto: "acueducto", concluído: "terminado", graças: "gracias (graças a = gracias a)",
                bolinhos: "croquetas", bacalhau: "bacalao", errava: "le erraba a", esquerda: "izquierda", direita: "derecha" },
@@ -1207,7 +1207,7 @@
         "a bonança.\"",
       gloss: { rédeas: "riendas", providências: "medidas", "atribui-se": "se atribuye", enterrar: "enterrar",
                autoria: "autoría", duvidosa: "dudosa", nobre: "noble", sério: "serio (levar a sério = tomar en serio)",
-               retas: "rectas", madeira: "madera", gaiola: "jaula", tremores: "temblores", zombou: "se burló",
+               retas: "rectas", madeira: "madera", gaiola: "jaula", pombalina: "de Pombal", tremores: "temblores", zombou: "se burló",
                otimismo: "optimismo", ditado: "refrán", bonança: "calma" },
       questions: [
         ["¿Qué destruyó Lisboa en 1755?", ["un terremoto, un maremoto e incendios", "una guerra", "una inundación del Tajo", "una epidemia"], "un terremoto, un maremoto e incendios"],

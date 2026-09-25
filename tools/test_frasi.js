@@ -73,7 +73,8 @@ var TENSE_FORMS = {
   condicional: ["seria", "gostaria", "poderia", "deveria", "diria", "faria"]
 };
 Frasi.ALL.forEach(function (f) {
-  var w = Frasi.words(f.it);
+  // «Ou seja» (o sea) es una fórmula fija, no un subjuntivo que se enseña.
+  var w = Frasi.words(f.it.replace(/\bou seja\b/gi, ""));
   Object.keys(TENSE_FORMS).forEach(function (t) {
     var bad = TENSE_FORMS[t].filter(function (x) { return w.indexOf(Frasi.words(x)[0]) >= 0; });
     ok(!bad.length || f.week >= TW[t], "«" + bad.join(", ") + "» (" + t + ", semana " + TW[t] + ") en la escena " +
@@ -390,12 +391,12 @@ ok(Engine.rankFor(1) === Engine.RANKS[0][1] && Engine.rankFor(60) === Engine.RAN
 var old = { xp: 10, cards: {}, badges: [], totals: { attempts: 1, right: 1, close: 0, wrong: 0 } };
 global.localStorage = { getItem: function () { return JSON.stringify(old); } };
 var loaded = Engine.load();
-ok(loaded.goal === 200 && loaded.goalV === 2 && loaded.days && loaded.shields === 1,
-   "salvataggio vecchio aggiornato (obiettivo 50 → 200)");
+ok(loaded.goal === 200 && loaded.days && loaded.shields === 1,
+   "una partida vieja se completa con los campos nuevos (meta 200)");
 old = { xp: 10, cards: {}, badges: [], goal: 20, totals: { attempts: 0, right: 0, close: 0, wrong: 0 } };
-ok(Engine.load().goal === 100, "obiettivo rilassato: 20 → 100");
+ok(Engine.load().goal === 200, "una meta fuera de las opciones vuelve a 200");
 old = { xp: 10, cards: {}, badges: [], goal: 350, goalV: 2, totals: { attempts: 0, right: 0, close: 0, wrong: 0 } };
-ok(Engine.load().goal === 350, "un obiettivo già nuovo non si tocca");
+ok(Engine.load().goal === 350, "una meta válida no se toca");
 delete global.localStorage;
 
 // Damaged saves are repaired, not trusted.
