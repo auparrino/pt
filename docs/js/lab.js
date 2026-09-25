@@ -1,217 +1,405 @@
 /*
- * Il laboratorio: esercizi costruiti su risultati della ricerca.
+ * El laboratorio de Rumo C1: ejercicios construidos sobre resultados de la
+ * investigación.
  *
- *  Ponte        — transfer dallo spagnolo: regole di corrispondenza tra
- *                 cognati (Ringbom 2007; Otwinowska 2015).  Chi parla spagnolo
- *                 conosce già migliaia di parole italiane: basta la regola.
- *  Falsi amici  — lo stesso transfer, dove tradisce.
- *  Capire       — input strutturato (VanPatten & Cadierno 1993; VanPatten 2004):
- *                 prima di produrre una forma, imparare a interpretarla.  Ogni
- *                 item si risolve solo guardando la forma, non il contesto.
+ *  Ponte        — transferencia desde el español: reglas de correspondencia
+ *                 entre cognados (Ringbom 2007; Otwinowska 2015).  Quien habla
+ *                 español ya conoce miles de palabras portuguesas: alcanza con
+ *                 la regla (-ción → -ção, ll- → ch-, la l y la n entre vocales
+ *                 que caen…).  Cada regla trae `week`: la semana del temario
+ *                 en la que entra en el recorrido.
+ *  Falsos amigos — la misma transferencia, donde traiciona (heterosemánticos:
+ *                 Grannier 2002; Durão 1999).  Entran en el recorrido en
+ *                 FALSI_WEEK.
+ *  Capire       — input estructurado (VanPatten & Cadierno 1993; VanPatten
+ *                 2004): antes de producir una forma, aprender a
+ *                 interpretarla.  Cada ítem se resuelve solo mirando la forma,
+ *                 no el contexto (você + 3.ª persona, contracciones, dele/dela,
+ *                 gostar de, perfeito/imperfeito, perfeito composto, achar
+ *                 que + indicativo, futuro do subjuntivo, infinitivo pessoal).
+ *                 Cada set trae `week` (tools/curriculo.py, TENSE_WEEK).
  *
- * Nessuna dipendenza dal DOM.
+ * Sin dependencias del DOM.
  */
 (function (root) {
   "use strict";
 
   /* ------------------------------------------------------------- ponte */
 
-  // [spagnolo, italiano, accettate in più?]
+  // [español, portugués, aceptadas además?]
   var RULES = [
-    { id: "zione", h: "-ción → -zione",
-      body: "Casi todas las palabras en **-ción** tienen gemela italiana en **-zione**, y son femeninas: *la nazione*, *la stazione*. Ojo: **-cción** pasa a **-zione** (*acción → azione*, *lección → lezione*), y a veces se dobla otra consonante (*atención → attenzione*).",
-      ex: [["nación", "nazione"], ["atención", "attenzione"]],
-      words: [["nación", "nazione"], ["estación", "stazione"], ["información", "informazione"],
-              ["situación", "situazione"], ["relación", "relazione"], ["educación", "educazione"],
-              ["solución", "soluzione"], ["posición", "posizione"], ["condición", "condizione"],
-              ["tradición", "tradizione"], ["atención", "attenzione"], ["colección", "collezione"],
-              ["lección", "lezione"], ["dirección", "direzione"], ["organización", "organizzazione"],
-              ["conversación", "conversazione"]] },
+    { id: "cao", week: 2, h: "-ción → -ção",
+      body: "Casi todas las palabras en **-ción** tienen gemela portuguesa en **-ção**, femenina, con plural en **-ções**: *a nação, as nações*. **-cción** también da **-ção**: *acción → ação*, *colección → coleção*.",
+      ex: [["nación", "nação"], ["canción", "canção"]],
+      words: [["nación", "nação"], ["estación", "estação"], ["información", "informação"],
+              ["situación", "situação"], ["relación", "relação"], ["educación", "educação"],
+              ["solución", "solução"], ["condición", "condição"], ["tradición", "tradição"],
+              ["atención", "atenção"], ["acción", "ação"], ["colección", "coleção"]] },
 
-    { id: "ta", h: "-dad / -tad → -tà",
-      body: "Las palabras en **-dad** o **-tad** terminan en **-tà**, con acento, en italiano. Son femeninas e invariables: *la città, le città*.",
-      ex: [["ciudad", "città"], ["libertad", "libertà"]],
-      words: [["ciudad", "città"], ["universidad", "università"], ["libertad", "libertà"],
-              ["verdad", "verità"], ["realidad", "realtà"], ["sociedad", "società"],
-              ["calidad", "qualità"], ["posibilidad", "possibilità"], ["curiosidad", "curiosità"],
-              ["felicidad", "felicità"], ["velocidad", "velocità"], ["electricidad", "elettricità"],
-              ["dificultad", "difficoltà"], ["personalidad", "personalità"], ["publicidad", "pubblicità"]] },
+    { id: "dade", week: 3, h: "-dad → -dade",
+      body: "Las palabras en **-dad** terminan en **-dade** y son femeninas: *a cidade*, *a liberdade*. Ojo con dos que cambian también la vocal: *edad → idade*, *mitad → metade*.",
+      ex: [["ciudad", "cidade"], ["libertad", "liberdade"]],
+      words: [["ciudad", "cidade"], ["universidad", "universidade"], ["libertad", "liberdade"],
+              ["verdad", "verdade"], ["realidad", "realidade"], ["sociedad", "sociedade"],
+              ["calidad", "qualidade"], ["posibilidad", "possibilidade"], ["felicidad", "felicidade"],
+              ["dificultad", "dificuldade"], ["novedad", "novidade"], ["edad", "idade"]] },
 
-    { id: "bile", h: "-ble → -bile",
-      body: "Los adjetivos en **-ble** terminan en **-bile**. Muchas veces la consonante se duplica: *posible → possibile*.",
-      ex: [["posible", "possibile"], ["terrible", "terribile"]],
-      words: [["posible", "possibile"], ["imposible", "impossibile"], ["terrible", "terribile"],
-              ["increíble", "incredibile"], ["responsable", "responsabile"], ["probable", "probabile"],
-              ["flexible", "flessibile"], ["horrible", "orribile"], ["visible", "visibile"],
-              ["sensible", "sensibile"], ["inevitable", "inevitabile"], ["admirable", "ammirabile"]] },
+    { id: "vel", week: 4, h: "-ble → -vel",
+      body: "Los adjetivos en **-ble** terminan en **-vel**, con tilde en la sílaba anterior, y hacen el plural en **-veis**: *possível, possíveis*. A veces la s se duplica: *posible → possível*.",
+      ex: [["posible", "possível"], ["agradable", "agradável"]],
+      words: [["posible", "possível"], ["imposible", "impossível"], ["terrible", "terrível"],
+              ["increíble", "incrível"], ["responsable", "responsável"], ["probable", "provável"],
+              ["horrible", "horrível"], ["visible", "visível"], ["amable", "amável"],
+              ["agradable", "agradável"], ["confortable", "confortável"], ["disponible", "disponível"]] },
 
-    { id: "tt", h: "-ct- / -pt- → -tt-",
-      body: "Donde el español tiene **ct** o **pt**, el italiano dobla la **t**: *perfecto → perfetto*, *septiembre → settembre*. Lo mismo con **x** → **ss** entre vocales: *máximo → massimo*, *próximo → prossimo* (pero *exacto → esatto*: **ex-** + vocal da **es-**). Y a veces donde el español ya simplificó el grupo latino: *escrito → scritto*, *objeto → oggetto*.",
-      ex: [["perfecto", "perfetto"], ["exacto", "esatto"]],
-      words: [["perfecto", "perfetto"], ["efecto", "effetto"], ["director", "direttore"],
-              ["actor", "attore"], ["exacto", "esatto"], ["proyecto", "progetto"],
-              ["objeto", "oggetto"], ["dictador", "dittatore"], ["septiembre", "settembre"],
-              ["octubre", "ottobre"], ["escrito", "scritto"], ["producto", "prodotto"],
-              ["correcto", "corretto"], ["aspecto", "aspetto"]] },
-
-    { id: "dittonghi", h: "ie / ue → e / o",
-      body: "Muchos diptongos del español son vocales simples en italiano: **ie → e**, **ue → o**. *Tiempo → tempo*, *puerta → porta*.",
+    { id: "ditongos", week: 5, h: "ie / ue → e / o",
+      body: "Los diptongos del español suelen ser vocales simples en portugués: **ie → e**, **ue → o**. *Tiempo → tempo*, *puerta → porta*. Es la trampa de *pueblo*: en portugués, *povo*.",
       ex: [["tiempo", "tempo"], ["puerta", "porta"]],
       words: [["tiempo", "tempo"], ["fiesta", "festa"], ["tierra", "terra"], ["puerta", "porta"],
               ["cuerpo", "corpo"], ["muerte", "morte"], ["puente", "ponte"], ["fuerte", "forte"],
-              ["puerto", "porto"], ["cierto", "certo"], ["siete", "sette"], ["diente", "dente"],
-              ["viento", "vento"], ["serpiente", "serpente"]] },
+              ["cierto", "certo"], ["siete", "sete"], ["nuevo", "novo"], ["fuego", "fogo"],
+              ["escuela", "escola"], ["piedra", "pedra"]] },
 
-    { id: "effe", h: "h- → f-",
-      body: "La **h-** inicial del español viene de una **f** latina que el italiano conservó: *hacer → fare*, *harina → farina*.",
-      ex: [["harina", "farina"], ["humo", "fumo"]],
-      words: [["harina", "farina"], ["horno", "forno"], ["humo", "fumo"], ["hambre", "fame"],
-              ["hierro", "ferro"], ["hoja", "foglia"], ["higo", "fico"], ["hilo", "filo"],
-              ["hormiga", "formica"], ["hongo", "fungo"], ["hacer", "fare"], ["hijo", "figlio"]] },
+    { id: "ao", week: 6, h: "-ón → -ão",
+      body: "La **-ón** final del español es **-ão** en portugués: *razón → razão*, *corazón → coração*. El plural varía: casi siempre **-ões** (*opiniões*), pero *mão → mãos*, *pão → pães*.",
+      ex: [["razón", "razão"], ["corazón", "coração"]],
+      words: [["razón", "razão"], ["corazón", "coração"], ["opinión", "opinião"],
+              ["región", "região"], ["religión", "religião"], ["unión", "união"],
+              ["avión", "avião"], ["limón", "limão"], ["balcón", "balcão"],
+              ["ladrón", "ladrão"], ["algodón", "algodão"], ["millón", "milhão"]] },
 
-    { id: "pi", h: "pl / cl / fl / bl / ll → pi / chi / fi / bi",
-      body: "Después de consonante, la **l** latina se volvió **i** en italiano: *plaza → piazza*, *blanco → bianco*. La **ll-** del español suele ser **pi-**, **chi-** o **fi-**: *lleno → pieno*, *llave → chiave*, *llama → fiamma*.",
-      ex: [["plaza", "piazza"], ["llave", "chiave"]],
-      words: [["plaza", "piazza"], ["plato", "piatto"], ["pluma", "piuma"], ["blanco", "bianco"],
-              ["flor", "fiore"], ["llave", "chiave"], ["lleno", "pieno"], ["llover", "piovere"],
-              ["llamar", "chiamare"], ["llama (fuego)", "fiamma"], ["plano", "piano"],
-              ["claro", "chiaro"], ["iglesia", "chiesa"], ["ejemplo", "esempio"]] },
+    { id: "nh", week: 7, h: "ñ → nh",
+      body: "El portugués no tiene **ñ**: el mismo sonido se escribe **nh**. *España → Espanha*, *señor → senhor*. (Y a veces la ñ es solo **n**: *año → ano*, *pequeño → pequeno*.)",
+      ex: [["señor", "senhor"], ["montaña", "montanha"]],
+      words: [["señor", "senhor"], ["España", "Espanha"], ["montaña", "montanha"],
+              ["compañía", "companhia"], ["extraño", "estranho"], ["baño", "banho"],
+              ["uña", "unha"], ["tamaño", "tamanho"], ["campaña", "campanha"],
+              ["araña", "aranha"], ["castaño", "castanho"], ["sueño", "sonho"]] },
 
-    { id: "aggio", h: "-aje → -aggio",
-      body: "Las palabras en **-aje** pasan a **-aggio** y son masculinas: *el viaje → il viaggio*.",
-      ex: [["viaje", "viaggio"], ["mensaje", "messaggio"]],
-      words: [["viaje", "viaggio"], ["mensaje", "messaggio"], ["paisaje", "paesaggio"],
-              ["coraje", "coraggio"], ["personaje", "personaggio"], ["pasaje", "passaggio"],
-              ["masaje", "massaggio"], ["lenguaje", "linguaggio"], ["homenaje", "omaggio"],
-              ["aterrizaje", "atterraggio"]] },
+    { id: "lh", week: 8, h: "ll / j → lh",
+      body: "El sonido **lh** (parecido a la «ll» de quien la distingue de la «y») aparece donde el español tiene **ll** (*batalla → batalha*) y, muchas veces, **j**: *trabajo → trabalho*, *ojo → olho*, *mujer → mulher*.",
+      ex: [["trabajo", "trabalho"], ["medalla", "medalha"]],
+      words: [["batalla", "batalha"], ["medalla", "medalha"], ["maravilla", "maravilha"],
+              ["orgullo", "orgulho"], ["detalle", "detalhe"], ["toalla", "toalha"],
+              ["trabajo", "trabalho"], ["ojo", "olho"], ["mujer", "mulher"],
+              ["consejo", "conselho"], ["espejo", "espelho"], ["mejor", "melhor"],
+              ["abeja", "abelha"], ["ajo", "alho"]] },
 
-    { id: "colte", h: "Palabras cultas: -ía → -ia, -cia → -zia",
-      body: "El vocabulario de las ideas es casi igual: **-logía → -logia**, **-fía → -fia**, **-ía → -ia** (sin tilde). La **-cia** del español pasa a **-zia**: *democracia → democrazia*, *justicia → giustizia*. Ojo: **historia → storia**, sin *h* ni *i* inicial.",
-      ex: [["sociología", "sociologia"], ["democracia", "democrazia"]],
-      words: [["sociología", "sociologia"], ["filosofía", "filosofia"], ["ideología", "ideologia"],
-              ["teoría", "teoria"], ["economía", "economia"], ["antropología", "antropologia"],
-              ["poesía", "poesia"], ["burguesía", "borghesia"], ["democracia", "democrazia"],
-              ["aristocracia", "aristocrazia"], ["justicia", "giustizia"], ["noticia", "notizia"],
-              ["historia", "storia"], ["psicología", "psicologia"]] }
+    { id: "efe", week: 9, h: "h- → f-",
+      body: "La **h-** inicial del español viene de una **f** latina que el portugués conservó: *hacer → fazer*, *hablar → falar*, *hijo → filho*.",
+      ex: [["hablar", "falar"], ["harina", "farinha"]],
+      words: [["hacer", "fazer"], ["hablar", "falar"], ["harina", "farinha"], ["hierro", "ferro"],
+              ["hijo", "filho"], ["hoja", "folha"], ["hambre", "fome"], ["hormiga", "formiga"],
+              ["higo", "figo"], ["horno", "forno"], ["hervir", "ferver"], ["herida", "ferida"]] },
+
+    { id: "ch", week: 10, h: "ll- / pl- / cl- / fl- → ch- / pr- / cr- / fr-",
+      body: "La **ll-** inicial del español suele ser **ch-**: *llamar → chamar*, *lleno → cheio*. Y la **l** después de consonante se vuelve **r**: *plaza → praça*, *blanco → branco*, *flaco → fraco*, *iglesia → igreja*.",
+      ex: [["llave", "chave"], ["playa", "praia"]],
+      words: [["lleno", "cheio"], ["llamar", "chamar"], ["llave", "chave"], ["llover", "chover"],
+              ["llorar", "chorar"], ["llegar", "chegar"], ["plaza", "praça"], ["playa", "praia"],
+              ["plato", "prato"], ["plata", "prata"], ["placer", "prazer"], ["plazo", "prazo"],
+              ["blanco", "branco"], ["flaco", "fraco"], ["iglesia", "igreja"], ["regla", "regra"]] },
+
+    { id: "ele", week: 11, h: "La l entre vocales cae",
+      body: "En portugués la **l** latina entre vocales desapareció: *salir → sair*, *volar → voar*, *color → cor*, *dolor → dor*, *cielo → céu*. Por eso *malo* es *mau* y *solo* (solamente) es *só*. Hay excepciones cultas: *calor*, *vela*.",
+      ex: [["salir", "sair"], ["color", "cor"]],
+      words: [["color", "cor"], ["dolor", "dor"], ["volar", "voar"], ["salir", "sair"],
+              ["salud", "saúde"], ["cielo", "céu"], ["palo", "pau"], ["malo", "mau"],
+              ["solo (solamente)", "só"], ["polvo", "pó"], ["doler", "doer"], ["vuelo", "voo"]] },
+
+    { id: "ene", week: 12, h: "La n entre vocales cae",
+      body: "También la **n** entre vocales cayó, muchas veces dejando la vocal nasal: *mano → mão*, *hermano → irmão*, *lana → lã*. Otras veces no queda rastro: *luna → lua*, *persona → pessoa*, *tener → ter*.",
+      ex: [["luna", "lua"], ["mano", "mão"]],
+      words: [["luna", "lua"], ["mano", "mão"], ["persona", "pessoa"], ["buena", "boa"],
+              ["lana", "lã"], ["hermano", "irmão"], ["tener", "ter"], ["poner", "pôr"],
+              ["venir", "vir"], ["arena", "areia"], ["cadena", "cadeia"], ["ballena", "baleia"],
+              ["moneda", "moeda"], ["corona", "coroa"]] },
+
+    { id: "it", week: 13, h: "-ch- → -it-",
+      body: "Donde el español tiene **ch** (del latín *ct*), el portugués tiene **it**: *noche → noite*, *leche → leite*, *ocho → oito*, *hecho → feito*, *mucho → muito*.",
+      ex: [["noche", "noite"], ["leche", "leite"]],
+      words: [["noche", "noite"], ["leche", "leite"], ["hecho", "feito"], ["ocho", "oito"],
+              ["pecho", "peito"], ["derecho", "direito"], ["estrecho", "estreito"], ["mucho", "muito"],
+              ["satisfecho", "satisfeito"], ["provecho", "proveito"]] },
+
+    { id: "ou", week: 14, h: "o → ou / oi",
+      body: "Muchas **o** del español son **ou** en portugués (del latín *au*): *oro → ouro*, *otro → outro*, *poco → pouco*. Y a veces **oi**: *cosa → coisa*.",
+      ex: [["oro", "ouro"], ["poco", "pouco"]],
+      words: [["oro", "ouro"], ["toro", "touro"], ["otro", "outro"], ["poco", "pouco"],
+              ["loco", "louco"], ["tesoro", "tesouro"], ["robar", "roubar"], ["otoño", "outono"],
+              ["dorado", "dourado"], ["cosa", "coisa"]] },
+
+    { id: "ss", week: 16, h: "-s- → -ss-; -sión → -ssão",
+      body: "Entre vocales, la **s** sorda se escribe **ss** (la **s** sola suena como z: *casa*). Por eso *pasar → passar*, *clásico → clássico*, *-sión → -ssão* y *-ísimo → -íssimo*.",
+      ex: [["pasar", "passar"], ["misión", "missão"]],
+      words: [["pasar", "passar"], ["clásico", "clássico"], ["necesario", "necessário"],
+              ["masa", "massa"], ["esencial", "essencial"], ["misión", "missão"],
+              ["sesión", "sessão"], ["expresión", "expressão"], ["impresión", "impressão"],
+              ["discusión", "discussão"], ["lindísimo", "lindíssimo"], ["riquísimo", "riquíssimo"]] },
+
+    { id: "agem", week: 17, h: "-aje → -agem",
+      body: "Las palabras en **-aje** pasan a **-agem** y son **femeninas**: *el viaje → a viagem*, *el mensaje → a mensagem*. Plural en **-agens**.",
+      ex: [["viaje", "viagem"], ["mensaje", "mensagem"]],
+      words: [["viaje", "viagem"], ["mensaje", "mensagem"], ["paisaje", "paisagem"],
+              ["coraje", "coragem"], ["personaje", "personagem"], ["pasaje", "passagem"],
+              ["garaje", "garagem"], ["lenguaje", "linguagem"], ["homenaje", "homenagem"],
+              ["masaje", "massagem"], ["aprendizaje", "aprendizagem"], ["porcentaje", "porcentagem", ["percentagem"]]] },
+
+    { id: "tude", week: 20, h: "-tud → -tude / -dão",
+      body: "La **-tud** del español da **-tude** (*actitud → atitude*, *juventud → juventude*) o **-dão**, femenino (*multitud → multidão*, *esclavitud → escravidão*). *Soledad* también: *solidão*.",
+      ex: [["juventud", "juventude"], ["multitud", "multidão"]],
+      words: [["actitud", "atitude"], ["juventud", "juventude"], ["virtud", "virtude"],
+              ["amplitud", "amplitude"], ["latitud", "latitude"], ["inquietud", "inquietude"],
+              ["multitud", "multidão"], ["esclavitud", "escravidão"], ["gratitud", "gratidão"],
+              ["soledad", "solidão"]] }
   ];
 
-  /* -------------------------------------------------------- falsi amici */
+  /* -------------------------------------------------------- falsos amigos */
 
-  // [italiano, cosa significa davvero, trappola che sembra, nota]
+  // Semana en que los falsos amigos entran en el recorrido.
+  var FALSI_WEEK = 14;
+
+  // [portugués, lo que significa de verdad, la trampa que parece, nota]
   var FALSI = [
-    ["burro", "manteca", "burro (animal)", "El burro es *asino*."],
-    ["caldo", "caliente / calor", "caldo (sopa)", "*Fa caldo* = hace calor. El caldo es *brodo*."],
-    ["largo", "ancho", "largo", "Largo es *lungo*."],
-    ["salire", "subir", "salir", "Salir es *uscire*."],
-    ["imbarazzata", "avergonzada", "embarazada", "Embarazada es *incinta*."],
-    ["camera", "habitación", "cámara", "La cámara de fotos es *macchina fotografica*."],
-    ["subito", "enseguida", "súbito / repentino", "*Torno subito* = vuelvo enseguida."],
-    ["presto", "temprano / pronto", "prestado", "*A presto!* = ¡hasta pronto!"],
-    ["gamba", "pierna", "gamba (camarón)", "El camarón es *gambero*."],
-    ["topo", "ratón", "topo (animal)", "El topo es *talpa*. *Topolino* es Mickey Mouse."],
-    ["cattivo", "malo", "cautivo", "*Un cattivo ragazzo* = un chico malo."],
-    ["aceto", "vinagre", "aceite", "El aceite es *olio*."],
-    ["tasca", "bolsillo", "tasca (bar)", "*Ce l'ho in tasca* = lo tengo en el bolsillo."],
-    ["morbido", "suave / blando", "morboso", "*Un cuscino morbido* = una almohada suave."],
-    ["cugino", "primo", "cocinero", "Y *primo* en italiano es «primero»."],
-    ["vaso", "maceta / jarrón", "vaso", "El vaso para beber es *bicchiere*."],
-    ["pronto", "¿hola? (al teléfono) / listo", "pronto", "*Pronto?* se dice al atender."],
-    ["rumore", "ruido", "rumor", "El rumor es *voce* o *pettegolezzo*."],
-    ["guardare", "mirar", "guardar", "Guardar es *conservare* o *mettere via*."],
-    ["fermare", "detener / parar", "firmar", "Firmar es *firmare*."],
-    ["autista", "chofer", "autista (TEA)", "*L'autista del bus* = el chofer del colectivo."],
-    ["bravo", "bueno / hábil", "bravo (enojado)", "*È bravo in matematica* = es bueno en matemática."],
-    ["nudo", "desnudo", "nudo", "El nudo es *nodo*."],
-    ["negozio", "tienda / negocio", "negocio (empresa)", "Una empresa es *azienda* o *ditta*."],
-    ["lontano", "lejos", "lento", "Suena a «lento», pero es lejos. *Vicino* = cerca."],
-    ["compito", "tarea", "cómputo", "*I compiti* = los deberes."],
-    ["squadra", "equipo", "cuadra (de la calle)", "La cuadra es *isolato*. *La mia squadra* = mi equipo de fútbol."],
-    ["stanza", "habitación / cuarto", "estancia (campo)", "*Una stanza doppia* = una habitación doble."]
+    ["esquisito", "raro, extraño", "exquisito", "Exquisito (rico) = *delicioso*, *gostoso*."],
+    ["polvo", "pulpo", "polvo (tierra)", "El polvo es *poeira* o *pó*."],
+    ["borracha", "goma de borrar; caucho", "borracha (ebria)", "Ebria = *bêbada*."],
+    ["apelido", "apodo", "apellido", "El apellido es *sobrenome*."],
+    ["sobrenome", "apellido", "sobrenombre, apodo", "El apodo es *apelido*."],
+    ["oficina", "taller mecánico", "oficina", "La oficina es *escritório*."],
+    ["escritório", "oficina", "escritorio (mueble)", "El mueble es *escrivaninha*."],
+    ["embaraçada", "avergonzada; enredada", "embarazada", "Embarazada = *grávida*."],
+    ["largo", "ancho", "largo", "Largo = *comprido*, *longo*. En Río, *largo* es también una plazoleta: *Largo do Machado*."],
+    ["pelado", "desnudo", "pelado (sin pelo)", "Sin pelo = *careca*."],
+    ["cena", "escena", "cena (comida)", "La cena es *o jantar*."],
+    ["sobremesa", "postre", "sobremesa (charla)", "La charla después de comer: *papo depois do almoço*."],
+    ["ninho", "nido", "niño", "El niño es *menino* o *criança*."],
+    ["rato", "ratón", "rato (momento)", "Un rato = *um pouco*, *um tempinho*."],
+    ["taça", "copa (de vino); trofeo", "taza", "La taza es *xícara*."],
+    ["copo", "vaso (para beber)", "copo (de nieve)", "El copo de nieve es *floco de neve*."],
+    ["vaso", "maceta; inodoro", "vaso (para beber)", "El vaso es *copo*. *Vaso sanitário* = inodoro."],
+    ["salada", "ensalada", "salada (con sal)", "Salado = *salgado*."],
+    ["cachorro", "perro", "cachorro (cría)", "La cría = *filhote*."],
+    ["tirar", "sacar, quitar", "tirar (arrojar)", "*Tirar uma foto* = sacar una foto. Arrojar = *jogar*."],
+    ["pegar", "agarrar; tomar (un transporte)", "pegar (golpear)", "Golpear = *bater*. *Pegar o ônibus* = tomar el colectivo."],
+    ["fechar", "cerrar", "fechar (poner fecha)", "Poner fecha = *datar*."],
+    ["contestar", "cuestionar, impugnar", "contestar (responder)", "Responder = *responder*."],
+    ["acordar", "despertar(se)", "acordar (ponerse de acuerdo)", "Ponerse de acuerdo = *combinar*, *concordar*."],
+    ["assinatura", "firma; suscripción", "asignatura", "La asignatura = *matéria*, *disciplina*."],
+    ["presunto", "jamón", "presunto (supuesto)", "Supuesto = *suposto*."],
+    ["cadeira", "silla", "cadera", "La cadera = *quadril*."],
+    ["cola", "pegamento", "cola (fila, rabo)", "La fila es *fila*; el rabo, *rabo* o *cauda*."],
+    ["garrafa", "botella", "garrafa (de gas)", "La garrafa de gas = *botijão*."],
+    ["berro", "grito", "berro (verdura)", "El berro = *agrião*."],
+    ["brincar", "jugar (los chicos); bromear", "brincar (saltar)", "Saltar = *pular*."],
+    ["engraçado", "gracioso, divertido", "engrasado", "Engrasado = *engordurado*."],
+    ["latido", "ladrido", "latido (del corazón)", "El latido = *batimento*."],
+    ["criança", "niño, niña", "crianza", "La crianza = *criação*."],
+    ["propina", "soborno, coima", "propina", "La propina = *gorjeta*."],
+    ["prejuízo", "pérdida, daño", "prejuicio", "Prejuicio = *preconceito*."],
+    ["balcão", "mostrador, barra", "balcón", "El balcón = *sacada* o *varanda*."],
+    ["bolsa", "cartera (de mujer); beca", "bolsa (de plástico)", "La bolsa de las compras = *sacola*. *Bolsa de estudos* = beca."],
+    ["carteira", "billetera; carnet", "cartera (de mujer)", "*Carteira de motorista* = registro de conducir."],
+    ["camelô", "vendedor ambulante", "camello", "El camello = *camelo*."],
+    ["chato", "pesado, aburrido", "chato (plano)", "Plano = *achatado*."],
+    ["desenvolver", "desarrollar", "desenvolver (abrir un paquete)", "Abrir un paquete = *desembrulhar*."],
+    ["exprimir", "expresar", "exprimir (sacar el jugo)", "Exprimir = *espremer*."],
+    ["mala", "valija", "mala (femenino de malo)", "Mala = *má*."],
+    ["novela", "telenovela", "novela (libro)", "La novela es *romance*."],
+    ["romance", "novela (libro)", "romance (amorío)", "*Um romance de Machado* es una novela; también puede ser un amorío."],
+    ["aula", "clase", "aula (salón)", "El aula = *sala de aula*."],
+    ["batata", "papa", "batata (boniato)", "El boniato = *batata-doce*."],
+    ["sucesso", "éxito", "suceso", "Un suceso = *acontecimento*."],
+    ["talher", "cubierto", "taller", "El taller = *oficina*."],
+    ["surdo", "sordo", "zurdo", "Zurdo = *canhoto*."],
+    ["esperto", "vivo, astuto", "experto", "Experto = *especialista*, *perito*."],
+    ["puxar", "tirar (hacia vos)", "empujar", "Empujar = *empurrar*. En las puertas: *puxe* / *empurre*."],
+    ["escova", "cepillo", "escoba", "La escoba = *vassoura*."],
+    ["conserto", "arreglo, reparación", "concierto", "El concierto = *concerto*, con c."],
+    ["ruivo", "pelirrojo", "rubio", "Rubio = *loiro*."],
+    ["roxo", "violeta, morado", "rojo", "Rojo = *vermelho*."],
+    ["firma", "empresa", "firma (autógrafo)", "La firma = *assinatura*."],
+    ["lograr", "engañar, estafar", "lograr (conseguir)", "Lograr = *conseguir*."],
+    ["largar", "soltar, dejar", "largar (lanzar)", "*Largar o emprego* = dejar el trabajo."],
+    ["morada", "vivienda", "morada (color)", "Morado = *roxo*."],
+    ["pronto", "listo", "pronto (enseguida)", "Pronto = *logo*, *em breve*."],
+    ["sítio", "finca, casa de campo", "sitio (lugar)", "Un lugar = *lugar*, *local*; el sitio web, *site*."],
+    ["tapa", "cachetada", "tapa (de olla)", "La tapa = *tampa*."],
+    ["todavia", "sin embargo", "todavía", "Todavía = *ainda*."],
+    ["borrar", "manchar, emborronar", "borrar", "Borrar = *apagar*."],
+    ["gordura", "grasa", "gordura (obesidad)", "La obesidad = *obesidade*."],
+    ["pasta", "carpeta; pasta (de dientes)", "pasta (fideos)", "Los fideos = *macarrão*, *massa*."],
+    ["salsa", "perejil", "salsa", "La salsa = *molho*."],
+    ["sótão", "altillo, desván", "sótano", "El sótano = *porão*."],
+    ["vaga", "vacante; lugar para estacionar", "vaga (perezosa)", "Perezoso = *preguiçoso*."],
+    ["palestra", "charla, conferencia", "palestra (lugar de combate)", "*Dar uma palestra* = dar una charla."],
+    ["fantasia", "disfraz", "fantasía (imaginación)", "*Fantasia de carnaval* = disfraz. También significa fantasía."],
+    ["pastel", "empanada frita", "pastel (torta)", "La torta = *bolo*."],
+    ["doce", "dulce", "doce (número)", "El número doce = *doze*."],
+    ["aborrecido", "molesto, fastidiado", "aburrido", "Aburrido = *entediado*."],
+    ["espantoso", "asombroso", "espantoso (horrible)", "Muchas veces es un elogio: *um resultado espantoso*."],
+    ["estofado", "tapizado", "estofado (guiso)", "El guiso = *ensopado*."],
+    ["cinto", "cinturón", "cinta", "La cinta = *fita*."],
+    ["pipa", "barrilete, cometa", "pipa (para fumar)", "En Río los chicos *soltam pipa* desde las terrazas."],
+    ["aceitar", "aceptar", "aceitar (poner aceite)", "El aceite de oliva es *azeite*."],
+    ["calçada", "vereda", "calzada", "La calzada = *pista*, *rua*. El *calçadão* es la vereda ancha frente a la playa."],
+    ["prender", "arrestar; sujetar", "prender (encender)", "Encender = *acender*, *ligar*."],
+    ["cigarro", "cigarrillo", "cigarro (habano)", "El habano = *charuto*."],
+    ["cueca", "calzoncillo", "cueca (danza)", "En Brasil *cueca* es ropa interior."],
+    ["boleto", "boleta de pago", "boleto (pasaje)", "El pasaje = *passagem*; la entrada, *ingresso*."],
+    ["ingresso", "entrada (para un show)", "ingreso (dinero)", "El ingreso de dinero = *renda*."],
+    ["rascunho", "borrador", "rasguño", "El rasguño = *arranhão*."],
+    ["rapaz", "muchacho", "rapaz (ave, ladrón)", "*Rapaz* es un chico joven."],
+    ["mexer", "tocar; revolver", "mecer", "Mecer = *balançar*. *Não mexe nisso!* = ¡No toques eso!"],
+    ["brinco", "aro (joya)", "brinco (salto)", "El salto = *pulo*."],
+    ["palco", "escenario", "palco (en el teatro)", "El palco = *camarote*."],
+    ["abono", "bono, plus salarial", "abono (fertilizante)", "El fertilizante = *adubo*."],
+    ["quitar", "saldar (una deuda)", "quitar (sacar)", "Sacar = *tirar*."],
+    ["assistir", "ver (un programa, una película)", "asistir (ayudar)", "*Assistir TV* = mirar tele. Ayudar = *ajudar*."],
+    ["aposentado", "jubilado", "aposentado (alojado)", "*Aposentadoria* = jubilación."],
+    ["seta", "flecha; luz de giro", "seta (hongo)", "El hongo = *cogumelo*."],
+    ["namorar", "estar de novio con", "enamorar", "Enamorar = *conquistar*. *Namorar* va sin preposición: *namoro a Bia*."],
+    ["noivo", "prometido; novio (en la boda)", "novio (de todos los días)", "El novio de todos los días es *namorado*."],
+    ["vitamina", "licuado (de fruta con leche)", "vitamina (nutriente)", "*Uma vitamina de banana* = un licuado de banana."],
+    ["batida", "cóctel de cachaça con fruta; choque", "batido (licuado)", "El licuado = *vitamina*."],
+    ["bilhete", "nota, mensaje escrito", "billete (dinero)", "El billete = *nota* o *cédula*."],
+    ["legal", "copado, buena onda", "legal (según la ley)", "*Que legal!* = ¡qué bueno! También significa «legal»."]
   ];
 
   /* ------------------------------------------------------------- capire */
 
-  // Ogni set: una spiegazione breve (informazione esplicita, come prevede la
-  // Processing Instruction) e item che si risolvono solo leggendo la forma.
+  // Cada set: una explicación breve (información explícita, como pide la
+  // Processing Instruction) e ítems que se resuelven solo leyendo la forma.
+  // Un tercer elemento en el ítem es la semana desde la que se muestra.
+  var P = ["yo", "nosotros (o a gente)", "él / ella / você", "ellos / ellas / vocês"];
+  var T = ["ya pasó (una vez)", "pasaba siempre (antes)", "pasa ahora / siempre", "va a pasar"];
+  var G = ["a Ana le gusta João", "a João le gusta Ana"];
+  var F = ["ya pasó", "pasa siempre (hábito)", "todavía no pasó"];
+  var I = ["nosotros", "ellos / ellas / vocês", "en general (nadie en particular)"];
   var CAPIRE = [
     { id: "persona", week: 5, h: "¿Quién lo hace?",
-      body: "En italiano el sujeto casi nunca se dice: **la terminación del verbo** te dice quién. Leé solo el final: *-iamo* = nosotros, *-ate/-ete/-ite* = ustedes, *-ano/-ono* = ellos.",
+      body: "La terminación dice quién: **-o** = eu; **-a / -e** = ele, ela y también **você**; **-amos / -emos / -imos** = nós; **-am / -em** = eles, elas y **vocês**. *A gente* (= nosotros) va con el verbo en singular.",
       q: "¿Quién hace la acción?",
-      opts: ["yo", "vos", "él / ella", "nosotros", "ustedes", "ellos"],
-      items: [["Parliamo sempre di calcio.", "nosotros"], ["Parlano sempre di calcio.", "ellos"],
-              ["Parlate troppo!", "ustedes"], ["Parla troppo!", "él / ella"],
-              ["Domani partiamo presto.", "nosotros"], ["Domani partono presto.", "ellos"],
-              ["Vivo a Roma da un anno.", "yo"], ["Vivi a Roma da un anno?", "vos"],
-              ["Scrivete bene.", "ustedes"], ["Scrive bene.", "él / ella"],
-              ["Dormono fino a tardi.", "ellos"], ["Dormiamo fino a tardi.", "nosotros"],
-              ["Hai fame?", "vos"], ["Ho fame.", "yo"], ["Hanno fame.", "ellos"],
-              ["Abbiamo fame.", "nosotros"]] },
+      opts: P,
+      items: [["Moro em Copacabana.", P[0]], ["Moramos em Copacabana.", P[1]],
+              ["Moram em Copacabana.", P[3]], ["Mora em Copacabana?", P[2]],
+              ["Falo espanhol em casa.", P[0]], ["Fala espanhol em casa?", P[2]],
+              ["Falam espanhol em casa.", P[3]], ["Falamos espanhol em casa.", P[1]],
+              ["A gente trabalha muito.", P[1]], ["Trabalha muito?", P[2]],
+              ["Trabalham muito.", P[3]], ["Trabalho muito.", P[0]],
+              ["Estuda português?", P[2]], ["A gente estuda português.", P[1]],
+              ["Estudam português.", P[3]], ["Estudo português.", P[0]]] },
 
-    { id: "tempo", week: 19, h: "¿Cuándo pasa?",
-      body: "Las pistas de tiempo (*ieri, domani*) no siempre están: aprendé a leer **el tiempo en el verbo**. *Ha mangiato* = ya pasó; *mangiava* = pasaba habitualmente; *mangerà* = va a pasar; *mangia* = pasa ahora o siempre.",
+    { id: "contracao", week: 3, h: "¿Qué preposición hay adentro?",
+      body: "Las contracciones son obligatorias: **no, na, nos, nas, num, numa** = *em* + artículo; **do, da** = *de* + artículo; **ao, à** = *a* + artículo; **pelo, pela** = *por* + artículo. Leé la contracción y sabés la preposición.",
+      q: "¿Qué preposición está dentro de la contracción?",
+      opts: ["em (en)", "de", "a", "por"],
+      items: [["Moro no Leblon.", "em (en)"], ["Venho do Leblon.", "de"],
+              ["Vou ao Leblon.", "a"], ["Passo pelo Leblon.", "por"],
+              ["Estou na praia.", "em (en)"], ["Volto da praia.", "de"],
+              ["Vou à praia.", "a"], ["Passeio pela praia.", "por"],
+              ["O livro está na mesa.", "em (en)"], ["Gosto do Rio.", "de"],
+              ["Andamos pelas ruas de Santa Teresa.", "por"], ["Moro num apartamento pequeno.", "em (en)"],
+              ["Mando um beijo às meninas.", "a"]] },
+
+    { id: "dele", week: 10, h: "¿De quién es?",
+      body: "*dele, dela, deles, delas* = de + ele, ela, eles, elas. El género y el número son **del dueño**, no de la cosa: *o carro dela* = el auto de ella. Van después del sustantivo.",
+      q: "¿De quién es?",
+      opts: ["de él", "de ella", "de ellos", "de ellas"],
+      items: [["O carro dele é azul.", "de él"], ["O carro dela é azul.", "de ella"],
+              ["O carro deles é azul.", "de ellos"], ["O carro delas é azul.", "de ellas"],
+              ["A casa dela fica em Botafogo.", "de ella"], ["A casa deles fica em Botafogo.", "de ellos"],
+              ["A casa dele fica em Botafogo.", "de él"], ["A casa delas fica em Botafogo.", "de ellas"],
+              ["Os filhos dele moram em Recife.", "de él"], ["Os filhos delas moram em Recife.", "de ellas"],
+              ["As amigas dela são cariocas.", "de ella"], ["As amigas deles são cariocas.", "de ellos"]] },
+
+    { id: "gostar", week: 14, h: "¿A quién le gusta quién?",
+      body: "Al revés que *gustar*: en *gostar de* el sujeto es **el que siente**, y lo que gusta va después de **de** (*do, da*). Mirá quién va con *de*: esa es la persona que gusta.",
+      q: "¿Qué dice la oración?",
+      opts: G,
+      items: [["A Ana gosta do João.", G[0]], ["O João gosta da Ana.", G[1]],
+              ["Quem gosta do João é a Ana.", G[0]], ["Quem gosta da Ana é o João.", G[1]],
+              ["É do João que a Ana gosta.", G[0]], ["É da Ana que o João gosta.", G[1]],
+              ["Do João, a Ana gosta muito.", G[0]], ["Da Ana, o João gosta muito.", G[1]],
+              ["A Ana sempre gostou do João.", G[0]], ["O João sempre gostou da Ana.", G[1]]] },
+
+    { id: "tempo", week: 15, h: "¿Cuándo pasa?",
+      body: "Leé el tiempo en el verbo: *comeu* = pasó y terminó; *comia* = pasaba siempre, era así; *come* = pasa ahora o siempre; *vai comer* / *comerá* = va a pasar.",
       q: "¿Cuándo pasa?",
-      opts: ["ya pasó (una vez)", "pasaba siempre (antes)", "pasa ahora / siempre", "va a pasar"],
-      items: [["Martín ha mangiato la pizza.", "ya pasó (una vez)"],
-              ["Martín mangiava la pizza.", "pasaba siempre (antes)"],
-              ["Martín mangerà la pizza.", "va a pasar"],
-              ["Martín mangia la pizza.", "pasa ahora / siempre"],
-              ["Giulia lavorava in un bar.", "pasaba siempre (antes)"],
-              ["Giulia ha lavorato in un bar.", "ya pasó (una vez)"],
-              ["Giulia lavorerà in un bar.", "va a pasar"],
-              ["Andavamo al mare ogni estate.", "pasaba siempre (antes)"],
-              ["Siamo andati al mare.", "ya pasó (una vez)"],
-              ["Andremo al mare.", "va a pasar"],
-              ["Esco con gli amici.", "pasa ahora / siempre"],
-              ["Uscirò con gli amici.", "va a pasar"],
-              ["Uscivo con gli amici.", "pasaba siempre (antes)"],
-              ["Sono uscito con gli amici.", "ya pasó (una vez)"]] },
+      opts: T,
+      items: [["O Martín comeu feijoada.", T[0]], ["O Martín comia feijoada.", T[1]],
+              ["O Martín come feijoada.", T[2]], ["O Martín vai comer feijoada.", T[3]],
+              ["A Bia trabalhava num bar.", T[1]], ["A Bia trabalhou num bar.", T[0]],
+              ["A Bia vai trabalhar num bar.", T[3]],
+              ["A gente ia à praia.", T[1]], ["A gente foi à praia.", T[0]],
+              ["Saio com os amigos.", T[2]], ["Saía com os amigos.", T[1]], ["Saí com os amigos.", T[0]],
+              // futuro simple: desde la semana 17
+              ["A gente irá à praia.", T[3], 17], ["Sairei com os amigos.", T[3], 17],
+              ["O Martín comerá feijoada.", T[3], 17]] },
 
-    { id: "accordo", week: 11, h: "¿Quiénes llegaron?",
-      body: "Con *essere*, el participio concuerda con el sujeto: **-o** un hombre, **-a** una mujer, **-i** varios (al menos un hombre), **-e** varias mujeres. El verbo te dice quién llegó aunque no haya nombres.",
-      q: "¿Quién llegó / salió / se fue?",
-      opts: ["un hombre", "una mujer", "varios (algún hombre)", "varias mujeres"],
-      items: [["È arrivato tardi.", "un hombre"], ["È arrivata tardi.", "una mujer"],
-              ["Sono arrivati tardi.", "varios (algún hombre)"], ["Sono arrivate tardi.", "varias mujeres"],
-              ["È uscita alle otto.", "una mujer"], ["Sono usciti alle otto.", "varios (algún hombre)"],
-              ["È partito ieri.", "un hombre"], ["Sono partite ieri.", "varias mujeres"],
-              ["Si è svegliata presto.", "una mujer", 16], ["Si sono svegliati presto.", "varios (algún hombre)", 16],
-              ["È tornato stanco.", "un hombre"], ["Sono tornate stanche.", "varias mujeres"]] },
-
-    { id: "certezza", week: 25, h: "¿Está seguro o es una opinión?",
-      body: "Después de *penso che, credo che, mi sembra che, spero che* va **congiuntivo** (*sia, abbia, venga*): el hablante opina o desea. Con *so che, sono sicuro che, è vero che* va **indicativo** (*è, ha, viene*): lo da por un hecho. La forma del verbo te lo dice.",
-      q: "¿Cómo lo presenta el hablante?",
-      opts: ["como un hecho", "como opinión / deseo"],
-      items: [["So che è tardi.", "como un hecho"], ["Penso che sia tardi.", "como opinión / deseo"],
-              ["Credo che abbia ragione.", "como opinión / deseo"], ["È vero che ha ragione.", "como un hecho"],
-              ["Spero che venga.", "como opinión / deseo"], ["Sono sicuro che viene.", "como un hecho"],
-              ["Mi sembra che stia male.", "como opinión / deseo"], ["Vedo che sta male.", "como un hecho"],
-              ["Dubito che lo sappia.", "como opinión / deseo"], ["Sappiamo che lo sa.", "como un hecho"],
-              ["Immagino che siano stanchi.", "como opinión / deseo"], ["È chiaro che sono stanchi.", "como un hecho"]] },
-
-    { id: "cortesia", week: 20, h: "¿Pedido cortés o directo?",
-      body: "El **condizionale** (*vorrei, potrebbe, sarebbe*) suaviza: es la forma educada de pedir en un bar, una oficina o un mail. El presente (*voglio, può*) es más directo; *voglio* puede sonar brusco con desconocidos.",
+    { id: "cortesia", week: 18, h: "¿Pedido cortés o directo?",
+      body: "El **futuro do pretérito** (*gostaria, poderia, seria, deveria*) y el imperfeito de cortesía (*queria*) suavizan: es la forma educada de pedir en un restaurante o en un mail. El presente (*quero, pode*) es más directo; con desconocidos, *quero* puede sonar brusco.",
       q: "¿Cómo suena?",
       opts: ["cortés / suave", "directo"],
-      items: [["Vorrei un caffè.", "cortés / suave"], ["Voglio un caffè.", "directo"],
-              ["Potrebbe ripetere?", "cortés / suave"], ["Può ripetere?", "directo"],
-              ["Mi darebbe una mano?", "cortés / suave"], ["Mi dai una mano?", "directo"],
-              ["Sarebbe possibile cambiare?", "cortés / suave"], ["È possibile cambiare?", "directo"],
-              ["Avrei una domanda.", "cortés / suave"], ["Ho una domanda.", "directo"],
-              ["Dovresti riposare.", "cortés / suave"], ["Devi riposare.", "directo"]] },
+      items: [["Eu queria um café.", "cortés / suave"], ["Eu quero um café.", "directo"],
+              ["Poderia repetir?", "cortés / suave"], ["Pode repetir?", "directo"],
+              ["Você me daria uma mão?", "cortés / suave"], ["Me dá uma mão?", "directo"],
+              ["Seria possível trocar?", "cortés / suave"], ["É possível trocar?", "directo"],
+              ["Eu gostaria de uma informação.", "cortés / suave"], ["Preciso de uma informação.", "directo"],
+              ["Você deveria descansar.", "cortés / suave"], ["Você tem que descansar.", "directo"]] },
 
-    { id: "pronomi", week: 10, h: "¿A quién se refiere?",
-      body: "Los pronombres van **antes** del verbo conjugado y marcan género y número: *lo* (a él / eso), *la* (a ella), *li* (a ellos), *le* (a ellas); y en el indirecto, *gli* = **a él** y *le* = a ella. Mirá solo el pronombre.",
-      q: "¿A qué se refiere el pronombre?",
-      opts: ["al libro", "a la carta", "a los libros", "a las cartas"],
-      items: [["Lo leggo stasera.", "al libro"], ["La leggo stasera.", "a la carta"],
-              ["Li leggo stasera.", "a los libros"], ["Le leggo stasera.", "a las cartas"],
-              // en passato prossimo: desde la semana 11
-              ["L'ho letto ieri.", "al libro", 11], ["L'ho letta ieri.", "a la carta", 11],
-              ["Li ho letti ieri.", "a los libros", 11], ["Le ho lette ieri.", "a las cartas", 11],
-              ["Non lo trovo più.", "al libro"], ["Non le trovo più.", "a las cartas"]] }
+    { id: "composto", week: 21, h: "¿Una vez o viene pasando?",
+      body: "*Tenho estudado* no es «he estudiado»: es algo que **se viene repitiendo hasta hoy** («vengo estudiando»). Lo que pasó, una vez o ya terminado, va en perfeito simple: *estudei* («estudié» y también «he estudiado»).",
+      q: "¿Qué dice el verbo?",
+      opts: ["pasó y terminó", "viene pasando hasta hoy"],
+      items: [["Estudei muito.", "pasó y terminó"], ["Tenho estudado muito.", "viene pasando hasta hoy"],
+              ["Ela trabalhou em casa.", "pasó y terminó"], ["Ela tem trabalhado em casa.", "viene pasando hasta hoy"],
+              ["Choveu no Rio.", "pasó y terminó"], ["Tem chovido no Rio.", "viene pasando hasta hoy"],
+              ["A gente se viu pouco.", "pasó y terminó"], ["A gente tem se visto pouco.", "viene pasando hasta hoy"],
+              ["Li muitos livros.", "pasó y terminó"], ["Tenho lido muitos livros.", "viene pasando hasta hoy"],
+              ["Eles saíram bastante.", "pasó y terminó"], ["Eles têm saído bastante.", "viene pasando hasta hoy"]] },
+
+    { id: "certeza", week: 23, h: "¿Hecho o deseo?",
+      body: "Con *acho que, acredito que, sei que, tenho certeza de que, parece que* va **indicativo**: el hablante lo da por cierto o lo cree (ojo: en portugués *acho que* no pide subjuntivo). Con *espero que, quero que, duvido que, talvez, tomara que, é possível que, não acho que* va **subjuntivo**.",
+      q: "¿Cómo lo presenta el hablante?",
+      opts: ["como un hecho o algo que cree", "como deseo, duda o posibilidad"],
+      items: [["Acho que ele vem.", "como un hecho o algo que cree"], ["Não acho que ele venha.", "como deseo, duda o posibilidad"],
+              ["Sei que é tarde.", "como un hecho o algo que cree"], ["Duvido que seja tarde.", "como deseo, duda o posibilidad"],
+              ["Espero que ela goste.", "como deseo, duda o posibilidad"], ["Tenho certeza de que ela gosta.", "como un hecho o algo que cree"],
+              ["Talvez ele saiba.", "como deseo, duda o posibilidad"], ["É óbvio que ele sabe.", "como un hecho o algo que cree"],
+              ["Quero que você fique.", "como deseo, duda o posibilidad"], ["É possível que chova.", "como deseo, duda o posibilidad"],
+              ["Parece que vai chover.", "como un hecho o algo que cree"], ["Tomara que faça sol.", "como deseo, duda o posibilidad"],
+              ["Acredito que faz sol lá.", "como un hecho o algo que cree"]] },
+
+    { id: "futsubj", week: 27, h: "¿Ya pasó o todavía no?",
+      body: "*Quando, se, assim que, sempre que* + **futuro do subjuntivo** (*vier, tiver, puder, fizer*) = algo que **todavía no pasó** («cuando venga»). Con presente (*vem*) es un hábito; con perfeito (*veio*), ya pasó.",
+      q: "¿Qué dice la oración?",
+      opts: F,
+      items: [["Quando ela vem ao Rio, fica em Santa Teresa.", F[1]],
+              ["Quando ela vier ao Rio, vai ficar em Santa Teresa.", F[2]],
+              ["Quando ela veio ao Rio, ficou em Santa Teresa.", F[0]],
+              ["Quando eu tenho tempo, leio.", F[1]], ["Quando eu tiver tempo, vou ler.", F[2]],
+              ["Quando eu tive tempo, li.", F[0]],
+              ["Sempre que eles podem, viajam.", F[1]], ["Assim que eles puderem, vão viajar.", F[2]],
+              ["Assim que eles puderam, viajaram.", F[0]],
+              ["Quando a gente faz feijoada, chama os amigos.", F[1]],
+              ["Quando a gente fizer feijoada, vai chamar os amigos.", F[2]],
+              ["Quando a gente fez feijoada, chamou os amigos.", F[0]]] },
+
+    { id: "infpessoal", week: 29, h: "¿Quién, en el infinitivo?",
+      body: "El **infinitivo pessoal** lleva la persona en la terminación: **-mos** = nós, **-em** = eles, elas, vocês. Sin terminación, el infinitivo es general: nadie en particular.",
+      q: "¿Quién hace lo que dice el infinitivo?",
+      opts: I,
+      items: [["Antes de sairmos, vamos jantar.", I[0]], ["Antes de saírem, vão jantar.", I[1]],
+              ["Antes de sair, é bom jantar.", I[2]],
+              ["É importante chegarmos cedo.", I[0]], ["É importante chegarem cedo.", I[1]],
+              ["É importante chegar cedo.", I[2]],
+              ["Depois de estudarmos, fomos à praia.", I[0]], ["Depois de estudarem, foram à praia.", I[1]],
+              ["Sem conhecermos a cidade, nos perdemos.", I[0]], ["Sem conhecerem a cidade, se perderam.", I[1]],
+              ["Estudar línguas abre portas.", I[2]], ["Viver no Rio é caro.", I[2]]] }
   ];
 
-  /* -------------------------------------------------------- generatori */
+  /* -------------------------------------------------------- generadores */
 
   function shuffle(a) {
     a = a.slice();
@@ -227,9 +415,9 @@
   RULES.forEach(function (r) {
     r.words.forEach(function (w, i) {
       var it = {
-        id: "ponte:" + r.id + ":" + i, src: "lab", lab: "ponte", group: r.id,
+        id: "ponte:" + r.id + ":" + i, src: "lab", lab: "ponte", group: r.id, week: r.week,
         type: "cloze",
-        prompt: "Pasalo al italiano (regla " + r.h + ")",
+        prompt: "Pasalo al portugués (regla " + r.h + ")",
         stem: w[0] + " → ___",
         answer: w[1],
         accept: [w[1]].concat(w[2] || []),
@@ -243,7 +431,7 @@
     var others = FALSI.filter(function (g) { return g !== f; });
     var it = {
       id: "falso:" + i, src: "lab", lab: "falsi", type: "choice",
-      prompt: "¿Qué significa en italiano?",
+      prompt: "¿Qué significa en portugués?",
       stem: f[0],
       // Options are rebuilt on every draw (see item()), this is the template.
       answer: f[1], accept: [f[1]], trap: f[2],
@@ -302,11 +490,16 @@
     return best;
   }
 
-  /* Ponte: la regola, poi le sue parole, poi due parole di regole già viste
-     (interleaving: Rohrer & Taylor 2007). */
-  function ponteSession(cards, groupId) {
+  // The Ponte rules already reached in a given week (all of them without one).
+  function ponteOpen(week) {
+    return RULES.filter(function (r) { return !week || r.week <= week; });
+  }
+
+  /* Ponte: la regla, después sus palabras, después dos palabras de reglas
+     ya vistas (intercalar: Rohrer & Taylor 2007). */
+  function ponteSession(cards, groupId, week) {
     var g = groupId ? RULES.filter(function (r) { return r.id === groupId; })[0]
-                    : freshestGroup(RULES, "ponte:", cards);
+                    : freshestGroup(ponteOpen(week).length ? ponteOpen(week) : RULES.slice(0, 1), "ponte:", cards);
     var out = [card(g.h, g.body, g.ex)];
     // The words not yet seen first: every session moves the rule forward.
     var all = ids("ponte:" + g.id + ":");
@@ -326,8 +519,8 @@
     return unseen.concat(seen).slice(0, 10).map(item);
   }
 
-  /* Each Capire set reads a form the course teaches in a given week (the
-     passato prossimo, the congiuntivo): before that week it stays closed. */
+  /* Cada set de Capire lee una forma que el curso enseña en una semana
+     dada (el perfeito composto, el futuro do subjuntivo): antes, cerrado. */
   function capireOpen(week) {
     return CAPIRE.filter(function (s) { return !week || s.week <= week; });
   }
@@ -353,14 +546,16 @@
   // One random item for interleaving into the coffee break.
   function randomItem(cards, week) {
     var pool = Object.keys(BY_ID).filter(function (k) {
+      if (week && k.indexOf("falso:") === 0) return week >= FALSI_WEEK || !!cards[k];
       return !week || !BY_ID[k].week || BY_ID[k].week <= week;
     });
+    if (!pool.length) pool = ids("ponte:" + RULES[0].id + ":");
     var seen = pool.filter(function (k) { return cards[k]; });
     var src = seen.length >= 6 && Math.random() < 0.5 ? seen : pool;
     var id = src[Math.floor(Math.random() * src.length)];
     // Don't drop a ponte word without its rule on a newcomer: prefer seen ones.
-    if (id.indexOf("ponte:") === 0 && !cards[id]) {
-      id = ids("falso:")[Math.floor(Math.random() * ids("falso:").length)];
+    if (id.indexOf("ponte:") === 0 && !cards[id] && seen.length) {
+      id = seen[Math.floor(Math.random() * seen.length)];
     }
     return item(id);
   }
@@ -368,10 +563,12 @@
   var api = {
     RULES: RULES,
     FALSI: FALSI,
+    FALSI_WEEK: FALSI_WEEK,
     CAPIRE: CAPIRE,
     BY_ID: BY_ID,
     item: item,
     ponteSession: ponteSession,
+    ponteOpen: ponteOpen,
     falsiSession: falsiSession,
     capireSession: capireSession,
     capireOpen: capireOpen,

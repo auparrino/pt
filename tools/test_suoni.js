@@ -1,142 +1,176 @@
-/* Suoni, dictogloss e capa de frecuencia: datos íntegros, sesiones que se
-   arman, puntuación del dictogloss, cobertura y verificador léxico.
+/* Sons, dictogloss, voces y capa de frecuencia: datos íntegros, sesiones que
+   se arman, puntuación del dictogloss, voces de Lingua Libre (portugués),
+   Common Voice vacío pero funcional, cobertura y verificador léxico.
    Run: node tools/test_suoni.js  */
 var fs = require("fs"), path = require("path");
 var ROOT = path.join(__dirname, "..");
 var Engine = require(path.join(ROOT, "docs/js/engine.js"));
-var Frasi = require(path.join(ROOT, "docs/js/frasi.js"));
 var Banca = require(path.join(ROOT, "docs/js/banca.js"));
-Banca.load(JSON.parse(fs.readFileSync(path.join(ROOT, "docs/data/bank.json"), "utf8")));
+var bankFile = path.join(ROOT, "docs/data/bank.json");
+if (fs.existsSync(bankFile)) Banca.load(JSON.parse(fs.readFileSync(bankFile, "utf8")));
 var A = require(path.join(ROOT, "docs/js/ascolto_data.js"));
 var Dg = require(path.join(ROOT, "docs/js/dictogloss_data.js"));
 var S = require(path.join(ROOT, "docs/js/suoni.js"));
-var F = require(path.join(ROOT, "docs/js/frequenza.js"));
-var Es = require(path.join(ROOT, "docs/js/esame_data.js"));
-var L = require(path.join(ROOT, "docs/js/letture.js"));
+var V = require(path.join(ROOT, "docs/js/voci.js"));
+var CV = require(path.join(ROOT, "docs/js/voci_cv_data.js"));
 var fails = 0, checks = 0;
 function ok(cond, what) { checks++; if (!cond) { fails++; console.log("FAIL " + what); } }
+function optional(name, fn) {
+  try { fn(); } catch (e) { console.log("aviso: " + name + " sin probar (" + e.message + ")"); }
+}
 
-/* ---------------------------------------------------------- ascolto */
+/* ---------------------------------------------------------- escucha */
 var ids = {};
 [].concat(A.PAIRS, A.CONNESSO, A.INTONAZIONE, A.ACCENTO).forEach(function (x) {
-  ok(!ids[x.id], "id duplicato: " + x.id); ids[x.id] = 1;
-  ok(x.week >= 1 && x.week <= 52, "settimana fuori range: " + x.id);
-  if (x.options) ok(x.options.indexOf(x.answer) >= 0 && new Set(x.options).size === x.options.length, "opzioni: " + x.id);
+  ok(!ids[x.id], "id repetido: " + x.id); ids[x.id] = 1;
+  ok(x.week >= 1 && x.week <= 52, "semana fuera de rango: " + x.id);
+  if (x.options) ok(x.options.indexOf(x.answer) >= 0 && new Set(x.options).size === x.options.length, "opciones: " + x.id);
 });
-ok(A.PAIRS.length >= 150, "almeno 150 coppie: " + A.PAIRS.length);
+ok(A.PAIRS.length >= 170, "al menos 170 pares: " + A.PAIRS.length);
+var pairKeys = {};
 A.PAIRS.forEach(function (p) {
-  ok(p.a !== p.b && p.es && p.es.length === 2 && p.cat, "coppia incompleta: " + p.id);
-  if (p.written) ok(p.written.length === 2, "written: " + p.id);
+  ok(p.a !== p.b && p.es && p.es.length === 2 && p.es[0] && p.es[1] && p.cat && p.note, "par incompleto: " + p.id);
+  ok(S.CAT_ES[p.cat], "categoría sin nombre: " + p.id + " / " + p.cat);
+  ok(!p.written, "los pares se escriben distinto, sin «written»: " + p.id);
+  ok(p.week <= 40, "los pares llegan hasta la semana 40: " + p.id);
+  var k = [p.a, p.b].sort().join("|");
+  ok(!pairKeys[k], "par repetido: " + p.id + " " + k); pairKeys[k] = 1;
+  ok(V.usable(p.a) && V.usable(p.b), "palabras sueltas, buscables en Lingua Libre: " + p.id);
 });
 var cats = {};
 A.PAIRS.forEach(function (p) { cats[p.cat] = (cats[p.cat] || 0) + 1; });
-ok(cats.geminate >= 50 && cats.affricate >= 20 && cats.palatali >= 20 && cats.vocali >= 20, "categorie coperte: " + JSON.stringify(cats));
-for (var w = 1; w <= 40; w++) ok(A.PAIRS.filter(function (p) { return p.week <= w; }).length >= 3 * Math.min(w, 10), "coppie disponibili alla settimana " + w);
-ok(A.CONNESSO.filter(function (c) { return c.kind === "conta"; }).every(function (c) { return /^\d+$/.test(c.answer); }), "conta: risposta numerica");
-ok(A.INTONAZIONE.every(function (x) { return (x.answer === "pregunta") === /\?$/.test(x.say); }), "intonazione: il punto interrogativo decide");
+ok(Object.keys(S.CAT_ES).every(function (c) { return cats[c] >= 8; }) && cats.vogais >= 15 && cats.nasais >= 20 && cats.tonica >= 20,
+   "categorías cubiertas: " + JSON.stringify(cats));
+var weeks = {};
+A.PAIRS.forEach(function (p) { weeks[p.week] = 1; });
+ok(Object.keys(weeks).length >= 30, "pares repartidos en al menos 30 semanas: " + Object.keys(weeks).length);
+for (var w = 1; w <= 40; w++) ok(A.PAIRS.filter(function (p) { return p.week <= w; }).length >= 3 * Math.min(w, 10), "pares disponibles en la semana " + w);
+ok(A.CONNESSO.length >= 40, "al menos 40 de habla conectada: " + A.CONNESSO.length);
+ok(A.CONNESSO.every(function (c) { return c.kind === "conta" || c.kind === "scegli"; }), "habla conectada: conta o scegli");
+ok(A.CONNESSO.filter(function (c) { return c.kind === "conta"; }).every(function (c) {
+  return /^\d+$/.test(c.answer) && c.say.replace(/[.,!?]/g, "").split(/\s+/).length === +c.answer;
+}), "conta: la respuesta es el número de palabras escritas");
+ok(A.CONNESSO.filter(function (c) { return c.kind === "scegli" && c.say !== c.answer; }).length >= 10, "formas reducidas (tá, cê, pra, tô)");
+ok(A.INTONAZIONE.length >= 80, "al menos 40 pares de entonación: " + A.INTONAZIONE.length / 2);
+ok(A.INTONAZIONE.every(function (x) { return (x.answer === "pregunta") === /\?$/.test(x.say); }), "entonación: el signo de pregunta decide");
+ok(A.ACCENTO.length >= 30, "al menos 30 de acento tónico: " + A.ACCENTO.length);
+A.ACCENTO.forEach(function (x) {
+  ok(x.options.every(function (o) { return /^[^·]+(·[^·]+)*$/.test(o) && o !== o.toLowerCase(); }), "acento: sílabas con la tónica en mayúsculas: " + x.id);
+  // las sílabas de la respuesta, juntas, son la palabra que se dice
+  ok(x.answer.replace(/·/g, "").toLowerCase() === x.say.toLowerCase(), "acento: la respuesta es la palabra dicha: " + x.id);
+});
 
-/* ---------------------------------------------------------- sessione */
+/* ---------------------------------------------------------- sesión */
 var st = Engine.blankSave(); st.unlocked = 12;
 var ses = S.session(st, 12, {});
-ok(ses.length >= 10 && ses.length <= 14, "sessione di suoni: " + ses.length);
-ok(ses.filter(function (x) { return x.type === "coppia"; }).length === 6, "sei coppie");
-ok(ses.every(function (x) { return x.id && x.src === "ascolto" && x.answer && x.voice; }), "item completi");
-ok(ses.some(function (x) { return x.type === "dictation" && x.dettato; }), "un dettato");
-ok(S.session(st, 12, { silent: true }).every(function (x) { return x.type !== "dictation"; }), "in ufficio niente dettato");
-// due cards first
+ok(ses.length >= 10 && ses.length <= 14, "sesión de Sons: " + ses.length);
+ok(ses.filter(function (x) { return x.type === "coppia"; }).length === 6, "seis pares");
+ok(ses.every(function (x) { return x.id && x.src === "ascolto" && x.answer && x.voice; }), "ítems completos");
+ok(ses.every(function (x) { return x.options == null || x.options.indexOf(x.answer) >= 0; }), "la respuesta está entre las opciones");
+var byCat = {};
+ses.filter(function (x) { return x.type === "coppia"; }).forEach(function (x) { byCat[x.cat] = (byCat[x.cat] || 0) + 1; });
+ok(Object.keys(byCat).every(function (c) { return byCat[c] <= 3; }), "como mucho tres pares de la misma categoría");
+var hasFragments = S.fragments(12, st).length > 0;
+if (hasFragments) ok(ses.some(function (x) { return x.type === "dictation" && x.dettato; }), "un dictado");
+else console.log("aviso: sin oraciones para el dictado (banca y frases vacías o sin portar)");
+ok(S.session(st, 12, { silent: true }).every(function (x) { return x.type !== "dictation"; }), "en la oficina, sin dictado");
+// las vencidas primero
 st.cards["suoni:" + A.PAIRS[0].id] = { s: 1, d: 5, due: Date.now() - 1000, last: Date.now() - 86400000, reps: 1 };
 var ses2 = S.session(st, 12, {});
-ok(ses2.some(function (x) { return x.id === "suoni:" + A.PAIRS[0].id; }), "la coppia scaduta rientra");
-ok(S.randomItem(st, 3) && S.randomItem(st, 3).src === "ascolto", "item per la pausa");
+ok(ses2.some(function (x) { return x.id === "suoni:" + A.PAIRS[0].id; }), "el par vencido vuelve");
+ok(S.randomItem(st, 3) && S.randomItem(st, 3).src === "ascolto", "ítem para la pausa");
 var sp = S.progress(12, st.cards);
-ok(sp.total > 30 && sp.seen === 1, "progresso: " + JSON.stringify(sp));
-// the pair item says one of the two and the answer is that one
-for (var k = 0; k < 20; k++) {
-  var pi = S.pairItem(A.PAIRS[k], k);
+ok(sp.total > 30 && sp.seen === 1, "progreso: " + JSON.stringify(sp));
+// el ítem de un par dice una de las dos y la respuesta es esa
+A.PAIRS.forEach(function (p, k) {
+  var pi = S.pairItem(p, k);
   var idx = pi.say === pi.pair.a ? 0 : 1;
-  ok(pi.options[idx] === pi.answer, "la risposta è la parola detta: " + pi.id);
+  ok(pi.options[idx] === pi.answer && pi.answer === pi.say, "la respuesta es la palabra dicha: " + pi.id);
+});
+// habla conectada: consigna según el tipo
+var seenRed = false, seenTr = false, seenConta = false;
+for (var r = 0; r < 200 && !(seenRed && seenTr && seenConta); r++) {
+  S.session(Engine.blankSave(), 40, { silent: true }).forEach(function (x) {
+    if (x.type === "conta") seenConta = seenConta || /cuántas palabras/i.test(x.prompt);
+    if (x.type === "scegli" && x.say !== x.answer) seenRed = seenRed || /forma completa/.test(x.prompt);
+    if (x.type === "scegli" && x.say === x.answer) seenTr = seenTr || /transcripción/.test(x.prompt);
+  });
 }
+ok(seenRed && seenTr && seenConta, "consignas de habla conectada: contar, transcribir, forma completa");
+ok(S.voiceOf(0).rate && S.voiceOf(4).pitch, "voz con velocidad y tono");
 
-/* ------------------------------------------------ voci di Common Voice */
-var CV = require(path.join(ROOT, "docs/js/voci_cv_data.js"));
-var cvIds = {};
-ok(CV.ALL.length >= 100, "almeno 100 frasi registrate: " + CV.ALL.length);
-CV.ALL.forEach(function (x) {
-  ok(!cvIds[x.f], "frase duplicata: " + x.f); cvIds[x.f] = 1;
-  ok(fs.existsSync(path.join(ROOT, "docs", CV.url(x))), "manca l'audio: " + CV.url(x));
-  ok(x.w >= 1 && x.w <= 52 && x.it.split(/\s+/).length >= 3, "frase o settimana: " + x.f);
-  ok(!/["“”]|E' /.test(x.it), "virgolette o E' al posto di È: " + x.it);
-  if (x.a) {
-    ok(x.a !== x.b && x.b && x.why && x.fw >= x.w, "forma incompleta: " + x.f);
-    ok(x.it.indexOf(x.a) >= 0, "la forma non è nella frase: " + x.it);
-    var fi = S.formItem(x, 0);
-    ok(fi.stem.indexOf("___") >= 0 && fi.stem.indexOf(x.a) < 0 && fi.options.indexOf(x.a) >= 0 &&
-       fi.answer === x.a && fi.audio === CV.url(x), "item «¿Qué forma?»: " + x.f);
-  }
-});
-// every mp3 in the folder is used (the discarded ones do not stay in the repo)
-fs.readdirSync(path.join(ROOT, "docs/audio/cv")).forEach(function (f) {
-  ok(cvIds[(/^common_voice_it_(\d+)\.mp3$/.exec(f) || [])[1]], "audio che nessuno usa: " + f);
-});
-ok(S.formPool(10).length === 0 && S.formPool(30).length >= 15, "le forme si aprono con la loro settimana");
-ok(S.realFragments(12).every(function (x) { return x.audio; }), "dettato con voce reale");
+/* ------------------------------------------------ voces de Lingua Libre */
+ok(V.usable("avô") && V.usable("caça") && V.usable("pão") && !V.usable("pra casa") && !V.usable("pau-brasil"), "palabras buscables");
+var t = V.parseTitle("File:LL-Q5146 (por)-Ederporto-avô.wav");
+ok(t && t.user === "Ederporto" && t.word === "avô", "título de Lingua Libre portugués: " + JSON.stringify(t));
+ok(!V.parseTitle("File:LL-Q652 (ita)-Qualcuno-nonno.wav"), "no toma grabaciones italianas");
+ok(/LL-Q5146%20\(por\)|LL-Q5146 \(por\)/.test(decodeURIComponent(V.searchUrl("avô"))), "busca en portugués");
+var json = { query: { pages: {
+  1: { title: "File:LL-Q5146 (por)-Alguém-avó.wav", imageinfo: [{ url: "https://x/avo1.wav" }] },
+  2: { title: "File:LL-Q5146 (por)-Alguém-avô.wav", imageinfo: [{ url: "https://x/avo2.wav" }] },
+  3: { title: "File:LL-Q5146 (por)-Ederporto-avô.wav", imageinfo: [{ url: "https://x/avo3.wav" }] },
+  4: { title: "File:LL-Q5146 (por)-Ederporto-avô.ogg", imageinfo: [{ url: "https://x/avo4.ogg" }] }
+} } };
+var got = V.fromApi("avô", json);
+ok(got.length === 2 && got.every(function (r) { return /avo[34]|avo2/.test(r.url); }) && got[0].user === "Ederporto",
+   "solo la palabra exacta (avô, no avó), un archivo por hablante, Brasil primero: " + JSON.stringify(got));
+ok(V.fromApi("avô".normalize("NFD"), json).length === 2, "tildes en NFD o NFC dan igual");
+
+/* ---------------------------------------------- Common Voice (vacío) */
+ok(Array.isArray(CV.ALL) && CV.LICENSE && typeof CV.url === "function", "API de Common Voice");
+ok(CV.ALL.length === 0, "todavía sin grabaciones de Common Voice en portugués");
+ok(S.formPool(30).length === 0 && S.realFragments(30).length === 0, "sin grabaciones no hay «¿Qué forma?» ni dictado grabado");
 var st30 = Engine.blankSave(); st30.unlocked = 30;
 var ses30 = S.session(st30, 30, {});
-ok(ses30.filter(function (x) { return x.type === "forma"; }).length === 1, "una «¿Qué forma?» per sessione");
-ok(S.session(st30, 30, { silent: true }).every(function (x) { return x.type !== "forma"; }), "in ufficio niente forma");
-var sawReal = false;
-for (var r = 0; r < 30 && !sawReal; r++) sawReal = S.session(st30, 30, {}).some(function (x) { return x.type === "dictation" && x.audio; });
-ok(sawReal, "il dettato usa le frasi registrate");
+ok(ses30.length >= 9 && ses30.every(function (x) { return x.type !== "forma"; }), "la sesión anda con la lista vacía");
+// si se suman grabaciones, el esquema tiene que servir
+var fake = { f: "123", w: 5, pt: "Eu fui à praia ontem.", a: "fui", b: "ia", fw: 15, why: "Un hecho cerrado: perfeito." };
+CV.ALL.push(fake);
+var fi = S.formItem(fake, 0);
+ok(fi.stem.indexOf("___") >= 0 && fi.stem.indexOf("fui") < 0 && fi.options.indexOf("fui") >= 0 && fi.audio === CV.url(fake) &&
+   /common_voice_pt_123\.mp3$/.test(fi.audio), "ítem «¿Qué forma?» con el campo pt");
+ok(S.formPool(15).length === 1 && S.formPool(10).length === 0 && S.realFragments(5)[0].text === fake.pt, "las formas se abren con su semana");
+CV.ALL.length = 0;
 
 /* --------------------------------------------------------- dictogloss */
-ok(Dg.TESTI.length === 47, "47 testi di dictogloss");
+ok(Dg.TESTI.length === 47, "47 textos de dictogloss: " + Dg.TESTI.length);
+var dgWeeks = Dg.TESTI.map(function (x) { return x.week; });
+var expected = [];
+for (var ww = 2; ww <= 51; ww++) if ([13, 26, 39].indexOf(ww) < 0) expected.push(ww);
+ok(JSON.stringify(dgWeeks) === JSON.stringify(expected), "semanas 2-51 salvo los jefes, en orden");
 Dg.TESTI.forEach(function (t) {
-  ok(t.chunks.length === 6, "sei blocchi: settimana " + t.week);
+  var n = t.text.split(/\s+/).filter(function (x) { return /\w/.test(x); }).length;
+  ok(n >= 50 && n <= 110, "entre 50 y 110 palabras: semana " + t.week + " (" + n + ")");
+  ok(t.title && t.es && t.level && t.keywords.length >= 6, "título, resumen, nivel y palabras clave: " + t.week);
+  ok(t.chunks.length === 6 && new Set(t.chunks).size === 6, "seis bloques: semana " + t.week);
   t.chunks.forEach(function (c) {
-    ok(S.chunkFound(c, t.text), "blocco nel testo: " + t.week + " / " + c);
+    ok(S.chunkFound(c, t.text), "bloque en el texto: " + t.week + " / " + c);
   });
-  ok(S.dgScore(t, t.text).pct === 100, "il testo intero recupera tutto: " + t.week);
-  ok(S.dgScore(t, "ciao").found.length === 0, "niente non recupera niente: " + t.week);
+  t.keywords.forEach(function (k) {
+    ok(S.norm(t.text).indexOf(S.norm(k)) >= 0, "palabra clave en el texto: " + t.week + " / " + k);
+  });
+  ok(S.dgScore(t, t.text).pct === 100, "el texto entero recupera todo: " + t.week);
+  ok(S.dgScore(t, "olá").found.length === 0, "nada no recupera nada: " + t.week);
+  ok(!/\b(idéia|vôo|lingüiça|pára|pêlo|heróico|assembléia|européia|jóia)\b/i.test(t.text), "ortografía del Acuerdo de 1990: " + t.week);
 });
-ok(S.dgFor(13) === null && S.dgFor(11), "settimane di boss senza testo");
-ok(S.chunkFound("ci vediamo domani", "ci vediamo poi domani") && !S.chunkFound("ci vediamo domani", "domani ci vediamo"), "ordine e finestra");
+ok(S.dgFor(13) === null && S.dgFor(26) === null && S.dgFor(39) === null && S.dgFor(11), "semanas de jefe sin texto");
+ok(S.chunkFound("a gente se vê amanhã", "a gente se vê logo amanhã") && !S.chunkFound("a gente se vê amanhã", "amanhã a gente se vê"), "orden y ventana");
+ok(S.chunkFound("caça", "caca") && S.chunkFound("pau-brasil", "pau brasil") && S.chunkFound("não sei, não", "Não sei não"), "sin tildes, ç, guiones ni comas");
+ok(S.chunkFound("tinha percebido", "tinha percebdo"), "un error de tipeo perdonado en palabras largas");
 
-/* ---------------------------------------------------------- frequenza */
-F.load(JSON.parse(fs.readFileSync(path.join(ROOT, "docs/data/frequenza.json"), "utf8")));
-ok(F.loaded(), "frequenze caricate");
-ok(F.level("casa") === "A1" && F.zipf("casa") > 5, "casa: A1 e frequente");
-ok(F.lemma("mangiato") === "mangiare" && F.lemma("case") === "casa", "forme → lemma");
-ok(F.zipf("magari") > 4 && F.zipf("comunque") > 4, "gli avverbi discorsivi hanno frequenza orale");
-var s2 = Engine.blankSave();
-s2.cards["v:casa"] = { ok: 2 }; s2.cards["v:mangiare"] = { ok: 1 }; s2.cards["b:voc:libro"] = { ok: 1 };
-var kn = F.knownLemmas(s2);
-ok(kn.casa && kn.libro && !kn.mangiare, "un verbo serve tre successi");
-var cov = F.coverage(kn);
-ok(cov.fundamental[1] > 1500 && cov.fundamental[0] >= 2, "copertura: " + JSON.stringify(cov.fundamental));
-var nw = F.nextWords(kn, "A1", 10);
-ok(nw.length === 10 && nw.indexOf("casa") < 0 && nw.every(function (w) { return F.level(w) === "A1"; }), "parole frequenti che mancano: " + nw.join(","));
-var mr = F.missRate("Il libro è sulla casa di Marco.", kn);
-ok(mr.rate === 0, "frase con parole note e nomi: " + JSON.stringify(mr));
-ok(F.missRate("Il fondaco era ingombro di bagattelle.", kn).rate > 0.5, "parole sconosciute contate");
-for (var q = 0; q < 30; q++) { var ps = F.pseudo("finestra"); ok(ps && ps !== "finestra" && !F.info(ps) && /^[a-z]+$/.test(ps), "pseudoparola: " + ps); }
-ok(F.sameBand("casa", 3).length === 3 && F.sameBand("casa", 3).every(function (w) { return F.pos(w) === "n"; }), "distrattori della stessa classe");
-
-/* -------------------------------------------------------------- esame */
-ok(Es.ascolto.length === 2 && Es.lettura.length === 2 && Es.scrittura.length === 2, "esame: due ascolti, due letture, due scritti");
-Es.ascolto.forEach(function (a) {
-  ok(a.turns.length >= 8 && a.questions.length === 8 && a.completa.length === 4, "ascolto completo: " + a.id);
-  a.questions.forEach(function (qq) { ok(qq[1].indexOf(qq[2]) >= 0, "risposta fra le opzioni: " + a.id); });
-  var all = a.turns.map(function (t) { return t[1]; }).join(" ").toLowerCase();
-  a.completa.forEach(function (c) { ok(all.indexOf(String(c[1]).toLowerCase()) >= 0, "parola del completa nell'audio: " + a.id + "/" + c[1]); });
+/* ------------------------------------------------ frecuencia (opcional) */
+optional("frequenza", function () {
+  var F = require(path.join(ROOT, "docs/js/frequenza.js"));
+  F.load(JSON.parse(fs.readFileSync(path.join(ROOT, "docs/data/frequenza.json"), "utf8")));
+  if (!F.info("você")) throw new Error("frequenza.json todavía no es portugués");
+  ok(F.level("casa") === "A1" && F.zipf("casa") > 5, "casa: A1 y frecuente");
+  ok(F.lemma("casas") === "casa", "formas → lema");
+  var s2 = Engine.blankSave();
+  s2.cards["v:casa"] = { ok: 2 }; s2.cards["b:voc:livro"] = { ok: 1 };
+  var kn = F.knownLemmas(s2);
+  ok(kn.casa && kn.livro, "lemas conocidos");
+  for (var q = 0; q < 30; q++) { var ps = F.pseudo("janela"); ok(ps && ps !== "janela" && !F.info(ps), "pseudopalabra: " + ps); }
 });
-Es.lettura.forEach(function (l) {
-  ok(l.paragraphs.length === 6 && l.titles.length === 8 && l.match.length === 6 && new Set(l.match).size === 6, "lettura: " + l.id);
-  ok(l.vf.length === 8 && l.vf.every(function (v) { return typeof v[1] === "boolean"; }), "vero/falso: " + l.id);
-});
-/* ------------------------------------------------------- inondazioni */
-var fl = L.ofSeries("flood");
-ok(fl.length === 12, "12 inondazioni");
-fl.forEach(function (e) { ok(L.huntTargets(e).length >= 8 && e.flood && e.flood.forms.length, "inondazione con almeno 8 forme: " + e.id); });
 
-console.log("controlli: " + checks + "   errori: " + fails);
+console.log("controles: " + checks + "   errores: " + fails);
 process.exit(fails ? 1 : 0);

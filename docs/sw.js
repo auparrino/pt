@@ -1,17 +1,23 @@
 /*
- * Service worker: tutta l'app resta nel telefono e funziona senza rete.
- * Strategia: rispondi subito dalla cache, aggiorna in background.
- * Cambiare VERSION a ogni rilascio per buttare la cache vecchia (e APP_VERSION
- * in js/app.js, che si vede in Oggi e Io: test_game.js controlla che coincidano).
+ * Service worker de Rumo C1: toda la app queda en el teléfono y anda sin red.
+ * Estrategia: responder enseguida desde la caché y actualizar por detrás.
+ * Cambiar VERSION en cada versión para tirar la caché vieja (y APP_VERSION en
+ * js/app.js, que se ve en Hoje y en Eu: test_game.js y el CI comprueban que
+ * «rumoc1-vN» y «vN» coincidan).
+ *
+ * Las cachés llevan el prefijo «rumoc1-»: la app de italiano (La Via C1)
+ * vive en el mismo origen (auparrino.github.io/It y /pt comparten dominio) y
+ * sus cachés («laviac1-…») no se tocan nunca.
  */
-var VERSION = "laviac1-v1.55";
+var VERSION = "rumoc1-v1";
+var PREFIX = "rumoc1-";
 var FILES = [
   "./",
   "index.html",
   "manifest.webmanifest",
   "css/app.css",
-  "fonts/bodoni-normal.woff2",
-  "fonts/bodoni-italic.woff2",
+  "fonts/fraunces-normal.woff2",
+  "fonts/fraunces-italic.woff2",
   "fonts/atkinson-400-normal.woff2",
   "fonts/atkinson-400-italic.woff2",
   "fonts/atkinson-700-normal.woff2",
@@ -44,6 +50,7 @@ var FILES = [
   "icons/icon.svg",
   "icons/icon-192.png",
   "icons/icon-512.png",
+  "icons/maskable-512.png",
   "icons/apple-touch-icon.png"
 ];
 
@@ -58,14 +65,15 @@ self.addEventListener("install", function (e) {
 
 self.addEventListener("activate", function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
-    return Promise.all(keys.filter(function (k) { return k !== VERSION && k !== VOCI; })
+    // only our own old caches: never those of another app on this origin
+    return Promise.all(keys.filter(function (k) { return k.indexOf(PREFIX) === 0 && k !== VERSION && k !== VOCI; })
       .map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
 
 // Real voices (Lingua Libre, on upload.wikimedia.org): kept in a cache of
 // their own that survives new versions, so a word heard once plays offline.
-var VOCI = "laviac1-voci";
+var VOCI = "rumoc1-voci";
 self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") return;
   var url = new URL(e.request.url);

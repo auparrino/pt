@@ -1,1115 +1,1279 @@
 /*
- * La settimana: un texto corto por cada semana del curso, escrito a mano (no
- * con IA) (Jeon & Day 2016: la lectura extensiva rinde, d = 0,57).  Cada uno
- * usa la gramática de su semana y palabras ya vistas o glosadas, para leer
- * sin diccionario (Hu & Nation 2000: 98 % de cobertura).  Los controla
- * tools/check_letture.py (gramática y vocabulario por semana).
+ * A semana: un texto corto por cada semana del curso (las 52, jefes
+ * incluidos), escrito a mano (Jeon & Day 2016: la lectura extensiva rinde,
+ * d = 0,57).  Cada uno usa solo la gramática de las semanas 1..N y palabras
+ * ya vistas o glosadas, para leer sin diccionario (Hu & Nation 2000: 98 % de
+ * cobertura).  Largo: 80-110 palabras hasta la semana 26, 110-160 después.
+ *
+ * Ambientación: Sofía, una diseñadora porteña que se muda a Botafogo, en Río
+ * de Janeiro; Bia, su compañera de departamento, profesora de historia en una
+ * escuela pública; João, el hermano surfista de Bia; doña Lúcia, la vecina de
+ * ochenta años que nació en Santa Teresa; y seu Manuel, el portugués de Oporto
+ * dueño de la panadería de la esquina.  Desde la semana 27 los textos tratan
+ * historia, sociología, filosofía y literatura de Brasil y de Portugal (datos
+ * verificables; una frase de atribución dudosa se dice dudosa).  El portugués
+ * es el de Brasil; lo coloquial va en diálogos y se marca en la consigna.
+ *
+ * Cada texto: id, week, n, level, emoji, title, grammar (en portugués), text,
+ * gloss {forma exacta del texto en minúsculas: significado}, questions
+ * (3 × [pregunta en castellano, opciones, respuesta]), vf (afirmaciones en
+ * portugués: "verdadeiro" / "falso" / "não se diz", como en el Celpe-Bras) y
+ * hunt {label, targets} (formas exactas, en minúsculas, a tocar en el texto).
+ * Las glosas limpias (1-2 palabras, no cognados) se vuelven glosas de opción
+ * múltiple (letture.js, mcTargets).  Los controla tools/check_letture.py.
  */
 (function (root) {
   "use strict";
 
   var TESTI = [
-    { id: "w-02", week: 2, n: 1, level: "A1", emoji: "🍽️", title: "La cucina di Anna",
-      grammar: "nomi: genere e numero",
+    // ------------------------------------------------ Estação 1 (A1 → A2)
+    { id: "w-01", week: 1, n: 1, level: "A1", emoji: "👋", title: "Olá, Rio!",
+      grammar: "ser, estar e ter",
       text:
-        "Anna ha una cucina piccola ma bella. C'è un tavolo e ci sono quattro sedie. " +
-        "Sopra il tavolo ci sono due bicchieri, tre piatti e un vaso con i fiori.\n\n" +
-        "Il frigorifero è pieno: ci sono le uova, il latte, due formaggi e tante verdure. " +
-        "Anna ha anche la pasta, il riso, lo zucchero e il caffè. Il caffè è importante: " +
-        "in Italia la mattina è sacro!\n\n" +
-        "Sopra il divano ci sono le foto di famiglia: i nonni, gli zii e i cugini. " +
-        "In una foto c'è anche il cane, Otto. Otto è vecchio, ma è ancora il re di casa.",
-      gloss: { bicchieri: "vasos", piatti: "platos", vaso: "florero", fiori: "flores", frigorifero: "heladera",
-               pieno: "lleno", uova: "huevos", verdure: "verduras", divano: "sillón", sopra: "sobre, arriba de", cugini: "primos",
-               cane: "perro", vecchio: "viejo", ancora: "todavía", sacro: "sagrado", re: "rey" },
+        "Olá! Eu sou a Sofía. Sou argentina, de Buenos Aires, e tenho vinte e nove anos. " +
+        "Agora estou no Rio de Janeiro e estou muito feliz!\n\n" +
+        "O apartamento é pequeno, mas é bonito. É em Botafogo, um bairro tranquilo. " +
+        "A Bia é carioca e é professora. Ela tem trinta anos e é muito simpática. " +
+        "A Bia tem um gato, o Tom. O Tom é preto e é muito preguiçoso.\n\n" +
+        "Hoje é sábado e o dia está lindo. O céu está azul e o mar está calmo. " +
+        "A Bia e eu estamos na praia, em Copacabana. Eu tenho um chapéu e um livro; " +
+        "a Bia tem uma água de coco. Tudo é novo para mim, mas eu estou em casa.",
+      gloss: { agora: "ahora", bairro: "barrio", carioca: "de Río de Janeiro", preguiçoso: "perezoso",
+               hoje: "hoy", céu: "cielo", praia: "playa", chapéu: "sombrero", preto: "negro",
+               coco: "coco (água de coco = agua de coco)", mim: "mí (para mim = para mí)" },
       questions: [
-        ["¿Cuántas sillas hay en la cocina?", ["cuatro", "dos", "tres", "seis"], "cuatro"],
-        ["¿Qué hay en la heladera?", ["huevos, leche, quesos y verduras", "solo café", "pasta y arroz", "nada"], "huevos, leche, quesos y verduras"],
-        ["¿Quién es Otto?", ["el perro", "el abuelo", "un primo", "el rey de Italia"], "el perro"]
+        ["¿De dónde es Sofía?", ["de Buenos Aires", "de Río de Janeiro", "de Rosario", "de Córdoba"], "de Buenos Aires"],
+        ["¿Quién es Tom?", ["el gato de Bia", "el hermano de Bia", "un vecino", "el perro de Sofía"], "el gato de Bia"],
+        ["¿Dónde están Sofía y Bia el sábado?", ["en la playa de Copacabana", "en casa", "en Botafogo", "en Buenos Aires"], "en la playa de Copacabana"]
       ],
-      vf: [["Nella cucina ci sono quattro sedie.", "vero"], ["Il frigorifero è vuoto.", "falso"], ["Anna ha una cucina grande.", "falso"]],
-      hunt: { label: "Tocá los sustantivos en plural", targets: ["sedie", "bicchieri", "piatti", "fiori", "uova", "formaggi", "verdure", "foto", "nonni", "zii", "cugini"] } },
+      vf: [["A Sofía é brasileira.", "falso"], ["O Tom é um gato preto.", "verdadeiro"], ["A Sofía tem um irmão no Rio.", "não se diz"]],
+      hunt: { label: "Tocá las formas de ser, estar y ter", targets: ["sou", "tenho", "estou", "é", "tem", "está", "estamos"] } },
 
-    { id: "w-03", week: 3, n: 2, level: "A1", emoji: "🏘️", title: "La mia via",
-      grammar: "articoli e preposizioni articolate",
+    { id: "w-02", week: 2, n: 2, level: "A1", emoji: "🏠", title: "O apartamento de Botafogo",
+      grammar: "substantivos: gênero e número",
       text:
-        "Abito in una via tranquilla, vicino alla stazione. All'angolo c'è un bar: " +
-        "il barista è un amico e il caffè è buono. Accanto al bar c'è lo studio di un dentista " +
-        "e poi c'è un'edicola.\n\n" +
-        "Nella piazza ci sono gli alberi e le panchine. La mattina ci sono degli anziani " +
-        "con i giornali e dei bambini con lo zaino. Il sabato c'è il mercato: " +
-        "c'è della frutta, c'è del pesce e ci sono dei fiori.\n\n" +
-        "Dalla finestra vedo il campanile della chiesa. La sera la via è vuota " +
-        "e c'è solo il rumore dell'acqua della fontana.",
-      gloss: { via: "calle", tranquilla: "tranquila", angolo: "esquina", accanto: "al lado", edicola: "kiosco de diarios",
-               panchine: "bancos (de plaza)", anziani: "ancianos", giornali: "diarios", zaino: "mochila",
-               pesce: "pescado", campanile: "campanario", vuota: "vacía", rumore: "ruido",
-               fontana: "fuente", vedo: "veo" },
+        "O apartamento é antigo, mas é bom. Tem dois quartos, uma sala, uma cozinha e um banheiro. " +
+        "A sala tem um sofá, duas cadeiras, três janelas e dois violões. " +
+        "Há também muitos livros e muitas plantas.\n\n" +
+        "A cozinha é pequena. Há pães, limões, feijão, arroz, o sal e o leite. " +
+        "O leite é para o café, e o café é sagrado!\n\n" +
+        "Na janela da sala há uma árvore grande e, atrás da árvore, o Pão de Açúcar. " +
+        "De noite, as luzes da cidade são lindas. E os animais? Há só um: o Tom, o gato. " +
+        "Ele é o rei da casa.",
+      gloss: { quartos: "dormitorios", banheiro: "baño", cadeiras: "sillas", janelas: "ventanas", janela: "ventana",
+               violões: "guitarras", pães: "panes", limões: "limones", feijão: "porotos", leite: "leche (en portugués es masculino)",
+               árvore: "árbol (en portugués es femenino)", atrás: "detrás", luzes: "luces", rei: "rey",
+               sagrado: "sagrado", noite: "noche", só: "solo" },
       questions: [
-        ["¿Qué hay en la esquina?", ["un bar", "una iglesia", "una estación", "un mercado"], "un bar"],
-        ["¿Qué pasa los sábados?", ["hay mercado", "cierra el bar", "no hay nadie", "hay misa"], "hay mercado"],
-        ["¿Cómo está la calle de noche?", ["vacía y tranquila", "llena de gente", "con música", "con tráfico"], "vacía y tranquila"]
+        ["¿Cuántos dormitorios tiene el departamento?", ["dos", "uno", "tres", "cuatro"], "dos"],
+        ["¿Para qué es la leche?", ["para el café", "para el gato", "para una torta", "para Bia"], "para el café"],
+        ["¿Qué se ve por la ventana?", ["un árbol y el Pan de Azúcar", "el mar", "la playa", "una plaza"], "un árbol y el Pan de Azúcar"]
       ],
-      vf: [["Il barista è un amico.", "vero"], ["Il mercato c'è la domenica.", "falso"], ["La fontana è molto antica.", "non si dice"]],
-      hunt: { label: "Tocá las preposiciones articuladas (alla, al, nella…)", targets: ["alla", "al", "nella", "della", "del", "dei", "degli", "dalla"] } },
+      vf: [["A cozinha é grande.", "falso"], ["O apartamento tem um gato.", "verdadeiro"], ["Os violões são novos.", "não se diz"]],
+      hunt: { label: "Tocá los sustantivos en plural", targets: ["quartos", "cadeiras", "janelas", "violões", "livros", "plantas", "pães", "limões", "luzes", "animais"] } },
 
-    { id: "w-04", week: 4, n: 3, level: "A1", emoji: "👯", title: "Due sorelle diverse",
-      grammar: "aggettivi",
+    { id: "w-03", week: 3, n: 3, level: "A1", emoji: "🥐", title: "A minha rua",
+      grammar: "artigos e contrações",
       text:
-        "Marta ed Elisa sono sorelle, ma sono molto diverse. Marta è alta e magra, " +
-        "ha i capelli lunghi e neri e gli occhi verdi. È una ragazza seria e precisa. " +
-        "Elisa è bassa, ha i capelli corti e biondi ed è sempre allegra.\n\n" +
-        "Marta ama i vestiti eleganti e le scarpe nere. Elisa preferisce le magliette " +
-        "colorate e i pantaloni comodi. Marta ha una macchina nuova; Elisa ha una bici rossa.\n\n" +
-        "Però hanno una cosa in comune: sono due buone amiche e hanno un bel rapporto. " +
-        "E tutte e due amano la pizza napoletana!",
-      gloss: { sorelle: "hermanas", diverse: "distintas", magra: "flaca", capelli: "pelo", occhi: "ojos",
-               bassa: "baja", corti: "cortos", allegra: "alegre", vestiti: "ropa, vestidos", scarpe: "zapatos",
-               magliette: "remeras", colorate: "de colores", pantaloni: "pantalones", comodi: "cómodos", bici: "bici", comune: "común (in comune = en común)",
-               rapporto: "relación", tutte: "todas (tutte e due = las dos)" },
+        "Eu moro numa rua de Botafogo, perto do metrô. Na esquina tem uma padaria: " +
+        "o dono é o seu Manuel, um português do Porto. O pão de queijo da padaria é ótimo.\n\n" +
+        "Ao lado da padaria há uma farmácia e, depois, um boteco. No boteco estão sempre os vizinhos, " +
+        "com uma cerveja e o jornal do dia.\n\n" +
+        "Pela janela do meu quarto vejo o Cristo Redentor, no alto do Corcovado. " +
+        "Aos domingos, a rua é das crianças e dos cachorros. De noite, há música nos bares da rua " +
+        "e o seu Manuel conversa com todo mundo pela janela da padaria.",
+      gloss: { perto: "cerca", padaria: "panadería", dono: "dueño", seu: "don (seu Manuel = don Manuel)",
+               queijo: "queso", ótimo: "buenísimo", lado: "lado (ao lado = al lado)", boteco: "bar de barrio",
+               vizinhos: "vecinos", jornal: "diario", vejo: "veo", crianças: "chicos, niños",
+               cachorros: "perros", conversa: "charla", mundo: "mundo (todo mundo = todo el mundo)" },
       questions: [
-        ["¿Cómo es Marta?", ["alta, flaca y seria", "baja y alegre", "rubia y de pelo corto", "desordenada"], "alta, flaca y seria"],
-        ["¿Qué tiene Elisa?", ["una bici roja", "un auto nuevo", "zapatos negros", "vestidos elegantes"], "una bici roja"],
-        ["¿Qué tienen en común?", ["son buenas amigas y aman la pizza", "el mismo pelo", "la misma ropa", "nada"], "son buenas amigas y aman la pizza"]
+        ["¿Quién es el dueño de la panadería?", ["un portugués de Oporto", "un vecino carioca", "Bia", "un argentino"], "un portugués de Oporto"],
+        ["¿Qué ve Sofía desde la ventana?", ["el Cristo Redentor", "el mar", "la playa", "el subte"], "el Cristo Redentor"],
+        ["¿De quién es la calle los domingos?", ["de los chicos y los perros", "de los autos", "de los turistas", "de nadie"], "de los chicos y los perros"]
       ],
-      vf: [["Marta ha i capelli biondi.", "falso"], ["Elisa ha una bici rossa.", "vero"], ["Marta ed Elisa abitano insieme.", "non si dice"]],
-      hunt: { label: "Tocá los adjetivos de color", targets: ["neri", "verdi", "biondi", "nere", "colorate", "rossa"] } },
+      vf: [["O seu Manuel é do Porto.", "verdadeiro"], ["O pão de queijo da padaria é ruim.", "falso"], ["O seu Manuel tem dois filhos.", "não se diz"]],
+      hunt: { label: "Tocá las contracciones (numa, do, na, da, ao, pela…)", targets: ["numa", "do", "na", "da", "ao", "no", "pela", "aos", "das", "dos", "nos"] } },
 
-    { id: "w-06", week: 6, n: 4, level: "A1", emoji: "⏰", title: "Una giornata di Sara",
-      grammar: "presente irregolare",
+    { id: "w-04", week: 4, n: 4, level: "A1", emoji: "🏖️", title: "Gente de Copacabana",
+      grammar: "adjetivos, cores e nacionalidades",
       text:
-        "Sara fa l'infermiera e lavora in un ospedale di Torino. Esce di casa alle sei " +
-        "e va al lavoro in autobus. Dice sempre che la mattina presto la città è molto bella.\n\n" +
-        "In ospedale non può mai stare ferma: deve controllare i pazienti, dare le medicine " +
-        "e parlare con i medici. A mezzogiorno beve un caffè veloce con i colleghi.\n\n" +
-        "Il pomeriggio viene a casa stanca, ma la sera esce con gli amici. " +
-        "\"Vuoi venire al cinema?\" chiede la sua amica Laura. \"Sì, vengo volentieri, " +
-        "ma domani devo lavorare presto!\" risponde Sara.",
-      gloss: { infermiera: "enfermera", ospedale: "hospital", ferma: "quieta", controllare: "controlar",
-               pazienti: "pacientes", medici: "médicos", mezzogiorno: "mediodía", veloce: "rápido",
-               colleghi: "compañeros de trabajo", stanca: "cansada", volentieri: "con gusto", presto: "temprano" },
+        "No domingo, a praia de Copacabana está cheia. Há turistas franceses, ingleses, alemães " +
+        "e muitos argentinos. A Sofía é argentina, mas não é turista: agora é um pouco carioca também!\n\n" +
+        "O João, o irmão da Bia, é alto e magro, tem o cabelo comprido e os olhos verdes. " +
+        "É surfista e é muito calmo. A Bia é baixa, tem o cabelo curto e crespo e é muito alegre.\n\n" +
+        "Ao lado, há uma família portuguesa: o pai é baixo e simpático, a mãe é loira " +
+        "e tem um chapéu amarelo enorme. O mar está azul-escuro e a areia está branca e quente. " +
+        "Um dia perfeito!",
+      gloss: { cheia: "llena", alemães: "alemanes", irmão: "hermano", magro: "flaco", cabelo: "pelo",
+               comprido: "largo", olhos: "ojos", crespo: "enrulado", loira: "rubia", mãe: "madre",
+               amarelo: "amarillo", areia: "arena", quente: "caliente", pouco: "poco" },
       questions: [
-        ["¿Cómo va Sara al trabajo?", ["en colectivo", "a pie", "en auto", "en tren"], "en colectivo"],
-        ["¿Qué hace al mediodía?", ["toma un café rápido", "almuerza en casa", "duerme", "va al cine"], "toma un café rápido"],
-        ["¿Por qué no puede quedarse hasta tarde?", ["mañana trabaja temprano", "está enferma", "no le gusta el cine", "no tiene plata"], "mañana trabaja temprano"]
+        ["¿Cómo es João?", ["alto y flaco, de pelo largo", "bajo y alegre", "rubio y de pelo corto", "gordo y serio"], "alto y flaco, de pelo largo"],
+        ["¿Quiénes están al lado?", ["una familia portuguesa", "unos turistas franceses", "unos argentinos", "los vecinos"], "una familia portuguesa"],
+        ["¿Cómo está la arena?", ["blanca y caliente", "mojada y fría", "sucia", "negra"], "blanca y caliente"]
       ],
-      vf: [["Sara fa l'infermiera.", "vero"], ["Sara esce di casa alle otto.", "falso"], ["Laura lavora con Sara in ospedale.", "non si dice"]],
-      hunt: { label: "Tocá los verbos irregulares (fa, esce, va, dice…)", targets: ["fa", "esce", "va", "dice", "può", "deve", "beve", "viene", "vuoi", "vengo", "devo"] } },
+      vf: [["O João tem os olhos verdes.", "verdadeiro"], ["A Bia é alta.", "falso"], ["A família portuguesa é de Lisboa.", "não se diz"]],
+      hunt: { label: "Tocá las nacionalidades y gentilicios", targets: ["franceses", "ingleses", "alemães", "argentinos", "argentina", "carioca", "portuguesa"] } },
 
-    { id: "w-07", week: 7, n: 5, level: "A1", emoji: "📅", title: "L'agenda di Paolo",
-      grammar: "numeri, date e ora",
+    { id: "w-05", week: 5, n: 5, level: "A1", emoji: "💻", title: "Um dia de trabalho",
+      grammar: "presente dos verbos regulares",
       text:
-        "Oggi è lunedì dodici marzo e Paolo ha una settimana piena. Alle otto e mezza " +
-        "ha una riunione in ufficio. Alle dieci e un quarto deve chiamare un cliente di Milano.\n\n" +
-        "Martedì tredici è il compleanno di sua madre: compie sessantacinque anni. " +
-        "Paolo compra una torta e ventiquattro rose rosse.\n\n" +
-        "Mercoledì alle diciannove ha lezione di inglese e giovedì alle sette di mattina " +
-        "va in palestra. Venerdì sedici prende per Napoli il treno delle quindici e quaranta.\n\n" +
-        "Il biglietto costa trentotto euro. \"Che ore sono?\" chiede Paolo al collega. " +
-        "\"Sono le nove meno cinque\". Paolo corre: è già in ritardo!",
-      gloss: { riunione: "reunión", ufficio: "oficina", quarto: "cuarto",
-               cliente: "cliente", compleanno: "cumpleaños", compie: "cumple", torta: "torta", palestra: "gimnasio",
-               biglietto: "pasaje", collega: "compañero de trabajo", corre: "corre", ritardo: "retraso (in ritardo = tarde)" },
+        "A Sofía trabalha em casa. É designer e desenha logotipos para empresas argentinas. " +
+        "Ela acorda cedo, abre a janela e olha o morro. Depois, bebe um café forte e começa a trabalhar.\n\n" +
+        "A Bia não trabalha em casa: ensina história numa escola pública do Catete. " +
+        "Ela almoça com os alunos e volta de tarde.\n\n" +
+        "De tarde, a gente estuda junto: a Sofía estuda português e a Bia estuda espanhol. " +
+        "A Sofía fala muito rápido e a Bia escreve tudo num caderno. De noite, elas cozinham, " +
+        "comem na varanda e conversam sobre o dia. E vocês? Vocês moram com um amigo?",
+      gloss: { desenha: "diseña", acorda: "se despierta", cedo: "temprano", morro: "cerro", ensina: "enseña",
+               almoça: "almuerza", alunos: "alumnos", volta: "vuelve", gente: "gente (a gente = nosotros)",
+               junto: "junto", caderno: "cuaderno", cozinham: "cocinan", varanda: "balcón", moram: "viven" },
       questions: [
-        ["¿A qué hora es la reunión del lunes?", ["a las ocho y media", "a las diez y cuarto", "a las siete", "a las nueve"], "a las ocho y media"],
-        ["¿Cuántos años cumple la madre?", ["sesenta y cinco", "cincuenta y seis", "setenta", "sesenta"], "sesenta y cinco"],
-        ["¿Cuánto cuesta el pasaje?", ["treinta y ocho euros", "veintiocho euros", "cuarenta euros", "dieciocho euros"], "treinta y ocho euros"]
+        ["¿Qué hace Sofía?", ["es diseñadora", "es profesora", "es cocinera", "es periodista"], "es diseñadora"],
+        ["¿Dónde enseña Bia?", ["en una escuela pública de Catete", "en su casa", "en una universidad", "en Buenos Aires"], "en una escuela pública de Catete"],
+        ["¿Qué hacen de tarde?", ["estudian juntas", "van a la playa", "duermen", "trabajan en la escuela"], "estudian juntas"]
       ],
-      vf: [["Martedì è il compleanno della madre di Paolo.", "vero"], ["Paolo va in palestra il venerdì.", "falso"], ["Il treno per Napoli è in ritardo.", "non si dice"]],
-      hunt: { label: "Tocá los números escritos en letras", targets: ["dodici", "otto", "dieci", "tredici", "sessantacinque", "ventiquattro", "diciannove", "sette", "sedici", "quindici", "quaranta", "trentotto", "nove", "cinque"] } },
+      vf: [["A Bia trabalha em casa.", "falso"], ["A Sofía estuda português.", "verdadeiro"], ["A escola da Bia é grande.", "não se diz"]],
+      hunt: { label: "Tocá los verbos regulares en presente", targets: ["trabalha", "desenha", "acorda", "abre", "olha", "bebe", "começa", "ensina", "almoça", "volta", "estuda", "fala", "escreve", "cozinham", "comem", "conversam", "moram"] } },
 
-    { id: "w-08", week: 8, n: 6, level: "A1", emoji: "🎙️", title: "Un'intervista alla radio",
-      grammar: "domande e interrogativi",
+    { id: "w-06", week: 6, n: 6, level: "A1", emoji: "🏄", title: "Sábado no Arpoador",
+      grammar: "presente dos verbos irregulares",
       text:
-        "Oggi alla radio c'è un'intervista con Luca, un giovane cuoco di Palermo.\n\n" +
-        "\"Luca, chi è la persona speciale nella tua cucina?\" " +
-        "\"Mia nonna, senza dubbio.\"\n" +
-        "\"Dove lavori adesso?\" \"In un piccolo ristorante vicino al porto.\"\n" +
-        "\"Quando apri la mattina?\" \"Alle undici, ma arrivo alle otto.\"\n" +
-        "\"Che cosa cucini di solito?\" \"Pesce, soprattutto. E la pasta con le sarde.\"\n" +
-        "\"Quanti clienti hai ogni sera?\" \"Circa cinquanta.\"\n" +
-        "\"Perché fai questo lavoro?\" \"Perché amo il mare e amo le persone.\"\n" +
-        "\"E come stai, dopo tante ore in cucina?\" \"Stanco, ma felice!\"",
-      gloss: { intervista: "entrevista", giovane: "joven", cuoco: "cocinero", dubbio: "duda (senza dubbio = sin duda)",
-               porto: "puerto", solito: "habitual (di solito = por lo general)", soprattutto: "sobre todo", sarde: "sardinas",
-               circa: "más o menos", felice: "feliz" },
+        "No sábado, o João sai de casa antes do sol. Ele vai de bicicleta até o Arpoador, " +
+        "põe a prancha na areia e entra no mar. Diz que de manhã o mar é perfeito.\n\n" +
+        "A Sofía não sabe surfar, mas quer aprender. Hoje ela vem com a Bia e traz um sanduíche " +
+        "para o João. Eles fazem um piquenique nas pedras e veem os surfistas. " +
+        "A Sofía pede uma aula: \"Você pode ensinar?\" \"Posso, sim!\", diz o João.\n\n" +
+        "No fim do dia, muita gente vem ao Arpoador para ver o pôr do sol. Quando o sol " +
+        "desaparece atrás do morro Dois Irmãos, todo mundo aplaude. É uma tradição carioca.",
+      gloss: { prancha: "tabla (de surf)", manhã: "mañana", traz: "trae", pedras: "piedras",
+               veem: "ven", pede: "pide", aula: "clase", fim: "fin", pôr: "poner (pôr do sol = atardecer)",
+               aplaude: "aplaude", irmãos: "hermanos", surfar: "surfear", piquenique: "pícnic" },
       questions: [
-        ["¿Quién es la persona especial en su cocina?", ["su abuela", "su madre", "un cliente", "su jefe"], "su abuela"],
-        ["¿Dónde trabaja?", ["en un restaurante cerca del puerto", "en un hotel", "en la radio", "en Milán"], "en un restaurante cerca del puerto"],
-        ["¿Por qué hace este trabajo?", ["ama el mar y a la gente", "gana mucho", "no tiene otra opción", "por su padre"], "ama el mar y a la gente"]
+        ["¿Cómo va João al Arpoador?", ["en bicicleta", "en colectivo", "a pie", "en auto"], "en bicicleta"],
+        ["¿Qué le pide Sofía a João?", ["una clase de surf", "un sándwich", "una tabla", "plata"], "una clase de surf"],
+        ["¿Qué hace la gente cuando se pone el sol?", ["aplaude", "canta", "se va a casa", "se mete al mar"], "aplaude"]
       ],
-      vf: [["Luca è un cuoco di Palermo.", "vero"], ["Il ristorante apre alle otto.", "falso"], ["Luca ha due figli.", "non si dice"]],
-      hunt: { label: "Tocá las palabras interrogativas", targets: ["chi", "dove", "quando", "che", "quanti", "perché", "come"] } },
+      vf: [["A Sofía sabe surfar.", "falso"], ["O João vai ao Arpoador de bicicleta.", "verdadeiro"], ["A Bia surfa também.", "não se diz"]],
+      hunt: { label: "Tocá los verbos irregulares (sai, vai, põe, diz…)", targets: ["sai", "vai", "põe", "diz", "sabe", "quer", "vem", "traz", "fazem", "veem", "pede", "pode", "posso"] } },
 
-    { id: "w-10", week: 10, n: 7, level: "A2", emoji: "🎁", title: "Il regalo per la nonna",
-      grammar: "pronomi personali",
+    { id: "w-07", week: 7, n: 7, level: "A1", emoji: "📅", title: "A agenda de janeiro",
+      grammar: "números, horas e datas",
       text:
-        "Domenica è la festa della nonna Rosa e i nipoti preparano un regalo. " +
-        "\"Le compriamo un libro?\" chiede Giulia. \"No, la nonna ha già tanti libri e non li legge più\", " +
-        "risponde Marco.\n\n" +
-        "\"Allora le regaliamo una pianta?\" \"Buona idea! La mettiamo sul balcone e lei la guarda ogni mattina.\"\n\n" +
-        "Marco chiama il fioraio e gli chiede un'orchidea bianca. Il fioraio la prepara e " +
-        "gli dice: \"La potete prendere sabato\".\n\n" +
-        "Domenica la nonna apre il pacco e sorride: \"Ragazzi, mi fate sempre felice! " +
-        "Vi voglio bene\". I nipoti la abbracciano forte.",
-      gloss: { festa: "fiesta", nipoti: "nietos", regalo: "regalo", già: "ya", pianta: "planta", balcone: "balcón",
-               fioraio: "florista", orchidea: "orquídea", pacco: "paquete", sorride: "sonríe",
-               bene: "bien (vi voglio bene = los quiero)", abbracciano: "abrazan", forte: "fuerte" },
+        "Hoje é segunda-feira, quinze de janeiro, e a semana da Sofía está cheia. " +
+        "Às nove e meia, ela tem uma reunião on-line com uma empresa de Rosário.\n\n" +
+        "Na terça-feira, às duas da tarde, tem aula de português: a aula custa oitenta reais. " +
+        "Na quarta, é o aniversário da Bia: ela faz trinta e um anos. A Sofía liga para a padaria " +
+        "e pede um bolo: \"Dois, meia, quatro, sete...\"\n\n" +
+        "O sábado, vinte de janeiro, é feriado no Rio: é o dia de São Sebastião, o padroeiro da cidade. " +
+        "Na sexta à noite, as duas vão a um show na Lapa, e o ingresso custa cento e vinte reais.\n\n" +
+        "Que horas são? São dez para as dez. A reunião! A Sofía está atrasada!",
+      gloss: { reunião: "reunión", aniversário: "cumpleaños", liga: "llama (por teléfono)",
+               meia: "seis (al decir un número)", bolo: "torta", feriado: "feriado", padroeiro: "santo patrono",
+               ingresso: "entrada", atrasada: "atrasada, llegando tarde", segunda: "segunda (segunda-feira = lunes)",
+               terça: "tercera (terça-feira = martes)", quarta: "cuarta (quarta = miércoles)", sexta: "sexta (sexta = viernes)" },
       questions: [
-        ["¿Por qué no le regalan un libro?", ["ya tiene muchos y no los lee", "no le gusta leer", "son caros", "no hay librería"], "ya tiene muchos y no los lee"],
-        ["¿Qué le regalan al final?", ["una orquídea blanca", "un libro", "una torta", "un viaje"], "una orquídea blanca"],
-        ["¿Qué hace la abuela?", ["sonríe y les dice que los quiere", "llora", "se enoja", "no abre el paquete"], "sonríe y les dice que los quiere"]
+        ["¿Cuánto cuesta la clase de portugués?", ["ochenta reales", "ciento veinte reales", "treinta reales", "veinte reales"], "ochenta reales"],
+        ["¿Cuántos años cumple Bia?", ["treinta y uno", "veintinueve", "treinta", "cuarenta y uno"], "treinta y uno"],
+        ["¿Por qué el 20 de enero es feriado en Río?", ["es el día del santo patrono", "es el cumpleaños de Bia", "es carnaval", "es fin de año"], "es el día del santo patrono"]
       ],
-      vf: [["La nonna ha già molti libri.", "vero"], ["I nipoti regalano un libro alla nonna.", "falso"], ["L'orchidea costa molto.", "non si dice"]],
-      hunt: { label: "Tocá los pronombres de objeto (le, la, li, gli, mi, vi)", targets: ["le", "la", "li", "gli", "mi", "vi"] } },
+      vf: [["A reunião é às nove e meia.", "verdadeiro"], ["O aniversário da Bia é na sexta-feira.", "falso"], ["O show na Lapa é de samba.", "não se diz"]],
+      hunt: { label: "Tocá los números escritos en letras", targets: ["quinze", "nove", "duas", "oitenta", "trinta", "um", "dois", "meia", "quatro", "sete", "vinte", "cento", "dez"] } },
 
-    { id: "w-14", week: 14, n: 8, level: "A2", emoji: "🍕", title: "Gusti di famiglia",
-      grammar: "piacere e verbi simili",
+    { id: "w-08", week: 8, n: 8, level: "A1", emoji: "💬", title: "Mensagens de sexta-feira",
+      grammar: "perguntas, ir + infinitivo e estar + gerúndio",
       text:
-        "Nella famiglia Bianchi nessuno ha gli stessi gusti. A papà piace il calcio, " +
-        "ma non gli piacciono i film romantici. A mamma piacciono i libri gialli e le passeggiate in montagna.\n\n" +
-        "A Chiara, la figlia, piace ballare. Le piacciono la musica pop e i concerti. " +
-        "Il fratello, Tommaso, preferisce i videogiochi: gli piace stare a casa.\n\n" +
-        "La domenica è difficile decidere cosa fare. Ieri Chiara ha proposto il mare: " +
-        "a tutti è piaciuta l'idea, tranne a Tommaso. Alla fine sono andati al mare " +
-        "e Tommaso ha giocato sul telefono. \"Mi manca il mio computer!\" ha detto.",
-      gloss: { gusti: "gustos", nessuno: "nadie", stessi: "mismos", gialli: "policiales (libri gialli = novelas policiales)",
-               passeggiate: "caminatas", ballare: "bailar", concerti: "recitales", videogiochi: "videojuegos",
-               decidere: "decidir", proposto: "propuesto", tranne: "excepto", manca: "extraña (me falta)" },
+        "— Oi, Sofía! O que você está fazendo?\n" +
+        "— Estou trabalhando ainda. E você?\n" +
+        "— Estou saindo da escola agora. Vamos à Lapa hoje à noite?\n" +
+        "— Quem vai?\n" +
+        "— Eu, o João e uns amigos. Tem uma roda de samba perto dos Arcos.\n" +
+        "— A que horas? Quanto custa?\n" +
+        "— Às dez. E é de graça!\n" +
+        "— Como a gente vai?\n" +
+        "— De metrô até a Cinelândia e depois a pé.\n" +
+        "— Por que não de táxi?\n" +
+        "— Porque o metrô é rápido e barato.\n" +
+        "— Tá bom. Vou tomar um banho e vou comer alguma coisa. Onde é o encontro?\n" +
+        "— Na saída do metrô. Estou esperando vocês lá!",
+      gloss: { ainda: "todavía", saindo: "saliendo", roda: "ronda (roda de samba)", graça: "gracia (de graça = gratis)",
+               pé: "pie (a pé = a pie)", tá: "está (tá bom = está bien, coloquial)", banho: "baño (tomar banho = bañarse)",
+               coisa: "cosa", encontro: "encuentro", saída: "salida", esperando: "esperando", oi: "hola" },
       questions: [
-        ["¿Qué no le gusta al papá?", ["las películas románticas", "el fútbol", "la montaña", "la música"], "las películas románticas"],
-        ["¿Qué le gusta a Tommaso?", ["los videojuegos", "bailar", "los libros", "la montaña"], "los videojuegos"],
-        ["¿Qué extraña Tommaso en la playa?", ["su computadora", "a su mamá", "la pizza", "la montaña"], "su computadora"]
+        ["¿Qué está haciendo Sofía?", ["está trabajando", "está saliendo de la escuela", "está en la Lapa", "está comiendo"], "está trabajando"],
+        ["¿Cuánto cuesta la roda de samba?", ["es gratis", "diez reales", "veinte reales", "no lo dicen"], "es gratis"],
+        ["¿Cómo van a ir?", ["en subte y después a pie", "en taxi", "en colectivo", "en bicicleta"], "en subte y después a pie"]
       ],
-      vf: [["Al papà piace il calcio.", "vero"], ["A Tommaso piace andare al mare.", "falso"], ["La mamma va in montagna ogni settimana.", "non si dice"]],
-      hunt: { label: "Tocá las formas de piacere y mancare", targets: ["piace", "piacciono", "piaciuta", "manca"] } },
+      vf: [["A roda de samba é de graça.", "verdadeiro"], ["Eles vão de táxi.", "falso"], ["A roda de samba termina às duas.", "não se diz"]],
+      hunt: { label: "Tocá los gerundios (estar + gerúndio)", targets: ["fazendo", "trabalhando", "saindo", "esperando"] } },
 
-    { id: "w-16", week: 16, n: 9, level: "A2", emoji: "😴", title: "Una mattina storta",
-      grammar: "riflessivi al passato",
+    { id: "w-09", week: 9, n: 9, level: "A2", emoji: "⛴️", title: "De barca para Niterói",
+      grammar: "preposições de lugar e movimento",
       text:
-        "Ieri Giorgio non ha sentito la sveglia e si è svegliato alle otto e mezza. " +
-        "Si è alzato di corsa, si è lavato in due minuti e non si è fatto la barba.\n\n" +
-        "Si è vestito al buio e si è messo due calzini diversi: un calzino blu e un calzino verde. " +
-        "Poi si è accorto che pioveva e non trovava l'ombrello.\n\n" +
-        "In ufficio i colleghi si sono messi a ridere. Giorgio si è arrabbiato un po', " +
-        "ma poi si è guardato i piedi e anche lui si è divertito.\n\n" +
-        "La sera lui e sua moglie si sono seduti sul divano e si sono raccontati la giornata.",
-      gloss: { sveglia: "despertador", corsa: "carrera (di corsa = a las corridas)", barba: "barba",
-               buio: "oscuridad", calzini: "medias", pioveva: "llovía",
-               ombrello: "paraguas", ridere: "reírse", arrabbiato: "enojado", piedi: "pies",
-               divano: "sillón", raccontati: "contado (se contaron)", accorto: "dado cuenta" },
+        "No domingo, a Sofía e a Bia vão a Niterói, do outro lado da baía de Guanabara. " +
+        "Pegam o metrô em Botafogo, descem na estação Carioca e vão a pé até a Praça XV. " +
+        "Lá pegam a barca. A viagem dura uns vinte minutos.\n\n" +
+        "Em Niterói, passam pela orla e sobem até o Museu de Arte Contemporânea, de Oscar Niemeyer. " +
+        "O museu parece um disco voador em cima de uma pedra!\n\n" +
+        "Do museu, a vista do Rio é incrível: o Pão de Açúcar, o Cristo e a ponte Rio-Niterói. " +
+        "As duas voltam de ônibus pela ponte, mas o trânsito é terrível. " +
+        "\"Da próxima vez, a gente volta de barca\", diz a Bia.",
+      gloss: { baía: "bahía", pegam: "toman", descem: "bajan", barca: "lancha (ferry)", orla: "costanera",
+               sobem: "suben", voador: "volador (disco voador = plato volador)", cima: "cima (em cima de = arriba de)",
+               ponte: "puente (en portugués es femenino)", ônibus: "colectivo", vez: "vez", outro: "otro" },
       questions: [
-        ["¿Por qué se despertó tarde?", ["no oyó el despertador", "estaba enfermo", "era domingo", "se quedó sin luz"], "no oyó el despertador"],
-        ["¿Qué tenía de raro?", ["dos medias distintas", "dos zapatos distintos", "la camisa al revés", "no tenía zapatos"], "dos medias distintas"],
-        ["¿Cómo terminó el día?", ["contándose el día con su mujer", "enojado", "en la oficina", "sin cenar"], "contándose el día con su mujer"]
+        ["¿Cómo cruzan a Niterói?", ["en barca", "en colectivo", "en subte", "a pie"], "en barca"],
+        ["¿A qué se parece el museo?", ["a un plato volador", "a una piedra", "a un barco", "a un puente"], "a un plato volador"],
+        ["¿Cómo vuelven?", ["en colectivo por el puente", "en barca", "en taxi", "a pie"], "en colectivo por el puente"]
       ],
-      vf: [["Giorgio si è svegliato tardi.", "vero"], ["Giorgio aveva due calzini uguali.", "falso"], ["Giorgio è arrivato in ufficio in ritardo.", "non si dice"]],
-      hunt: { label: "Tocá los auxiliares de los reflexivos (è, sono)", targets: ["è", "sono"] } },
+      vf: [["A viagem de barca dura uns vinte minutos.", "verdadeiro"], ["As duas voltam de barca.", "falso"], ["O museu é muito caro.", "não se diz"]],
+      hunt: { label: "Tocá los medios de transporte", targets: ["metrô", "pé", "barca", "ônibus"] } },
 
-    { id: "w-17", week: 17, n: 10, level: "A2", emoji: "📦", title: "Il trasloco",
-      grammar: "dimostrativi, possessivi, indefiniti",
+    { id: "w-10", week: 10, n: 10, level: "A2", emoji: "📷", title: "O álbum da Dona Lúcia",
+      grammar: "possessivos e demonstrativos",
       text:
-        "Oggi Elena e Marco cambiano casa. Ci sono scatole dappertutto. " +
-        "\"Di chi è questa scatola?\" chiede Marco. \"È mia: dentro ci sono i miei libri\".\n\n" +
-        "\"E quella lì, vicino alla porta?\" \"Quella è tua: ci sono le tue scarpe e qualche maglione\".\n\n" +
-        "Alcuni amici aiutano con i mobili. Ognuno porta qualcosa: Luca porta le sedie, " +
-        "Anna porta quel vecchio specchio della nonna.\n\n" +
-        "Alla fine della giornata sono tutti stanchi. \"Questo appartamento è perfetto\", dice Elena. " +
-        "\"Sì, ma quelle scale... Nessuno vuole più portare niente!\" risponde Marco, e ride.",
-      gloss: { scatole: "cajas", scatola: "caja", dappertutto: "por todas partes", dentro: "adentro",
-               maglione: "pulóver", mobili: "muebles", ognuno: "cada uno", specchio: "espejo", scale: "escaleras",
-               ride: "se ríe", appartamento: "departamento" },
+        "A Dona Lúcia é a vizinha do terceiro andar. Tem oitenta anos e muitas histórias. " +
+        "Hoje ela mostra um álbum de fotos à Sofía.\n\n" +
+        "— Esta aqui sou eu, em Santa Teresa. Este senhor é o meu pai, e aquela senhora " +
+        "de chapéu é a mãe dele. Esse cachorro é o Bolinha, o nosso primeiro cachorro.\n" +
+        "— E este rapaz?\n" +
+        "— Ah, esse é o Carlos, o meu marido. O violão dele está naquele armário. " +
+        "E as suas fotos, Sofía?\n" +
+        "— As minhas fotos estão no celular! Nesta foto estão os meus pais, em Buenos Aires. " +
+        "Este é o meu irmão, e esta é a namorada dele.\n" +
+        "— Que bonitos! E aquilo, o que é?\n" +
+        "— Aquilo é o Obelisco!",
+      gloss: { vizinha: "vecina", andar: "piso", rapaz: "muchacho", marido: "marido", armário: "ropero",
+               namorada: "novia", celular: "celular", senhor: "señor", senhora: "señora", pais: "padres" },
       questions: [
-        ["¿Qué hay en la caja de Elena?", ["sus libros", "zapatos", "platos", "ropa"], "sus libros"],
-        ["¿Qué lleva Anna?", ["el espejo viejo de la abuela", "las sillas", "una caja de libros", "nada"], "el espejo viejo de la abuela"],
-        ["¿De qué se queja Marco al final?", ["de las escaleras", "del departamento", "de los amigos", "del precio"], "de las escaleras"]
+        ["¿Quién es Carlos?", ["el marido de doña Lúcia", "su padre", "su hermano", "un vecino"], "el marido de doña Lúcia"],
+        ["¿Dónde está la guitarra de Carlos?", ["en aquel ropero", "en Santa Teresa", "en el celular", "en la casa de Sofía"], "en aquel ropero"],
+        ["¿Qué muestra Sofía?", ["fotos de su familia en el celular", "un álbum viejo", "una guitarra", "un mapa"], "fotos de su familia en el celular"]
       ],
-      vf: [["Nella scatola di Elena ci sono i libri.", "vero"], ["Luca porta lo specchio della nonna.", "falso"], ["Il nuovo appartamento è al quinto piano.", "non si dice"]],
-      hunt: { label: "Tocá los demostrativos (questa, quella, quel…)", targets: ["questa", "quella", "quel", "questo", "quelle"] } },
+      vf: [["A Dona Lúcia mora no terceiro andar.", "verdadeiro"], ["O Bolinha é um gato.", "falso"], ["O irmão da Sofía mora no Rio.", "não se diz"]],
+      hunt: { label: "Tocá los posesivos y los demostrativos", targets: ["esta", "este", "aquela", "dele", "esse", "nosso", "meu", "naquele", "suas", "minhas", "nesta", "meus", "aquilo"] } },
 
-    { id: "w-23", week: 23, n: 11, level: "B1", emoji: "⚖️", title: "Bologna o Milano?",
-      grammar: "comparativi e superlativi",
+    { id: "w-11", week: 11, n: 11, level: "A2", emoji: "⛵", title: "Um fim de semana em Paraty",
+      grammar: "pretérito perfeito",
       text:
-        "Francesca deve scegliere dove vivere. Milano è più grande di Bologna e offre più lavoro, " +
-        "ma è anche più cara. Un appartamento a Milano costa molto più che a Bologna.\n\n" +
-        "Bologna è meno caotica e più tranquilla. Per molti è la città più simpatica d'Italia, " +
-        "e la cucina è migliore: i tortellini sono buonissimi!\n\n" +
-        "A Milano però lo stipendio è più alto e ci sono più opportunità per una giovane architetta. " +
-        "Francesca pensa: \"Il lavoro è importante quanto la qualità della vita\".\n\n" +
-        "Alla fine sceglie Bologna, ma lavora due giorni a settimana a Milano. " +
-        "Il treno ci mette solo un'ora: è la soluzione migliore.",
-      gloss: { scegliere: "elegir", offre: "ofrece", cara: "cara", caotica: "caótica", stipendio: "sueldo",
-               opportunità: "oportunidades", architetta: "arquitecta", qualità: "calidad", mette: "tarda (ci mette)",
-               soluzione: "solución" },
+        "No fim de semana passado, a Sofía e a Bia foram a Paraty, uma cidade colonial entre o Rio " +
+        "e São Paulo. Saíram na sexta às seis da tarde e chegaram de ônibus quase à meia-noite.\n\n" +
+        "No sábado, andaram pelas ruas de pedra do centro histórico. Na maré alta, o mar entra " +
+        "em algumas ruas! Na hora do almoço, comeram peixe com banana e beberam suco de caju. " +
+        "De tarde, fizeram um passeio de barco pelas ilhas, e a Sofía tirou cem fotos.\n\n" +
+        "No domingo choveu o dia todo, mas elas não ficaram tristes: visitaram uma cachaçaria " +
+        "e compraram duas garrafas para o seu Manuel.",
+      gloss: { quase: "casi", maré: "marea", almoço: "almuerzo", peixe: "pescado", suco: "jugo",
+               caju: "cajú (una fruta)", passeio: "paseo", ilhas: "islas", tirou: "sacó",
+               choveu: "llovió", cachaçaria: "destilería de cachaça", garrafas: "botellas", ficaram: "quedaron, se pusieron" },
       questions: [
-        ["¿Qué ciudad es más cara?", ["Milán", "Bolonia", "las dos igual", "ninguna"], "Milán"],
-        ["¿Qué ofrece Milán?", ["un sueldo más alto", "mejor comida", "más tranquilidad", "casas más baratas"], "un sueldo más alto"],
-        ["¿Qué decide Francesca?", ["vivir en Bolonia y trabajar dos días en Milán", "vivir en Milán", "quedarse en su casa", "irse al exterior"], "vivir en Bolonia y trabajar dos días en Milán"]
+        ["¿Cómo llegaron a Paraty?", ["en colectivo", "en barco", "en avión", "en auto"], "en colectivo"],
+        ["¿Qué comieron?", ["pescado con banana", "feijoada", "pizza", "pan de queso"], "pescado con banana"],
+        ["¿Qué compraron para seu Manuel?", ["dos botellas de cachaça", "fotos", "un barco", "jugo de cajú"], "dos botellas de cachaça"]
       ],
-      vf: [["Milano è più cara di Bologna.", "vero"], ["Francesca sceglie di vivere a Milano.", "falso"], ["Francesca ha un fidanzato a Bologna.", "non si dice"]],
-      hunt: { label: "Tocá las formas de comparación (più, meno, migliore…)", targets: ["più", "meno", "migliore", "buonissimi", "quanto"] } },
+      vf: [["Choveu no domingo.", "verdadeiro"], ["Elas chegaram a Paraty de manhã.", "falso"], ["O seu Manuel gosta de cachaça.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en pretérito perfeito", targets: ["foram", "saíram", "chegaram", "andaram", "comeram", "beberam", "fizeram", "tirou", "choveu", "ficaram", "visitaram", "compraram"] } },
 
-    { id: "w-27", week: 27, n: 12, level: "B1", emoji: "💼", title: "Il primo mese di Chiara",
-      grammar: "avverbi",
+    { id: "w-12", week: 12, n: 12, level: "A2", emoji: "🍫", title: "Brigadeiro para a festa",
+      grammar: "imperativo e verbos reflexivos",
       text:
-        "Chiara lavora in una casa editrice da appena un mese. Arriva sempre puntualmente alle nove " +
-        "e spesso resta fino a tardi.\n\n" +
-        "All'inizio parlava pochissimo: ascoltava attentamente i colleghi e prendeva appunti. " +
-        "Adesso si sente già più sicura e discute tranquillamente con il capo.\n\n" +
-        "Il lavoro è davvero interessante, ma a volte è piuttosto faticoso. " +
-        "Ieri, per esempio, ha letto velocemente tre manoscritti e alla fine era completamente stanca.\n\n" +
-        "Comunque Chiara è contenta: finalmente fa il lavoro che sognava. " +
-        "\"Non ho ancora capito tutto\", dice, \"ma imparo qualcosa ogni giorno\".",
-      gloss: { editrice: "editorial (casa editrice)", appena: "apenas", resta: "se queda",
-               inizio: "principio (all'inizio = al principio)", appunti: "apuntes", sicura: "segura", capo: "jefe", davvero: "de verdad",
-               volte: "veces (a volte = a veces)", attentamente: "con atención", piuttosto: "bastante", faticoso: "cansador", manoscritti: "manuscritos",
-               sognava: "soñaba", imparo: "aprendo" },
+        "No sábado tem festa, e a Bia ensina a Sofía a fazer brigadeiro, o doce das festas " +
+        "de aniversário no Brasil. A Sofía se levanta cedo, se veste e vai ao mercado.\n\n" +
+        "Anote a receita: ponha numa panela uma lata de leite condensado, uma colher de manteiga " +
+        "e três colheres de chocolate em pó. Cozinhe em fogo baixo e mexa sempre, sem parar, " +
+        "uns dez minutos. Quando a massa desgruda do fundo da panela, está pronta. Espere esfriar.\n\n" +
+        "Depois, passe manteiga nas mãos, faça bolinhas e passe no chocolate granulado. " +
+        "A Sofía se diverte e se suja toda. \"Não coma tudo antes da festa!\", diz a Bia.",
+      gloss: { doce: "dulce", panela: "olla", colher: "cuchara", colheres: "cucharas", manteiga: "manteca",
+               pó: "polvo (em pó = en polvo)", fogo: "fuego", mexa: "revolvé", massa: "masa",
+               desgruda: "se despega", fundo: "fondo", pronta: "lista", esfriar: "enfriarse",
+               bolinhas: "bolitas", granulado: "granas", suja: "ensucia", lata: "lata" },
       questions: [
-        ["¿Hace cuánto trabaja Chiara en la editorial?", ["apenas un mes", "un año", "una semana", "tres meses"], "apenas un mes"],
-        ["¿Qué hacía al principio?", ["escuchaba con atención y tomaba apuntes", "hablaba mucho", "llegaba tarde", "discutía con el jefe"], "escuchaba con atención y tomaba apuntes"],
-        ["¿Cómo se siente ahora?", ["contenta: hace el trabajo que soñaba", "aburrida", "quiere renunciar", "enojada con el jefe"], "contenta: hace el trabajo que soñaba"]
+        ["¿Qué es el brigadeiro?", ["un dulce de los cumpleaños", "una bebida", "una comida salada", "un pan"], "un dulce de los cumpleaños"],
+        ["¿Cuánto tiempo se cocina la mezcla?", ["unos diez minutos", "una hora", "dos minutos", "toda la noche"], "unos diez minutos"],
+        ["¿Cuándo está lista la masa?", ["cuando se despega del fondo de la olla", "cuando hierve", "cuando se enfría", "cuando es negra"], "cuando se despega del fondo de la olla"]
       ],
-      vf: [["Chiara lavora in una casa editrice.", "vero"], ["All'inizio Chiara parlava molto.", "falso"], ["Chiara guadagna bene.", "non si dice"]],
-      hunt: { label: "Tocá los adverbios en -mente", targets: ["puntualmente", "attentamente", "tranquillamente", "velocemente", "completamente", "finalmente"] } },
+      vf: [["O brigadeiro leva leite condensado.", "verdadeiro"], ["A Sofía cozinha o brigadeiro em fogo alto.", "falso"], ["A festa é para o João.", "não se diz"]],
+      hunt: { label: "Tocá los imperativos (anote, ponha, cozinhe…)", targets: ["anote", "ponha", "cozinhe", "mexa", "espere", "passe", "faça", "coma"] } },
 
-    { id: "w-28", week: 28, n: 13, level: "B1", emoji: "🏙️", title: "Città o campagna?",
-      grammar: "connettivi",
+    { id: "w-13", week: 13, n: 13, level: "A2", emoji: "🎭", title: "O primeiro Carnaval",
+      grammar: "revisão A2: presente e perfeito",
       text:
-        "Molti giovani italiani lasciano i piccoli paesi e vanno in città. Infatti in città ci sono " +
-        "più università e più lavoro. Inoltre la vita culturale è più ricca.\n\n" +
-        "Tuttavia la città ha anche dei problemi: gli affitti sono alti, quindi molti vivono " +
-        "in appartamenti piccoli. E poi il traffico e il rumore stancano.\n\n" +
-        "In campagna, invece, la vita è più lenta e le case costano meno. " +
-        "Però i servizi sono pochi e spesso bisogna prendere la macchina per tutto.\n\n" +
-        "Insomma, nessuna scelta è perfetta. Comunque, grazie al lavoro da casa, " +
-        "oggi alcuni giovani tornano nei paesi, anche se non è sempre facile.",
-      gloss: { paesi: "pueblos", lasciano: "dejan", ricca: "rica", affitti: "alquileres", rumore: "ruido",
-               stancano: "cansan", lenta: "lenta", servizi: "servicios", bisogna: "hay que", scelta: "elección" },
+        "Em fevereiro, a Sofía viveu o seu primeiro Carnaval carioca. Ela não foi ao Sambódromo: " +
+        "preferiu os blocos de rua, que são de graça e estão por toda a cidade.\n\n" +
+        "No sábado, acordou às sete e foi com a Bia ao Cordão da Bola Preta, no Centro, " +
+        "um bloco de 1918. Na rua, milhares de pessoas cantaram marchinhas antigas e dançaram " +
+        "sob o sol forte. A Sofía usou uma fantasia de abacaxi, e o João, uma de sereia.\n\n" +
+        "Na segunda, todos estão cansados, mas a Bia já está fazendo planos: \"Amanhã a gente vai " +
+        "às Carmelitas, em Santa Teresa!\" E a Quarta-Feira de Cinzas? A Sofía dormiu o dia inteiro.",
+      gloss: { blocos: "comparsas", milhares: "miles", marchinhas: "marchas de carnaval", sob: "bajo",
+               fantasia: "disfraz", abacaxi: "ananá", sereia: "sirena", cinzas: "cenizas",
+               inteiro: "entero", amanhã: "mañana", cansados: "cansados", preferiu: "prefirió" },
       questions: [
-        ["¿Por qué muchos jóvenes van a la ciudad?", ["hay más universidades y trabajo", "es más barata", "es más tranquila", "no hay tráfico"], "hay más universidades y trabajo"],
-        ["¿Qué problema tiene el campo?", ["pocos servicios y hace falta el auto", "el ruido", "los alquileres altos", "el tráfico"], "pocos servicios y hace falta el auto"],
-        ["¿Qué cambió con el trabajo desde casa?", ["algunos jóvenes vuelven a los pueblos", "nadie vuelve", "las ciudades se vaciaron", "subieron los alquileres del campo"], "algunos jóvenes vuelven a los pueblos"]
+        ["¿Por qué prefirió Sofía los blocos?", ["son gratis y están en toda la ciudad", "son más cortos", "le gusta el Sambódromo", "son de noche"], "son gratis y están en toda la ciudad"],
+        ["¿De qué se disfrazó Sofía?", ["de ananá", "de sirena", "de sol", "de marinero"], "de ananá"],
+        ["¿Qué hizo el Miércoles de Ceniza?", ["durmió todo el día", "fue a otro bloco", "trabajó", "fue a la playa"], "durmió todo el día"]
       ],
-      vf: [["In città gli affitti sono alti.", "vero"], ["In campagna ci sono molti servizi.", "falso"], ["Il lavoro da casa ha aiutato alcuni giovani a tornare nei paesi.", "vero"]],
-      hunt: { label: "Tocá los conectores (infatti, inoltre, tuttavia…)", targets: ["infatti", "inoltre", "tuttavia", "quindi", "invece", "però", "insomma", "comunque"] } },
+      vf: [["A Sofía foi ao Sambódromo.", "falso"], ["O Cordão da Bola Preta é de 1918.", "verdadeiro"], ["O João dançou com a Bia.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en pretérito perfeito", targets: ["viveu", "foi", "preferiu", "acordou", "cantaram", "dançaram", "usou", "dormiu"] } },
 
-    { id: "w-32", week: 32, n: 14, level: "B2", emoji: "✉️", title: "La lettera del nonno",
-      grammar: "concordanza dei tempi",
+    // ------------------------------------------------ Estação 2 (A2 → B1)
+    { id: "w-14", week: 14, n: 14, level: "A2", emoji: "🍲", title: "Feijoada de sábado",
+      grammar: "gostar de e verbos com preposição",
       text:
-        "Mentre riordinava la soffitta, Laura ha trovato una lettera che il nonno aveva scritto alla nonna nel 1962.\n\n" +
-        "\"Cara Maria, pensavo che non mi rispondessi più. Temevo che tuo padre ti avesse proibito " +
-        "di scrivermi. Quando è arrivata la tua lettera, ho capito che mi avevi aspettato.\n\n" +
-        "Ti prometto che troverò un lavoro e che ti sposerò entro un anno. " +
-        "Spero che tu non abbia cambiato idea e che mi aspetti ancora un po'.\"\n\n" +
-        "Laura ha pianto mentre la leggeva. Sapeva che i nonni si erano sposati nel 1963, " +
-        "ma non immaginava che fosse stato così difficile.",
-      gloss: { riordinava: "ordenaba", soffitta: "altillo", temevo: "temía", proibito: "prohibido",
-               prometto: "prometo", sposerò: "me casaré con", entro: "dentro de", pianto: "llorado",
-               immaginava: "imaginaba" },
+        "No Rio, a feijoada é um ritual de quarta-feira e de sábado. O seu Manuel faz uma no boteco " +
+        "todo sábado, e a Sofía adora. Ela gosta do feijão preto, gosta da couve e da farofa, " +
+        "mas não gosta muito do torresmo. A Bia gosta de tudo e sempre pede uma caipirinha.\n\n" +
+        "O seu Manuel lembra de Portugal: \"Lá a gente come cozido à portuguesa, que também leva " +
+        "carne de porco.\" A Sofía pensa na mãe dela e no churrasco de domingo em Buenos Aires. " +
+        "\"Eu sonho com um bom assado\", diz ela. \"Acredito em você\", responde o seu Manuel, " +
+        "\"mas aqui você precisa de feijoada!\"",
+      gloss: { couve: "col", farofa: "harina de mandioca tostada", torresmo: "chicharrón",
+               lembra: "se acuerda", cozido: "puchero", leva: "lleva", porco: "cerdo",
+               churrasco: "asado", sonho: "sueño", acredito: "creo", precisa: "necesita", adora: "adora" },
       questions: [
-        ["¿Dónde encontró Laura la carta?", ["en el altillo", "en un libro", "en el correo", "en la cocina"], "en el altillo"],
-        ["¿Qué temía el abuelo?", ["que el padre de ella le prohibiera escribirle", "perder el trabajo", "que la carta no llegara", "mudarse"], "que el padre de ella le prohibiera escribirle"],
-        ["¿Qué no se imaginaba Laura?", ["que hubiera sido tan difícil", "que se hubieran casado", "que el abuelo escribiera", "que existiera la carta"], "que hubiera sido tan difícil"]
+        ["¿Qué no le gusta tanto a Sofía?", ["el chicharrón", "los porotos", "la farofa", "la col"], "el chicharrón"],
+        ["¿Con qué sueña Sofía?", ["con un buen asado", "con un cocido portugués", "con una caipirinha", "con Portugal"], "con un buen asado"],
+        ["¿Qué pide siempre Bia?", ["una caipirinha", "una cerveza", "un café", "un jugo"], "una caipirinha"]
       ],
-      vf: [["Il nonno ha scritto la lettera nel 1962.", "vero"], ["I nonni si sono sposati nel 1962.", "falso"], ["La nonna ha risposto subito alla lettera.", "non si dice"]],
-      hunt: { label: "Tocá los congiuntivi (rispondessi, avesse, abbia, aspetti, fosse)", targets: ["rispondessi", "avesse", "abbia", "aspetti", "fosse"] } },
+      vf: [["A Bia gosta de tudo na feijoada.", "verdadeiro"], ["O seu Manuel faz feijoada toda sexta-feira.", "falso"], ["O seu Manuel tem um restaurante em Portugal.", "não se diz"]],
+      hunt: { label: "Tocá los verbos que piden preposición (gostar de, lembrar de…)", targets: ["gosta", "lembra", "pensa", "sonho", "acredito", "precisa"] } },
 
-    { id: "w-35", week: 35, n: 15, level: "B2", emoji: "🧀", title: "Com'è fatto il parmigiano",
-      grammar: "la voce passiva",
+    { id: "w-15", week: 15, n: 15, level: "A2", emoji: "🚋", title: "Quando a Dona Lúcia era menina",
+      grammar: "pretérito imperfeito",
       text:
-        "Il Parmigiano Reggiano è prodotto soltanto in alcune province dell'Emilia-Romagna e della Lombardia. " +
-        "Il latte viene munto la sera e la mattina, e viene lavorato in grandi caldaie di rame.\n\n" +
-        "La forma viene poi immersa in acqua e sale per circa venti giorni. " +
-        "Dopo, le forme sono sistemate su lunghi scaffali, dove vengono girate e controllate regolarmente.\n\n" +
-        "Il formaggio deve essere stagionato almeno dodici mesi. Ogni forma è esaminata da un esperto, " +
-        "che la batte con un martelletto per sentire se è perfetta.\n\n" +
-        "Pare che il parmigiano fosse già apprezzato nel Medioevo: " +
-        "è stato citato perfino da Boccaccio nel Decameron.",
-      gloss: { soltanto: "solamente", province: "provincias", munto: "ordeñado", caldaie: "calderas", rame: "cobre",
-               forma: "horma", immersa: "sumergida", sistemate: "acomodadas", scaffali: "estantes",
-               girate: "dadas vuelta", stagionato: "estacionado", almeno: "por lo menos", esaminata: "examinada",
-               batte: "golpea", martelletto: "martillito", apprezzato: "apreciado", pare: "parece", perfino: "hasta, incluso", citato: "citado" },
+        "Quando a Dona Lúcia era menina, morava em Santa Teresa, numa casa amarela com um jardim " +
+        "enorme. Todos os dias pegava o bonde para ir à escola, no Centro. O bonde passava sobre " +
+        "os Arcos da Lapa, e as crianças faziam barulho e cantavam.\n\n" +
+        "Naquela época, Copacabana tinha poucos prédios altos, e as famílias iam à praia de manhã " +
+        "cedo. O pai dela era músico e tocava violão nos bares da Lapa. A mãe costurava para fora.\n\n" +
+        "Um dia, o pai chegou em casa com um rádio novo. Foi uma festa: a família inteira ouviu " +
+        "os programas da Rádio Nacional. \"Ah, que saudade!\", diz ela.",
+      gloss: { menina: "nena", pegava: "tomaba", bonde: "tranvía", barulho: "ruido", época: "época",
+               prédios: "edificios", tocava: "tocaba", costurava: "cosía", fora: "afuera (costurar para fora = coser por encargo)",
+               ouviu: "escuchó", saudade: "nostalgia, añoranza", jardim: "jardín" },
       questions: [
-        ["¿Cuándo se ordeña la leche?", ["a la tarde y a la mañana", "solo de noche", "una vez por semana", "al mediodía"], "a la tarde y a la mañana"],
-        ["¿Cuánto tiempo se estaciona como mínimo?", ["doce meses", "veinte días", "dos años", "seis meses"], "doce meses"],
-        ["¿Para qué el experto golpea la horma?", ["para oír si está perfecta", "para cortarla", "para limpiarla", "para darla vuelta"], "para oír si está perfecta"]
+        ["¿Cómo iba Lúcia a la escuela?", ["en tranvía", "a pie", "en colectivo", "en auto"], "en tranvía"],
+        ["¿Qué hacía el padre?", ["era músico y tocaba la guitarra", "era profesor", "era costurero", "trabajaba en la radio"], "era músico y tocaba la guitarra"],
+        ["¿Qué trajo el padre un día?", ["una radio nueva", "una guitarra", "un tranvía de juguete", "un perro"], "una radio nueva"]
       ],
-      vf: [["Il parmigiano si stagiona almeno dodici mesi.", "vero"], ["Il latte si lavora in caldaie di plastica.", "falso"], ["Un chilo di parmigiano costa venti euro.", "non si dice"]],
-      hunt: { label: "Tocá los participios de la pasiva (prodotto, munto…)", targets: ["prodotto", "munto", "lavorato", "immersa", "sistemate", "girate", "controllate", "stagionato", "esaminata", "citato"] } },
+      vf: [["A casa da Dona Lúcia era amarela.", "verdadeiro"], ["O pai dela era professor.", "falso"], ["A Dona Lúcia tinha cinco irmãos.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en imperfeito", targets: ["era", "morava", "pegava", "passava", "faziam", "cantavam", "tinha", "iam", "tocava", "costurava"] } },
 
-    { id: "w-43", week: 43, n: 16, level: "C1", emoji: "🎓", title: "Imparare da adulti",
-      grammar: "l'infinito",
+    { id: "w-16", week: 16, n: 16, level: "A2", emoji: "🎁", title: "O presente da Bia",
+      grammar: "pronomes objeto",
       text:
-        "Imparare una lingua da adulti non è impossibile, ma richiede costanza. " +
-        "Secondo molti studiosi, studiare venti minuti ogni giorno è più utile che passare " +
-        "tre ore sui libri la domenica.\n\n" +
-        "Dopo aver letto un testo, conviene riassumerlo con parole proprie: " +
-        "ripetere senza capire serve a poco. Prima di andare a dormire, è utile " +
-        "ripassare le parole nuove, perché il sonno aiuta a ricordarle.\n\n" +
-        "L'importante è non avere paura di sbagliare. Sbagliare fa parte del processo, " +
-        "e correggersi da soli insegna più che ricevere la risposta giusta.\n\n" +
-        "Per non perdere la motivazione, basta fissarsi obiettivi piccoli e festeggiare ogni progresso.",
-      gloss: { richiede: "requiere", costanza: "constancia", studiosi: "investigadores", conviene: "conviene",
-               riassumerlo: "resumirlo", proprie: "propias", ripassare: "repasar", sonno: "sueño",
-               sbagliare: "equivocarse", correggersi: "corregirse", fissarsi: "ponerse", obiettivi: "objetivos",
-               festeggiare: "festejar", motivazione: "motivación" },
+        "No domingo, a Sofía foi à Feira Hippie de Ipanema, na Praça General Osório, para comprar " +
+        "um presente para a Bia. Viu uma bolsa de couro linda e comprou-a na hora.\n\n" +
+        "Depois, encontrou o João e mostrou-lhe a bolsa. \"Ela vai adorar!\", ele disse. " +
+        "\"Me dá o cartão, que eu escrevo também.\"\n\n" +
+        "Em casa, a Bia abriu o pacote e ficou emocionada. \"Você me conhece bem! Obrigada!\" " +
+        "Depois, olhou para a mesa: \"E o bolo? Você esqueceu?\" A Sofía riu: \"Não esqueci, não. " +
+        "Está na geladeira. Vou buscá-lo agora.\"\n\n" +
+        "Na conversa, a Bia diz \"eu vi ele\"; no livro de português, está escrito \"eu o vi\".",
+      gloss: { feira: "feria", presente: "regalo", bolsa: "cartera", couro: "cuero", hora: "hora (na hora = en el acto)",
+               cartão: "tarjeta", pacote: "paquete", esqueceu: "olvidaste", riu: "se rió",
+               geladeira: "heladera", "buscá-lo": "buscarlo (ir a buscarlo)", conversa: "charla", escrito: "escrito" },
       questions: [
-        ["¿Qué es más útil según el texto?", ["estudiar veinte minutos por día", "tres horas el domingo", "no estudiar", "leer sin entender"], "estudiar veinte minutos por día"],
-        ["¿Por qué repasar antes de dormir?", ["el sueño ayuda a recordar", "hay más tiempo", "se está más despierto", "es más divertido"], "el sueño ayuda a recordar"],
-        ["¿Qué enseña más?", ["corregirse solo", "recibir la respuesta correcta", "no equivocarse nunca", "estudiar de memoria"], "corregirse solo"]
+        ["¿Qué compró Sofía?", ["una cartera de cuero", "una torta", "un libro", "una tarjeta"], "una cartera de cuero"],
+        ["¿Qué quiere hacer João?", ["escribir en la tarjeta", "comprar otra cartera", "hacer la torta", "ir a la feria"], "escribir en la tarjeta"],
+        ["¿Dónde está la torta?", ["en la heladera", "en la feria", "en la casa de João", "no hay torta"], "en la heladera"]
       ],
-      vf: [["Studiare un po' ogni giorno è più utile che studiare molto la domenica.", "vero"], ["Secondo il testo, sbagliare non serve a niente.", "falso"], ["Il testo consiglia di usare un'app.", "non si dice"]],
-      hunt: { label: "Tocá los infinitivos usados como sustantivo o después de preposición", targets: ["imparare", "studiare", "passare", "aver", "andare", "dormire", "ripassare", "ricordarle", "avere", "sbagliare", "perdere", "fissarsi", "festeggiare"] } },
+      vf: [["A Sofía comprou uma bolsa de couro.", "verdadeiro"], ["A Sofía esqueceu o bolo na feira.", "falso"], ["A bolsa custou cem reais.", "não se diz"]],
+      hunt: { label: "Tocá los pronombres objeto (y el verbo al que van pegados)", targets: ["comprou-a", "mostrou-lhe", "me", "buscá-lo"] } },
 
-    { id: "w-46", week: 46, n: 17, level: "C1", emoji: "🐱", title: "Il gattino del vicino",
-      grammar: "suffissi e alterazione",
+    { id: "w-17", week: 17, n: 17, level: "B1", emoji: "🎆", title: "Réveillon em Copacabana",
+      grammar: "futuro do presente",
       text:
-        "Nel palazzone dove abito vive un vecchietto simpaticissimo, il signor Bruno. " +
-        "Ha un gattino nero e un cagnolino bianco che abbaia a tutti.\n\n" +
-        "Ogni mattina il signor Bruno scende con il suo cappellino e un giornalino sotto il braccio. " +
-        "Si siede su una panchina del giardinetto e dà qualche briciolina ai passerotti.\n\n" +
-        "Ieri il gattino è sparito. Il vecchietto era disperato: l'ha cercato in ogni angolino. " +
-        "Alla fine l'abbiamo trovato dentro uno scatolone, addormentato su un vecchio maglione.\n\n" +
-        "\"Che furbacchione!\" ha detto il signor Bruno, e per festeggiare " +
-        "ci ha offerto un caffettino al bar.",
-      gloss: { palazzone: "edificio grandote", vecchietto: "viejito", abbaia: "ladra", scende: "baja",
-               cappellino: "sombrerito", giornalino: "revistita, diarito", braccio: "brazo", briciolina: "miguita",
-               passerotti: "gorriones", sparito: "desaparecido", angolino: "rinconcito", scatolone: "cajón, caja grande",
-               addormentato: "dormido", furbacchione: "pícaro, vivo", caffettino: "cafecito" },
+        "No dia 31 de dezembro, mais de dois milhões de pessoas estarão na praia de Copacabana " +
+        "para o Réveillon. A Sofía já tem o plano: vestirá branco, como manda a tradição, " +
+        "e à meia-noite pulará sete ondas e fará sete pedidos.\n\n" +
+        "A Bia levará flores brancas para Iemanjá, a rainha do mar, e as jogará na água. " +
+        "Os fogos durarão mais de dez minutos e iluminarão toda a orla.\n\n" +
+        "E as promessas? A Sofía as escreveu num papel: \"No ano novo, falarei português sem medo, " +
+        "farei a trilha da Pedra da Gávea e aprenderei a surfar.\" O João riu: \"Surfar? Veremos!\"",
+      gloss: { milhões: "millones", manda: "manda", pulará: "saltará", ondas: "olas", pedidos: "deseos",
+               rainha: "reina", jogará: "tirará", fogos: "fuegos artificiales", durarão: "durarán",
+               promessas: "promesas", medo: "miedo", trilha: "caminata, sendero", branco: "blanco" },
       questions: [
-        ["¿Qué animales tiene el señor Bruno?", ["un gatito negro y un perrito blanco", "dos perros", "un pájaro", "un gato blanco"], "un gatito negro y un perrito blanco"],
-        ["¿Dónde encontraron al gatito?", ["dormido en una caja grande", "en el bar", "en el jardín", "en la calle"], "dormido en una caja grande"],
-        ["¿Cómo festejó Bruno?", ["los invitó a un cafecito", "hizo una fiesta", "compró una torta", "no festejó"], "los invitó a un cafecito"]
+        ["¿De qué color se vestirá Sofía?", ["de blanco", "de rojo", "de azul", "de amarillo"], "de blanco"],
+        ["¿Qué hará a medianoche?", ["saltar siete olas", "tirar flores", "cantar", "surfear"], "saltar siete olas"],
+        ["¿Qué llevará Bia?", ["flores blancas para Iemanjá", "fuegos artificiales", "un papel", "una tabla"], "flores blancas para Iemanjá"]
       ],
-      vf: [["Il signor Bruno ha un gattino e un cagnolino.", "vero"], ["Il gattino si era perso in strada.", "falso"], ["Il signor Bruno vive al primo piano.", "non si dice"]],
-      hunt: { label: "Tocá las palabras con sufijo (-ino, -etto, -one…)", targets: ["palazzone", "vecchietto", "gattino", "cagnolino", "cappellino", "giornalino", "giardinetto", "briciolina", "passerotti", "angolino", "scatolone", "furbacchione", "caffettino"] } },
+      vf: [["A Sofía vestirá branco.", "verdadeiro"], ["A Bia levará flores vermelhas.", "falso"], ["O João passará o Réveillon em Niterói.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en futuro", targets: ["estarão", "vestirá", "pulará", "fará", "levará", "jogará", "durarão", "iluminarão", "falarei", "farei", "aprenderei", "veremos"] } },
 
-    { id: "w-47", week: 47, n: 18, level: "C1", emoji: "🧮", title: "La ricetta della nonna",
-      grammar: "numerali, misure e quantità",
+    { id: "w-18", week: 18, n: 18, level: "B1", emoji: "🛎️", title: "Um quarto com vista para o mar",
+      grammar: "futuro do pretérito e cortesia",
       text:
-        "Per il ragù della nonna servono mezzo chilo di carne macinata, un etto di pancetta, " +
-        "una carota, una costa di sedano e mezza cipolla.\n\n" +
-        "Si aggiungono un bicchiere di vino rosso, due cucchiai di concentrato di pomodoro " +
-        "e circa un litro e mezzo di passata. Il sugo deve cuocere almeno tre ore a fuoco basso.\n\n" +
-        "La nonna dice che la ricetta basta per una decina di persone, " +
-        "ma la nostra famiglia è di sei persone: gli avanzi finiscono in freezer.\n\n" +
-        "Un terzo del ragù va sulle tagliatelle della domenica; il resto, " +
-        "la metà almeno, lo regaliamo agli zii, che ne vanno pazzi.",
-      gloss: { ragù: "salsa boloñesa", macinata: "picada", etto: "cien gramos", pancetta: "panceta",
-               costa: "rama", sedano: "apio", cipolla: "cebolla", aggiungono: "agregan", cucchiai: "cucharadas",
-               passata: "puré de tomate", sugo: "salsa", cuocere: "cocinarse", fuoco: "fuego",
-               decina: "unas diez", avanzi: "sobras", pazzi: "locos (ne vanno pazzi = les encanta)", tagliatelle: "tallarines al huevo" },
+        "O Lucas, um amigo de Rosário, chega ao Rio na sexta. A Sofía liga para um hotel em Ipanema.\n\n" +
+        "— Bom dia. Eu gostaria de reservar um quarto para um amigo, de sexta a domingo.\n" +
+        "— Pois não. Seria um quarto de solteiro?\n" +
+        "— Sim. Vocês teriam um quarto com vista para o mar?\n" +
+        "— Teríamos, mas custaria seiscentos reais por noite.\n" +
+        "— Nossa! Seria possível um desconto? Ele ficaria três noites.\n" +
+        "— Eu poderia fazer quinhentos, com o café da manhã.\n" +
+        "— Perfeito. E você poderia indicar um bom restaurante perto?\n" +
+        "— Eu iria ao boteco da esquina: a comida é simples, mas é muito boa.\n" +
+        "— Muito obrigada. Eu queria também o endereço do hotel, por favor.",
+      gloss: { pois: "pues (pois não = cómo no)", solteiro: "single, individual", desconto: "descuento",
+               nossa: "¡uy! (sorpresa)", quinhentos: "quinientos", seiscentos: "seiscientos",
+               endereço: "dirección", obrigada: "gracias (dicho por una mujer)", indicar: "recomendar" },
       questions: [
-        ["¿Cuánto tiempo se cocina la salsa?", ["por lo menos tres horas", "media hora", "un día", "una hora"], "por lo menos tres horas"],
-        ["¿Para cuántas personas alcanza la receta?", ["unas diez", "seis", "dos", "veinte"], "unas diez"],
-        ["¿Qué hacen con lo que sobra?", ["va al freezer y a los tíos", "lo tiran", "lo venden", "lo comen al día siguiente"], "va al freezer y a los tíos"]
+        ["¿Para quién es la habitación?", ["para Lucas", "para Sofía", "para Bia", "para João"], "para Lucas"],
+        ["¿Cuánto cuesta al final por noche?", ["quinientos reales, con desayuno", "seiscientos reales", "trescientos reales", "es gratis"], "quinientos reales, con desayuno"],
+        ["¿Qué restaurante recomienda el recepcionista?", ["el bar de la esquina", "el restaurante del hotel", "uno en Copacabana", "ninguno"], "el bar de la esquina"]
       ],
-      vf: [["Il ragù cuoce almeno tre ore.", "vero"], ["La famiglia è di dieci persone.", "falso"], ["La nonna usa carne di maiale.", "non si dice"]],
-      hunt: { label: "Tocá las medidas y cantidades (mezzo, etto, decina…)", targets: ["mezzo", "chilo", "etto", "mezza", "litro", "decina", "terzo", "metà"] } },
+      vf: [["O Lucas ficaria três noites.", "verdadeiro"], ["No final, o quarto custa seiscentos reais.", "falso"], ["O Lucas já conhece o Rio.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en futuro do pretérito (condicional)", targets: ["gostaria", "seria", "teriam", "teríamos", "custaria", "ficaria", "poderia", "iria"] } },
 
-    { id: "w-50", week: 50, n: 19, level: "C1", emoji: "🔤", title: "Parole che ingannano",
-      grammar: "lessico avanzato e falsi amici",
+    { id: "w-19", week: 19, n: 19, level: "B1", emoji: "🏙️", title: "Rio ou São Paulo?",
+      grammar: "comparativos e superlativos",
       text:
-        "Appena arrivata a Roma, Valeria ha detto al suo coinquilino che era \"molto imbarazzata\", " +
-        "volendo dire che si vergognava. Lui ha capito subito, ma altre parole sono state più insidiose.\n\n" +
-        "In un negozio ha chiesto una \"salsa\" per la pasta e le hanno dato del ketchup: " +
-        "in italiano si dice \"sugo\". Poi ha raccontato che il suo capo era \"molto largo\", " +
-        "pensando alla generosità, e i colleghi si sono messi a ridere.\n\n" +
-        "Ormai Valeria ha imparato la lezione: prima di usare una parola che somiglia allo spagnolo, " +
-        "la controlla sul dizionario. \"Le parole più pericolose\", dice, " +
-        "\"sono quelle che sembrano facili\".",
-      gloss: { imbarazzata: "avergonzada, incómoda", vergognava: "le daba vergüenza", coinquilino: "compañero de departamento",
-               insidiose: "traicioneras", negozio: "negocio", sugo: "salsa (para pasta)", largo: "ancho",
-               generosità: "generosidad", ormai: "a esta altura", somiglia: "se parece", pericolose: "peligrosas" },
+        "O Lucas passou uma semana no Rio e três dias em São Paulo, e agora compara. São Paulo " +
+        "é maior do que o Rio: é a maior cidade do Brasil, com mais de onze milhões de habitantes. " +
+        "Tem mais museus e mais teatros, mas o trânsito é pior e o céu é menos azul.\n\n" +
+        "O Rio é menor, mas é lindíssimo: tem praia, montanha e floresta no meio da cidade. " +
+        "A Floresta da Tijuca é uma das maiores florestas urbanas do mundo.\n\n" +
+        "\"Os paulistanos trabalham tanto quanto os cariocas\", diz a Bia. O Lucas não concorda: " +
+        "\"Mas em São Paulo a pizza é melhor que aqui!\" \"E o pôr do sol do Arpoador é o mais bonito " +
+        "do mundo\", responde a Sofía.",
+      gloss: { floresta: "selva, bosque", meio: "medio (no meio = en el medio)", paulistanos: "los de la ciudad de São Paulo",
+               concorda: "está de acuerdo", lindíssimo: "lindísimo", milhões: "millones" },
       questions: [
-        ["¿Qué le dieron cuando pidió «salsa»?", ["ketchup", "salsa de tomate", "aceite", "queso"], "ketchup"],
-        ["¿Por qué se rieron los compañeros?", ["dijo «largo» pensando en «generoso»", "llegó tarde", "habló en español", "se equivocó de oficina"], "dijo «largo» pensando en «generoso»"],
-        ["¿Qué hace ahora Valeria?", ["controla en el diccionario las palabras parecidas al español", "habla solo en inglés", "no usa palabras nuevas", "pregunta al jefe"], "controla en el diccionario las palabras parecidas al español"]
+        ["¿Cuál es la ciudad más grande de Brasil?", ["São Paulo", "Río de Janeiro", "Brasilia", "Salvador"], "São Paulo"],
+        ["¿Qué tiene Río en medio de la ciudad?", ["un bosque, la Floresta da Tijuca", "un lago", "un desierto", "un río enorme"], "un bosque, la Floresta da Tijuca"],
+        ["¿Qué dice Lucas de la pizza?", ["que en São Paulo es mejor", "que en Río es mejor", "que son iguales", "que no le gusta"], "que en São Paulo es mejor"]
       ],
-      vf: [["Valeria ha chiesto una salsa e le hanno dato il ketchup.", "vero"], ["I colleghi hanno capito subito cosa voleva dire con largo.", "falso"], ["Valeria studia medicina.", "non si dice"]],
-      hunt: { label: "Tocá los falsos amigos del texto", targets: ["imbarazzata", "salsa", "largo"] } },
+      vf: [["São Paulo é maior do que o Rio.", "verdadeiro"], ["O Lucas acha a pizza do Rio melhor.", "falso"], ["O Lucas vai morar em São Paulo.", "não se diz"]],
+      hunt: { label: "Tocá los comparativos y superlativos", targets: ["maior", "pior", "menos", "menor", "lindíssimo", "maiores", "tanto", "melhor", "mais"] } },
 
-    { id: "w-01", week: 1, level: "A1", emoji: "👋", title: "Sono Lucia",
-      grammar: "essere e avere",
+    { id: "w-20", week: 20, n: 20, level: "B1", emoji: "☔", title: "Uma segunda-feira sem sorte",
+      grammar: "indefinidos, negação e quantidade",
       text:
-        "Ciao! Sono Lucia. Sono italiana, di Roma, e ho ventiquattro anni. " +
-        "Sono una studentessa di musica.\n\n" +
-        "Ho un fratello, Paolo. Paolo ha trent'anni ed è medico a Milano. " +
-        "È alto, simpatico e un po' pigro.\n\n" +
-        "Ho anche una gatta, Nina. Nina è piccola e bianca, e ha gli occhi verdi. " +
-        "La mia casa è vecchia ma bella, e ha un balcone con i fiori.\n\n" +
-        "Oggi è domenica: sono a casa, ho un caffè e un libro. Il libro è nuovo ed è molto bello. Sono contenta!",
-      gloss: { studentessa: "estudiante (mujer)", fratello: "hermano", medico: "médico", pigro: "vago, perezoso",
-               anche: "también", gatta: "gata", piccola: "chiquita", bianca: "blanca", occhi: "ojos",
-               vecchia: "vieja", balcone: "balcón", fiori: "flores", oggi: "hoy", contenta: "contenta" },
+        "Ontem nada deu certo para a Sofía. De manhã, não tinha café em casa, nem pão: ninguém lembrou " +
+        "de fazer compras. Foi trabalhar num café, mas nenhuma mesa estava livre, e o wi-fi também " +
+        "não funcionava. Ligou para a Bia: ninguém atendeu.\n\n" +
+        "De tarde, foi ao banco e esperou uma hora. Quando chegou a vez dela, o sistema caiu. " +
+        "\"Hoje não é o meu dia, não\", pensou.\n\n" +
+        "Voltou para casa a pé, debaixo de chuva, sem nenhum guarda-chuva. Mas, na porta do prédio, " +
+        "alguém estava esperando: a Bia, com uma pizza e um vinho. \"Todo mundo tem um dia assim\", disse. " +
+        "A Sofía comeu tudo, riu de tudo e esqueceu tudo.",
+      gloss: { ontem: "ayer", certo: "bien (dar certo = salir bien)", compras: "compras", atendeu: "atendió",
+               vez: "turno", caiu: "se cayó", debaixo: "debajo", chuva: "lluvia", "guarda-chuva": "paraguas",
+               assim: "así", sorte: "suerte", esqueceu: "olvidó" },
       questions: [
-        ["¿Cuántos años tiene Lucia?", ["veinticuatro", "treinta", "veinte", "catorce"], "veinticuatro"],
-        ["¿Qué hace Paolo?", ["es médico en Milán", "es estudiante", "es músico", "trabaja en Roma"], "es médico en Milán"],
-        ["¿Cómo es la gata?", ["chiquita y blanca, de ojos verdes", "grande y negra", "vieja y gorda", "no tiene gata"], "chiquita y blanca, de ojos verdes"]
+        ["¿Qué faltaba en casa a la mañana?", ["café y pan", "leche", "agua", "nada"], "café y pan"],
+        ["¿Qué pasó en el banco?", ["se cayó el sistema", "estaba cerrado", "le robaron", "atendieron rápido"], "se cayó el sistema"],
+        ["¿Quién la esperaba en la puerta?", ["Bia, con una pizza y un vino", "João", "doña Lúcia", "nadie"], "Bia, con una pizza y un vino"]
       ],
-      vf: [["Lucia è di Milano.", "falso"], ["Paolo è il fratello di Lucia.", "vero"], ["Lucia suona il pianoforte.", "non si dice"]],
-      hunt: { label: "Tocá las formas de essere y avere", targets: ["sono", "ho", "ha", "è"] } },
+      vf: [["Havia uma mesa livre no café.", "falso"], ["A Bia levou uma pizza.", "verdadeiro"], ["O João estava no trabalho.", "não se diz"]],
+      hunt: { label: "Tocá los indefinidos y las palabras negativas", targets: ["nada", "nem", "ninguém", "nenhuma", "nenhum", "alguém", "tudo", "todo"] } },
 
-    { id: "w-05", week: 5, level: "A1", emoji: "📚", title: "La libraia",
-      grammar: "presente dei verbi regolari",
+    { id: "w-21", week: 21, n: 21, level: "B1", emoji: "✉️", title: "Carta para a mãe",
+      grammar: "pretérito perfeito composto e mais-que-perfeito composto",
       text:
-        "Carla abita a Firenze e lavora in una libreria del centro. La mattina prende " +
-        "l'autobus alle otto e legge il giornale. Alle nove apre la libreria e parla con i clienti.\n\n" +
-        "A mezzogiorno mangia un panino con la collega, Marta. Il pomeriggio ordina i libri nuovi " +
-        "e risponde alle email. Finisce di lavorare alle sette.\n\n" +
-        "La sera cucina qualcosa di semplice, guarda un film o telefona alla madre. " +
-        "Dorme poco, perché legge sempre fino a tardi. \"I libri sono la mia vita\", dice Carla.",
-      gloss: { libreria: "librería", giornale: "diario", clienti: "clientes",
-               mezzogiorno: "mediodía", panino: "sándwich", collega: "compañera de trabajo", ordina: "ordena",
-               risponde: "responde", finisce: "termina", cucina: "cocina", semplice: "simple", tardi: "tarde" },
+        "Querida mãe,\n\n" +
+        "Aqui está tudo bem. Tenho trabalhado muito, porque tenho recebido projetos de Buenos Aires " +
+        "e também de clientes brasileiros. Tenho estudado português todos os dias e, nas últimas " +
+        "semanas, tenho sonhado em português!\n\n" +
+        "Você lembra da viagem a Paraty? Quando chegamos à pousada, a dona já tinha preparado um bolo " +
+        "de banana para nós. E ontem, quando voltei do trabalho, a Bia já tinha feito o jantar.\n\n" +
+        "O tempo tem estado estranho: tem chovido muito, e o calor não diminui. A Dona Lúcia diz que " +
+        "nunca tinha visto um março assim.\n\n" +
+        "Beijos, e manda um abraço para o papai.\n" +
+        "Sofía",
+      gloss: { querida: "querida", pousada: "posada, hotelito", jantar: "cena", chovido: "llovido",
+               beijos: "besos", abraço: "abrazo", últimas: "últimas", estranho: "raro" },
       questions: [
-        ["¿Dónde trabaja Carla?", ["en una librería del centro", "en un diario", "en una escuela", "en un bar"], "en una librería del centro"],
-        ["¿A qué hora termina de trabajar?", ["a las siete", "a las nueve", "al mediodía", "a las ocho"], "a las siete"],
-        ["¿Por qué duerme poco?", ["lee hasta tarde", "trabaja de noche", "mira películas", "habla con la madre"], "lee hasta tarde"]
+        ["¿Qué viene haciendo Sofía?", ["trabaja y estudia mucho", "viaja por Brasil", "no hace nada", "busca trabajo"], "trabaja y estudia mucho"],
+        ["¿Qué había hecho Bia cuando Sofía volvió?", ["la cena", "una torta", "las compras", "la limpieza"], "la cena"],
+        ["¿Cómo viene el tiempo?", ["llueve mucho y hace calor", "hace frío", "no llueve nunca", "nieva"], "llueve mucho y hace calor"]
       ],
-      vf: [["Carla lavora in una libreria.", "vero"], ["Carla va al lavoro in bicicletta.", "falso"], ["Marta è la sorella di Carla.", "falso"]],
-      hunt: { label: "Tocá los verbos en presente de la tercera persona (abita, lavora…)", targets: ["abita", "lavora", "prende", "legge", "apre", "parla", "mangia", "ordina", "risponde", "finisce", "cucina", "guarda", "telefona", "dorme"] } },
+      vf: [["A Sofía tem sonhado em português.", "verdadeiro"], ["A dona da pousada preparou um bolo de chocolate.", "falso"], ["O pai da Sofía está doente.", "não se diz"]],
+      hunt: { label: "Tocá los participios de los tiempos compuestos", targets: ["trabalhado", "recebido", "estudado", "sonhado", "preparado", "feito", "estado", "chovido", "visto"] } },
 
-    { id: "w-09", week: 9, level: "A2", emoji: "🚆", title: "Da Genova a Lugano",
-      grammar: "preposizioni",
+    { id: "w-22", week: 22, n: 22, level: "B1", emoji: "⛰️", title: "O Cristo Redentor",
+      grammar: "particípios e voz passiva",
       text:
-        "Tommaso vive a Genova, ma lavora in Svizzera. Ogni lunedì parte da Genova alle sei " +
-        "e arriva a Lugano in tre ore. Va in treno, con un libro e un caffè.\n\n" +
-        "A Lugano abita da un amico, Marco, in un piccolo appartamento vicino al lago. " +
-        "Lavora per una banca e parla tedesco, francese e italiano.\n\n" +
-        "Il venerdì torna a casa per il fine settimana. Il sabato va al mercato con la moglie " +
-        "e la domenica pranza dai genitori. Tra un viaggio e l'altro Tommaso è sempre stanco, " +
-        "ma dice: \"Per ora va bene così\".",
-      gloss: { svizzera: "Suiza", ogni: "cada", treno: "tren", appartamento: "departamento", lago: "lago",
-               banca: "banco", tedesco: "alemán", torna: "vuelve", moglie: "esposa", pranza: "almuerza",
-               genitori: "padres", viaggio: "viaje", stanco: "cansado" },
+        "O Cristo Redentor foi inaugurado em 12 de outubro de 1931, no alto do Corcovado, a uns 700 metros " +
+        "de altura. O projeto foi desenvolvido pelo engenheiro brasileiro Heitor da Silva Costa, " +
+        "e o rosto foi esculpido em Paris pelo escultor romeno Gheorghe Leonida, no ateliê do francês " +
+        "Paul Landowski.\n\n" +
+        "A estátua foi construída de concreto armado e coberta por milhares de triângulos de pedra-sabão. " +
+        "Tem 30 metros de altura, sem contar o pedestal. Em 2007, foi eleita uma das Sete Maravilhas " +
+        "do Mundo Moderno.\n\n" +
+        "A Sofía subiu de trem pela floresta, mas, quando chegou lá em cima, o Cristo estava coberto " +
+        "de nuvens. \"Vou voltar num dia de sol\", prometeu.",
+      gloss: { rosto: "cara, rostro", esculpido: "esculpido", romeno: "rumano", ateliê: "taller",
+               concreto: "hormigón", coberta: "cubierta", coberto: "cubierto", "pedra-sabão": "esteatita (piedra jabón)",
+               eleita: "elegida", trem: "tren", nuvens: "nubes", prometeu: "prometió", desenvolvido: "desarrollado" },
       questions: [
-        ["¿Cómo va Tommaso a Lugano?", ["en tren", "en auto", "en avión", "en colectivo"], "en tren"],
-        ["¿Con quién vive en Lugano?", ["con un amigo", "con su esposa", "solo", "con sus padres"], "con un amigo"],
-        ["¿Qué hace el domingo?", ["almuerza con sus padres", "trabaja", "va al mercado", "viaja a Suiza"], "almuerza con sus padres"]
+        ["¿Cuándo se inauguró el Cristo?", ["en 1931", "en 1922", "en 2007", "en 1960"], "en 1931"],
+        ["¿Dónde se esculpió el rostro?", ["en París", "en Río", "en Rumania", "en São Paulo"], "en París"],
+        ["¿Por qué Sofía quiere volver?", ["el Cristo estaba cubierto de nubes", "el tren no funcionaba", "estaba cerrado", "no le gustó"], "el Cristo estaba cubierto de nubes"]
       ],
-      vf: [["Tommaso lavora in Svizzera.", "vero"], ["A Lugano Tommaso vive da solo.", "falso"], ["Marco lavora in banca con Tommaso.", "non si dice"]],
-      hunt: { label: "Tocá las preposiciones simples (a, in, da, con, per, tra)", targets: ["a", "in", "da", "con", "per", "tra"] } },
+      vf: [["O Cristo foi inaugurado em 1931.", "verdadeiro"], ["O rosto foi esculpido no Rio.", "falso"], ["A Sofía subiu com a Bia.", "não se diz"]],
+      hunt: { label: "Tocá los participios de la voz pasiva", targets: ["inaugurado", "desenvolvido", "esculpido", "construída", "coberta", "eleita"] } },
 
-    { id: "w-11", week: 11, level: "A2", emoji: "🚤", title: "Un sabato a Venezia",
-      grammar: "passato prossimo",
+    { id: "w-23", week: 23, n: 23, level: "B1", emoji: "🥁", title: "Conselhos para a Pedra do Sal",
+      grammar: "presente do subjuntivo",
       text:
-        "Sabato scorso Anna e Luca sono andati a Venezia. Sono partiti da Padova alle nove " +
-        "e sono arrivati in mezz'ora. Hanno camminato per ore tra calli e ponti e hanno visto piazza San Marco.\n\n" +
-        "A pranzo hanno mangiato le sarde in saor in una piccola osteria. Anna ha comprato " +
-        "una maschera per sua sorella, Luca ha fatto molte foto.\n\n" +
-        "Il pomeriggio hanno preso il vaporetto fino a Murano e hanno visitato una fornace del vetro. " +
-        "La sera sono tornati a casa stanchi. \"Abbiamo speso troppo\", ha detto Luca, " +
-        "\"ma è stata una giornata perfetta\".",
-      gloss: { scorso: "pasado", calli: "callecitas (de Venecia)", ponti: "puentes", pranzo: "almuerzo",
-               sarde: "sardinas", osteria: "fonda, bodegón", maschera: "máscara", sorella: "hermana",
-               vaporetto: "lancha colectivo", fornace: "horno", vetro: "vidrio", speso: "gastado", troppo: "demasiado" },
+        "A Sofía quer conhecer a roda de samba da Pedra do Sal, no bairro da Saúde, numa região " +
+        "que os cariocas chamam de Pequena África. Ali perto do porto chegaram à cidade muitos " +
+        "africanos escravizados, e ali nasceu uma parte da história do samba.\n\n" +
+        "A Dona Lúcia tem conselhos: \"Espero que você vá de metrô e volte de táxi. É importante " +
+        "que chegue cedo, porque a roda enche rápido. Não quero que leve muito dinheiro, e sugiro " +
+        "que peça uma cerveja bem gelada.\"\n\n" +
+        "A Bia ri: \"Tomara que não chova!\" E o João acrescenta: \"Talvez eu vá também. " +
+        "Mas duvido que o samba termine antes das duas!\"",
+      gloss: { escravizados: "esclavizados", nasceu: "nació", conselhos: "consejos", enche: "se llena",
+               dinheiro: "plata, dinero", sugiro: "sugiero", gelada: "helada", tomara: "ojalá",
+               acrescenta: "agrega", duvido: "dudo", porto: "puerto", talvez: "tal vez" },
       questions: [
-        ["¿De dónde salieron?", ["de Padua", "de Roma", "de Murano", "de Milán"], "de Padua"],
-        ["¿Qué compró Anna?", ["una máscara para su hermana", "vidrio de Murano", "sardinas", "un libro"], "una máscara para su hermana"],
-        ["¿Qué dice Luca al final?", ["gastaron mucho, pero fue un día perfecto", "fue un día aburrido", "quiere volver mañana", "Venecia es fea"], "gastaron mucho, pero fue un día perfecto"]
+        ["¿Qué quiere conocer Sofía?", ["la roda de samba de la Pedra do Sal", "el puerto", "una escuela de samba", "el Sambódromo"], "la roda de samba de la Pedra do Sal"],
+        ["¿Por qué tiene que llegar temprano?", ["porque la ronda se llena rápido", "porque cierra temprano", "porque llueve", "porque es gratis"], "porque la ronda se llena rápido"],
+        ["¿Qué duda João?", ["que el samba termine antes de las dos", "que llueva", "que Sofía vaya", "que haya cerveza"], "que el samba termine antes de las dos"]
       ],
-      vf: [["Anna e Luca sono partiti da Padova.", "vero"], ["Luca ha comprato una maschera.", "falso"], ["A Murano hanno comprato un vaso.", "non si dice"]],
-      hunt: { label: "Tocá los participios con essere (andati, partiti…)", targets: ["andati", "partiti", "arrivati", "tornati", "stata"] } },
+      vf: [["A Pedra do Sal fica no bairro da Saúde.", "verdadeiro"], ["A Dona Lúcia quer que a Sofía leve muito dinheiro.", "falso"], ["A Sofía vai com o seu Manuel.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en presente do subjuntivo", targets: ["vá", "volte", "chegue", "leve", "peça", "chova", "termine"] } },
 
-    { id: "w-12", week: 12, level: "A2", emoji: "👵", title: "Le regole della nonna",
-      grammar: "riflessivi e imperativo",
+    { id: "w-24", week: 24, n: 24, level: "B1", emoji: "🥾", title: "A trilha dos Dois Irmãos",
+      grammar: "subjuntivo com conjunções",
       text:
-        "Quando i nipoti arrivano, la nonna Pina dà sempre le sue regole. \"Lavatevi le mani " +
-        "prima di mangiare! Sedetevi a tavola e non alzatevi fino alla frutta.\"\n\n" +
-        "La mattina i ragazzi si svegliano tardi. \"Alzati, Giacomo! Vestiti e fai colazione\", " +
-        "dice la nonna. Giacomo si lamenta, ma si alza.\n\n" +
-        "Il pomeriggio si divertono in giardino e la sera si riposano davanti alla televisione. " +
-        "\"Non vi addormentate sul divano!\" ripete la nonna. Alla fine, però, è la nonna che si " +
-        "addormenta per prima, con gli occhiali sul naso. I nipoti ridono e la coprono con una coperta.",
-      gloss: { nipoti: "nietos", regole: "reglas", mani: "manos", tavola: "mesa", svegliano: "despiertan",
-               colazione: "desayuno", lamenta: "queja", divertono: "divierten", riposano: "descansan",
-               divano: "sillón", occhiali: "anteojos", naso: "nariz", ridono: "se ríen", coperta: "manta" },
+        "A Sofía quer fazer a trilha do Morro Dois Irmãos, que começa no Vidigal. O João vai com ela, " +
+        "desde que saiam cedo, antes que o sol fique forte demais.\n\n" +
+        "\"Leve muita água, para que não passe mal\", ele diz. \"E caso chova, a gente deixa para outro " +
+        "dia, porque a pedra fica escorregadia.\"\n\n" +
+        "Embora a trilha seja curta, a subida é íngreme. Um guia do Vidigal vai acompanhá-los, " +
+        "sem que precisem pagar muito, e o dinheiro fica na comunidade. Lá de cima, a gente vê " +
+        "toda a Zona Sul: a Lagoa, Ipanema, o Leblon e a Pedra da Gávea. \"Daqui eu não saio " +
+        "antes que o sol se ponha!\", diz a Sofía.",
+      gloss: { desde: "desde (desde que = siempre que)", demais: "demasiado", mal: "mal (passar mal = sentirse mal)",
+               caso: "en caso de que", deixa: "deja", escorregadia: "resbaladiza", embora: "aunque",
+               subida: "subida", íngreme: "empinada", guia: "guía", "acompanhá-los": "acompañarlos", daqui: "de acá" },
       questions: [
-        ["¿Qué deben hacer antes de comer?", ["lavarse las manos", "vestirse", "ir al jardín", "mirar la tele"], "lavarse las manos"],
-        ["¿Qué hace Giacomo cuando la abuela lo llama?", ["se queja, pero se levanta", "sigue durmiendo", "se enoja y se va", "llora"], "se queja, pero se levanta"],
-        ["¿Quién se duerme primero?", ["la abuela", "Giacomo", "los nietos", "nadie"], "la abuela"]
+        ["¿Con qué condición va João?", ["que salgan temprano", "que llueva", "que vaya Bia", "que paguen mucho"], "que salgan temprano"],
+        ["¿Qué pasa si llueve?", ["lo dejan para otro día", "van igual", "van en auto", "llaman a un guía"], "lo dejan para otro día"],
+        ["¿Adónde va el dinero del guía?", ["queda en la comunidad", "a la ciudad", "a João", "a una empresa"], "queda en la comunidad"]
       ],
-      vf: [["La nonna vuole che i nipoti si lavino le mani.", "vero"], ["Giacomo si sveglia presto.", "falso"], ["La nonna guarda un film alla televisione.", "non si dice"]],
-      hunt: { label: "Tocá los imperativos (lavatevi, sedetevi, alzati…)", targets: ["lavatevi", "sedetevi", "alzatevi", "alzati", "vestiti", "fai", "addormentate"] } },
+      vf: [["A trilha começa no Vidigal.", "verdadeiro"], ["A subida é fácil e plana.", "falso"], ["O guia se chama Marcos.", "não se diz"]],
+      hunt: { label: "Tocá las conjunciones que piden subjuntivo (desde que, antes que, caso…)", targets: ["desde", "antes", "caso", "embora", "sem"] } },
 
-    { id: "w-13", week: 13, level: "A2", emoji: "🍷", title: "La nuova vicina",
-      grammar: "ripasso: presente, passato prossimo, pronomi",
+    { id: "w-25", week: 25, n: 25, level: "B1", emoji: "🎶", title: "A garota de Ipanema",
+      grammar: "pronomes relativos",
       text:
-        "Ieri è arrivata una nuova vicina, Sara. È di Bari e ha ventinove anni. Fa l'architetta " +
-        "e lavora in uno studio del centro.\n\n" +
-        "L'ho incontrata sulle scale con tre scatole pesanti e l'ho aiutata. Lei mi ha ringraziato " +
-        "e mi ha offerto un caffè. Abbiamo parlato di tutto: del lavoro, della città, dei ristoranti. " +
-        "Le ho consigliato la trattoria sotto casa e le ho dato il mio numero.\n\n" +
-        "Stamattina mi ha scritto: \"Grazie per ieri! Stasera vieni a cena da me?\" Ho messo una camicia elegante, " +
-        "ho comprato una bottiglia di vino e alle otto ho suonato alla sua porta.",
-      gloss: { vicina: "vecina", architetta: "arquitecta", studio: "estudio", scale: "escaleras",
-               scatole: "cajas", pesanti: "pesadas", ringraziato: "agradecido", consigliato: "recomendado",
-               trattoria: "bodegón", stamattina: "esta mañana", bottiglia: "botella", suonato: "tocado el timbre" },
+        "A rua onde fica o bar Garota de Ipanema se chama hoje Vinicius de Moraes, o poeta que escreveu " +
+        "a letra da canção. A música, cuja melodia é de Tom Jobim, é de 1962.\n\n" +
+        "Os dois amigos frequentavam o antigo bar Veloso e viam passar uma jovem a quem ninguém " +
+        "resistia, e que ia à praia todos os dias. A moça, a qual mais tarde ficou famosa, " +
+        "era a Helô Pinheiro, como ficou conhecida.\n\n" +
+        "A Sofía, para quem a Bia contou tudo isso, quis ver o lugar em que tudo começou. " +
+        "No bar, pediu um chope e cantou baixinho: \"Olha que coisa mais linda...\"",
+      gloss: { letra: "letra (de una canción)", canção: "canción", cuja: "cuya", frequentavam: "frecuentaban",
+               moça: "chica", conhecida: "conocida", chope: "chopp (cerveza tirada)", baixinho: "bajito",
+               quis: "quiso", resistia: "resistía" },
       questions: [
-        ["¿De dónde es Sara?", ["de Bari", "de Roma", "de Milán", "de Nápoles"], "de Bari"],
-        ["¿Cómo se conocieron?", ["en la escalera, con unas cajas", "en un bar", "en el trabajo", "en la trattoria"], "en la escalera, con unas cajas"],
-        ["¿Qué lleva el narrador a la cena?", ["una botella de vino", "flores", "una torta", "nada"], "una botella de vino"]
+        ["¿Quién escribió la letra?", ["Vinicius de Moraes", "Tom Jobim", "Helô Pinheiro", "Sofía"], "Vinicius de Moraes"],
+        ["¿De qué año es la canción?", ["de 1962", "de 1931", "de 1918", "de 1988"], "de 1962"],
+        ["¿Qué pidió Sofía en el bar?", ["un chopp", "una caipirinha", "un café", "agua de coco"], "un chopp"]
       ],
-      vf: [["Sara è di Bari.", "vero"], ["Il narratore ha incontrato Sara al bar.", "falso"], ["Sara ha cucinato il pesce.", "non si dice"]],
-      hunt: { label: "Tocá los pronombres de objeto (l', le, mi)", targets: ["l'ho", "le", "mi"] } },
+      vf: [["A melodia é de Tom Jobim.", "verdadeiro"], ["A canção é de 1972.", "falso"], ["A Sofía foi ao bar com o João.", "não se diz"]],
+      hunt: { label: "Tocá los pronombres relativos", targets: ["onde", "cuja", "quem", "qual"] } },
 
-    { id: "w-15", week: 15, level: "A2", emoji: "🌳", title: "L'estate dal nonno",
-      grammar: "imperfetto e passato prossimo",
+    { id: "w-26", week: 26, n: 26, level: "B1", emoji: "🌅", title: "Seis meses de Rio",
+      grammar: "revisão B1",
       text:
-        "Quando ero bambino passavo le estati dal nonno, in un paese della Puglia. La casa era bianca " +
-        "e aveva un grande fico nel cortile.\n\n" +
-        "Ogni mattina il nonno mi svegliava presto e andavamo insieme al mercato. Lui conosceva tutti " +
-        "e parlava con tutti. Il pomeriggio faceva troppo caldo: dormivamo o giocavamo a carte.\n\n" +
-        "Un giorno, però, è successa una cosa strana: mentre raccoglievo i fichi, ho visto un piccolo " +
-        "cane sotto l'albero. Era magro e aveva paura. Il nonno l'ha adottato subito e l'ha chiamato Fico.",
-      gloss: { estati: "veranos", paese: "pueblo", fico: "higuera, higo", fichi: "higos", cortile: "patio",
-               svegliava: "despertaba", presto: "temprano", caldo: "calor", carte: "cartas",
-               successa: "pasado, sucedido", raccoglievo: "juntaba", albero: "árbol", magro: "flaco",
-               paura: "miedo", adottato: "adoptado" },
+        "Faz seis meses que a Sofía chegou ao Rio. Quando desembarcou no Galeão, não entendia quase " +
+        "nada e tinha vergonha de falar. Hoje pede café na padaria, discute futebol no boteco e até " +
+        "conta piadas.\n\n" +
+        "Muita coisa tem mudado: ela tem acordado cedo e tem ido à praia antes do trabalho. " +
+        "Não sente falta do inverno portenho, mas sente falta da família.\n\n" +
+        "A empresa de Buenos Aires quer que ela volte em dezembro. A Sofía ainda não decidiu. " +
+        "\"Eu gostaria de ficar mais um ano\", diz. \"Talvez eu consiga um trabalho aqui.\" " +
+        "A Bia espera que ela fique: \"Você vai perder o Carnaval?\" Hoje à noite, as duas irão " +
+        "ao Arpoador. Quem sabe o pôr do sol ajude a decidir.",
+      gloss: { desembarcou: "desembarcó", vergonha: "vergüenza", piadas: "chistes", falta: "falta (sentir falta = extrañar)",
+               inverno: "invierno", portenho: "porteño", consiga: "consiga", mudado: "cambiado", ajude: "ayude" },
       questions: [
-        ["¿Dónde pasaba los veranos?", ["en un pueblo de Apulia", "en Roma", "en la playa", "en la montaña"], "en un pueblo de Apulia"],
-        ["¿Qué hacían a la tarde?", ["dormían o jugaban a las cartas", "iban al mercado", "nadaban", "trabajaban"], "dormían o jugaban a las cartas"],
-        ["¿Cómo se llamó el perro?", ["Fico", "Nonno", "Puglia", "Bianco"], "Fico"]
+        ["¿Qué le pasaba cuando llegó?", ["no entendía casi nada y le daba vergüenza hablar", "hablaba perfecto", "no quería salir", "estaba enferma"], "no entendía casi nada y le daba vergüenza hablar"],
+        ["¿Qué extraña Sofía?", ["a la familia", "el invierno porteño", "el trabajo", "el subte"], "a la familia"],
+        ["¿Qué quiere la empresa?", ["que vuelva en diciembre", "que se quede en Río", "que trabaje más", "que viaje a São Paulo"], "que vuelva en diciembre"]
       ],
-      vf: [["La casa del nonno era in Puglia.", "vero"], ["Il pomeriggio andavano al mercato.", "falso"], ["Il cane è vissuto molti anni.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en imperfetto", targets: ["ero", "passavo", "era", "aveva", "svegliava", "andavamo", "conosceva", "parlava", "faceva", "dormivamo", "giocavamo", "raccoglievo"] } },
+      vf: [["A Sofía já decidiu voltar.", "falso"], ["A Bia quer que a Sofía fique.", "verdadeiro"], ["A Sofía tem uma entrevista de emprego amanhã.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en subjuntivo", targets: ["volte", "consiga", "fique", "ajude"] } },
 
-    { id: "w-18", week: 18, level: "A2", emoji: "😩", title: "Che giornata!",
-      grammar: "negazioni ed esclamazioni",
+    // ------------------------------------------------ Estação 3 (B1 → B2)
+    { id: "w-27", week: 27, n: 27, level: "B1", emoji: "👑", title: "A corte no Rio",
+      grammar: "futuro do subjuntivo",
       text:
-        "Che giornata! Stamattina non ha suonato la sveglia e non ho fatto colazione. Alla fermata " +
-        "non c'era nessuno: ho perso l'autobus.\n\n" +
-        "In ufficio non funzionava niente, né il computer né la stampante. Il capo non c'era ancora " +
-        "e i colleghi non sapevano cosa fare.\n\n" +
-        "A pranzo non ho mangiato neanche un panino, perché non avevo più soldi nel portafoglio. Che fame! " +
-        "La sera, finalmente, sono arrivato davanti a casa... e non avevo le chiavi! " +
-        "Mai più una giornata così, per favore. Che disastro!",
-      gloss: { sveglia: "despertador", colazione: "desayuno", fermata: "parada", funzionava: "funcionaba",
-               stampante: "impresora", capo: "jefe", colleghi: "compañeros", neanche: "ni siquiera",
-               soldi: "plata", portafoglio: "billetera", fame: "hambre", chiavi: "llaves", disastro: "desastre" },
+        "A Bia vai levar a Sofía a um passeio histórico pelo Centro. \"Quando você chegar à Praça XV, " +
+        "vai ver o Paço Imperial\", explica. \"Ali funcionou o governo depois que a família real " +
+        "portuguesa fugiu das tropas de Napoleão e desembarcou no Rio, em março de 1808.\"\n\n" +
+        "Em poucos anos, a cidade mudou: ganhou o Jardim Botânico, a Imprensa Régia, o Banco do Brasil " +
+        "e a Biblioteca Real. Em 1815, o Brasil foi elevado a Reino Unido com Portugal e Algarves, " +
+        "e o Rio virou, na prática, a capital de um império.\n\n" +
+        "\"Se você quiser, depois a gente vai ao Jardim Botânico, que Dom João criou em 1808. E se " +
+        "sobrar tempo, passamos na Quinta da Boa Vista, onde a família real viveu.\" " +
+        "\"Enquanto eu estiver no Rio, vou tropeçar na história a cada esquina\", diz a Sofía. " +
+        "\"Assim que puder, volto sozinha, com um caderno.\"",
+      gloss: { paço: "palacio", fugiu: "huyó", tropas: "tropas", imprensa: "imprenta", régia: "real",
+               elevado: "elevado", reino: "reino", virou: "se volvió", império: "imperio", sobrar: "sobra",
+               tropeçar: "tropezar", sozinha: "sola", quiser: "querés", estiver: "esté", puder: "pueda" },
       questions: [
-        ["¿Qué pasó en la parada?", ["perdió el colectivo", "era domingo", "llovía", "había paro"], "perdió el colectivo"],
-        ["¿Qué no funcionaba en la oficina?", ["ni la computadora ni la impresora", "el ascensor", "la luz", "el teléfono"], "ni la computadora ni la impresora"],
-        ["¿Qué le faltaba a la noche?", ["las llaves", "la billetera", "el celular", "el colectivo"], "las llaves"]
+        ["¿Por qué la familia real portuguesa vino a Río?", ["huyó de las tropas de Napoleón", "buscaba oro", "quería ver el carnaval", "la invitó el emperador"], "huyó de las tropas de Napoleón"],
+        ["¿Qué pasó en 1815?", ["Brasil pasó a ser Reino Unido con Portugal", "Brasil se independizó", "se fundó Río", "se abolió la esclavitud"], "Brasil pasó a ser Reino Unido con Portugal"],
+        ["¿Qué creó don João en 1808?", ["el Jardín Botánico", "la Quinta da Boa Vista", "el Paço Imperial", "el Cristo Redentor"], "el Jardín Botánico"]
       ],
-      vf: [["Stamattina il narratore non ha fatto colazione.", "vero"], ["A pranzo ha mangiato un panino.", "falso"], ["Il narratore ha chiamato un fabbro.", "non si dice"]],
-      hunt: { label: "Tocá las palabras negativas (non, nessuno, niente, né…)", targets: ["non", "nessuno", "niente", "né", "neanche", "più", "mai"] } },
+      vf: [["A família real chegou ao Rio em 1808.", "verdadeiro"], ["O Jardim Botânico foi criado por Napoleão.", "falso"], ["A Bia já levou outros amigos à Praça XV.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en futuro do subjuntivo", targets: ["chegar", "quiser", "sobrar", "estiver", "puder"] } },
 
-    { id: "w-19", week: 19, level: "B1", emoji: "✈️", title: "Il piano di Giulia",
-      grammar: "futuro",
+    { id: "w-28", week: 28, n: 28, level: "B2", emoji: "⛓️", title: "Se vocês pudessem voltar a 1888",
+      grammar: "imperfeito do subjuntivo e orações condicionais",
       text:
-        "Il prossimo anno Giulia finirà l'università e partirà per un anno in Spagna. Vivrà a Valencia " +
-        "con due amiche e studierà lo spagnolo.\n\n" +
-        "All'inizio cercherà un lavoro in un bar o in un albergo. Poi, quando parlerà bene la lingua, " +
-        "farà domanda in una scuola di italiano.\n\n" +
-        "I genitori sono un po' preoccupati. \"Come farai con i soldi? Dove abiterai?\" chiede la madre. " +
-        "\"Non preoccuparti, mamma: andrà tutto bene\", risponde Giulia. Il padre, invece, sorride: " +
-        "\"Sarà un'esperienza bellissima. E noi verremo a trovarti a Natale!\"",
-      gloss: { prossimo: "próximo", cercherà: "buscará", albergo: "hotel", lingua: "idioma",
-               domanda: "solicitud (fare domanda = postularse)", genitori: "padres", preoccupati: "preocupados",
-               soldi: "plata", sorride: "sonríe", esperienza: "experiencia", trovarti: "visitarte" },
+        "Na aula da Bia, os alunos estudam a Abolição. O Brasil foi o último país das Américas a abolir " +
+        "a escravidão: a Lei Áurea foi assinada pela Princesa Isabel em 13 de maio de 1888. Durante mais " +
+        "de três séculos, entre quatro e cinco milhões de africanos foram trazidos à força para o Brasil.\n\n" +
+        "A Bia pergunta: \"Se vocês pudessem viajar no tempo, o que fariam?\" Um aluno responde que iria " +
+        "à Rua do Ouvidor para ver a festa. Outra diz que, se fosse jornalista, entrevistaria André " +
+        "Rebouças ou José do Patrocínio, dois abolicionistas negros.\n\n" +
+        "A Bia lembra que a festa não resolveu tudo: a lei não deu aos libertos nem terra, nem escola, " +
+        "nem trabalho. \"E se hoje o país quisesse reparar essa dívida, por onde começaria?\", pergunta. " +
+        "A turma fica em silêncio. Depois, todo mundo quer falar ao mesmo tempo.",
+      gloss: { escravidão: "esclavitud", assinada: "firmada", séculos: "siglos", força: "fuerza (à força = por la fuerza)",
+               pudessem: "pudieran", fariam: "harían", entrevistaria: "entrevistaría", libertos: "libertos (esclavos liberados)",
+               terra: "tierra", quisesse: "quisiera", dívida: "deuda", turma: "clase, grupo de alumnos", abolir: "abolir" },
       questions: [
-        ["¿Adónde se va Giulia?", ["a Valencia, en España", "a Madrid", "a Roma", "a Londres"], "a Valencia, en España"],
-        ["¿Dónde trabajará al principio?", ["en un bar o en un hotel", "en una escuela", "en una oficina", "en la universidad"], "en un bar o en un hotel"],
-        ["¿Qué harán los padres en Navidad?", ["la visitarán", "se quedarán en casa", "irán a la playa", "le mandarán plata"], "la visitarán"]
+        ["¿Quién firmó la Lei Áurea?", ["la princesa Isabel", "don Pedro I", "José do Patrocínio", "André Rebouças"], "la princesa Isabel"],
+        ["¿Qué haría un alumno si viajara en el tiempo?", ["iría a la Rua do Ouvidor a ver la fiesta", "entrevistaría a la princesa", "se quedaría en casa", "viajaría a África"], "iría a la Rua do Ouvidor a ver la fiesta"],
+        ["Según Bia, ¿qué no les dio la ley a los libertos?", ["tierra, escuela ni trabajo", "la libertad", "un nombre", "la ciudadanía portuguesa"], "tierra, escuela ni trabajo"]
       ],
-      vf: [["Giulia vivrà a Valencia.", "vero"], ["La madre chiede dove abiterà Giulia.", "vero"], ["Giulia ha già un lavoro in Spagna.", "falso"]],
-      hunt: { label: "Tocá los verbos en futuro", targets: ["finirà", "partirà", "vivrà", "studierà", "cercherà", "parlerà", "farà", "farai", "abiterai", "andrà", "sarà", "verremo"] } },
+      vf: [["A Lei Áurea é de 1888.", "verdadeiro"], ["O Brasil foi o primeiro país das Américas a abolir a escravidão.", "falso"], ["A turma da Bia tem trinta alunos.", "não se diz"]],
+      hunt: { label: "Tocá los verbos de las hipótesis (subjuntivo imperfecto y condicional)", targets: ["pudessem", "fariam", "iria", "fosse", "entrevistaria", "quisesse", "começaria"] } },
 
-    { id: "w-20", week: 20, level: "B1", emoji: "🌅", title: "Un ristorante al mare",
-      grammar: "condizionale presente",
+    { id: "w-29", week: 29, n: 29, level: "B2", emoji: "📚", title: "Paulo Freire e a leitura do mundo",
+      grammar: "infinitivo pessoal",
       text:
-        "Marco lavora in banca, ma non è felice. \"Mi piacerebbe cambiare vita\", dice all'amico Paolo. " +
-        "\"Vorrei aprire un piccolo ristorante al mare.\"\n\n" +
-        "\"E dove lo apriresti?\" chiede Paolo. \"In Sardegna. Cucinerei pesce fresco e la sera guarderei " +
-        "il tramonto dalla terrazza.\"\n\n" +
-        "\"Sarebbe bello\", risponde Paolo, \"ma dovresti imparare a cucinare! E il ristorante potrebbe anche non " +
-        "guadagnare niente.\" Marco ride: \"Hai ragione. Però almeno sarei libero. Tu verresti a lavorare " +
-        "con me?\" \"Forse... ma solo come cliente!\" Ridono tutti e due, ma Marco non dimentica il suo sogno.",
-      gloss: { felice: "feliz", pesce: "pescado", fresco: "fresco", tramonto: "atardecer", terrazza: "terraza",
-               imparare: "aprender", guadagnare: "ganar (plata)", almeno: "al menos", libero: "libre", forse: "quizás" },
+        "Em 1963, na cidade de Angicos, no Rio Grande do Norte, o educador pernambucano Paulo Freire " +
+        "coordenou uma experiência que ficou famosa: cerca de trezentos trabalhadores aprenderam a ler " +
+        "e a escrever em umas quarenta horas de aula. O método partia de palavras da vida dos alunos, " +
+        "como tijolo e salário, para eles discutirem a própria realidade antes de decorarem sílabas.\n\n" +
+        "Para Freire, não bastava os adultos saberem juntar letras: era preciso lerem o mundo. " +
+        "Numa frase conhecida, escreveu que a leitura do mundo precede a leitura da palavra.\n\n" +
+        "Depois do golpe militar de 1964, foi preso e partiu para o exílio. No Chile, escreveu a " +
+        "Pedagogia do Oprimido, hoje lida no mundo inteiro. A Bia usa as ideias dele na escola: pede " +
+        "aos alunos para trazerem notícias do bairro e, antes de começarem a aula, conversarem sobre elas.",
+      gloss: { pernambucano: "de Pernambuco", coordenou: "coordinó", tijolo: "ladrillo", discutirem: "discutan",
+               decorarem: "memoricen", bastava: "alcanzaba", juntar: "juntar", preciso: "necesario (era preciso = hacía falta)",
+               lerem: "lean", leitura: "lectura", golpe: "golpe", preso: "preso", exílio: "exilio",
+               oprimido: "oprimido", trazerem: "traigan", começarem: "empiecen", conversarem: "charlen" },
       questions: [
-        ["¿Qué quiere hacer Marco?", ["abrir un restaurante en el mar", "cambiar de banco", "irse a vivir con Paolo", "aprender a nadar"], "abrir un restaurante en el mar"],
-        ["¿Qué problema ve Paolo?", ["Marco no sabe cocinar", "Cerdeña es cara", "no hay pescado", "Marco es muy joven"], "Marco no sabe cocinar"],
-        ["¿Cómo iría Paolo al restaurante?", ["solo como cliente", "como cocinero", "como socio", "no iría"], "solo como cliente"]
+        ["¿Qué pasó en Angicos en 1963?", ["unos trescientos trabajadores aprendieron a leer", "Freire nació allí", "se fundó una universidad", "hubo un golpe militar"], "unos trescientos trabajadores aprendieron a leer"],
+        ["¿De qué partía el método?", ["de palabras de la vida de los alumnos", "de las sílabas", "de libros europeos", "de canciones"], "de palabras de la vida de los alumnos"],
+        ["¿Dónde escribió Pedagogia do Oprimido?", ["en Chile", "en Angicos", "en Río", "en Portugal"], "en Chile"]
       ],
-      vf: [["Marco lavora in banca.", "vero"], ["Marco vorrebbe un ristorante in montagna.", "falso"], ["Paolo sa cucinare molto bene.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en condizionale", targets: ["piacerebbe", "vorrei", "apriresti", "cucinerei", "guarderei", "sarebbe", "dovresti", "potrebbe", "sarei", "verresti"] } },
+      vf: [["Paulo Freire foi preso depois do golpe de 1964.", "verdadeiro"], ["O método começava pelas sílabas.", "falso"], ["A Bia conheceu Paulo Freire.", "não se diz"]],
+      hunt: { label: "Tocá los infinitivos personales (con -em, -mos…)", targets: ["discutirem", "decorarem", "saberem", "lerem", "trazerem", "começarem", "conversarem"] } },
 
-    { id: "w-21", week: 21, level: "B1", emoji: "🧺", title: "Il mercato del sabato",
-      grammar: "ne e ci",
+    { id: "w-30", week: 30, n: 30, level: "B2", emoji: "🗡️", title: "Independência ou morte?",
+      grammar: "tempos compostos e hipótese no passado",
       text:
-        "Il sabato vado al mercato di piazza delle Erbe: ci vado da dieci anni. Compro sempre la frutta " +
-        "dal signor Bepi. \"Quante mele vuole?\" \"Ne prendo un chilo.\"\n\n" +
-        "Poi passo dal formaggio. \"Il parmigiano? Ne vorrei due etti.\" Al banco del pesce c'è sempre " +
-        "la fila, ma ci resto volentieri perché le persone chiacchierano.\n\n" +
-        "A volte ci trovo anche la mia amica Lucia. Parliamo del lavoro e dei figli, e ne ridiamo insieme. " +
-        "Quando torno a casa la borsa è pesante: ci sono troppe cose! Ma è il mio momento preferito della settimana.",
-      gloss: { mele: "manzanas", etti: "cien gramos (due etti = 200 g)", banco: "puesto", fila: "fila, cola",
-               volentieri: "con gusto", chiacchierano: "charlan", figli: "hijos", volte: "veces (a volte = a veces)", ridiamo: "nos reímos",
-               borsa: "bolsa", pesante: "pesada" },
+        "Em 7 de setembro de 1822, às margens do riacho Ipiranga, em São Paulo, Dom Pedro teria gritado " +
+        "\"Independência ou morte!\". A cena ficou famosa no quadro de Pedro Américo, pintado em 1888, " +
+        "décadas depois, e é bem mais heroica do que deve ter sido a realidade.\n\n" +
+        "Os historiadores discutem o que teria acontecido se a corte não tivesse vindo para o Rio em 1808. " +
+        "Talvez o Brasil tivesse se dividido em vários países, como a América espanhola. E se Dom João VI " +
+        "não tivesse voltado a Portugal em 1821, deixando o filho aqui, a independência talvez tivesse " +
+        "demorado mais.\n\n" +
+        "A Sofía pensa na própria vida: \"Se eu não tivesse aceitado aquele trabalho remoto, nunca teria " +
+        "vindo ao Rio.\" \"Espero que você não tenha se arrependido\", diz a Bia. \"Quando você tiver " +
+        "terminado o curso, vai discutir tudo isso comigo em português.\"",
+      gloss: { margens: "orillas", riacho: "arroyo", gritado: "gritado", quadro: "cuadro", heroica: "heroica",
+               acontecido: "pasado, sucedido", vindo: "venido", dividido: "dividido", filho: "hijo",
+               demorado: "tardado", aceitado: "aceptado", arrependido: "arrepentido", comigo: "conmigo" },
       questions: [
-        ["¿Hace cuánto va a ese mercado?", ["diez años", "un año", "dos meses", "toda la vida"], "diez años"],
-        ["¿Cuánto parmesano pide?", ["doscientos gramos", "un kilo", "cien gramos", "medio kilo"], "doscientos gramos"],
-        ["¿Por qué no le molesta la fila del pescado?", ["la gente charla", "es corta", "no compra pescado", "va con Lucia"], "la gente charla"]
+        ["¿Qué habría gritado don Pedro?", ["«¡Independencia o muerte!»", "«¡Viva Portugal!»", "«¡Me quedo!»", "«¡Abajo el rey!»"], "«¡Independencia o muerte!»"],
+        ["Según algunos historiadores, sin la corte en Río, ¿qué habría pasado?", ["Brasil quizás se habría dividido en varios países", "Brasil sería más grande", "no habría carnaval", "Río sería la capital de Portugal"], "Brasil quizás se habría dividido en varios países"],
+        ["¿Qué habría pasado si Sofía no aceptaba el trabajo remoto?", ["nunca habría venido a Río", "viviría en São Paulo", "habría estudiado historia", "nada"], "nunca habría venido a Río"]
       ],
-      vf: [["Il narratore va al mercato da dieci anni.", "vero"], ["Compra un chilo di parmigiano.", "falso"], ["Lucia vende il pesce al mercato.", "non si dice"]],
-      hunt: { label: "Tocá ci y ne", targets: ["ci", "ne"] } },
+      vf: [["O quadro de Pedro Américo foi pintado em 1888.", "verdadeiro"], ["Dom João VI ficou no Brasil até morrer.", "falso"], ["A Sofía se arrependeu de ter vindo ao Rio.", "não se diz"]],
+      hunt: { label: "Tocá los auxiliares de los tiempos compuestos (teria, tivesse, tenha, tiver)", targets: ["teria", "tivesse", "tenha", "tiver"] } },
 
-    { id: "w-22", week: 22, level: "B1", emoji: "📕", title: "Il libro prestato",
-      grammar: "pronomi combinati",
+    { id: "w-31", week: 31, n: 31, level: "B2", emoji: "📓", title: "Quarto de despejo",
+      grammar: "discurso indireto",
       text:
-        "Due mesi fa ho prestato un libro a Giorgio. Ieri gliel'ho chiesto: \"Me lo ridai?\" " +
-        "\"Certo, te lo porto domani\", mi ha detto.\n\n" +
-        "Oggi Giorgio è arrivato senza libro. \"L'ho dato a mia sorella: gliel'ho prestato perché le piace " +
-        "quell'autore. Glielo chiedo stasera.\" Mi sono arrabbiato un po'. \"Ma il libro è mio! " +
-        "Me l'ha regalato mia madre.\"\n\n" +
-        "Giorgio si è scusato: \"Hai ragione. Te lo riporto sabato, te lo prometto.\" " +
-        "Sabato il libro è tornato, con un biglietto di sua sorella: \"Grazie! Me lo presti ancora?\"",
-      gloss: { prestato: "prestado", ridai: "devolvés", porto: "traigo", sorella: "hermana", autore: "autor",
-               arrabbiato: "enojado", regalato: "regalado", scusato: "disculpado", riporto: "devuelvo",
-               prometto: "prometo", biglietto: "notita", presti: "prestás" },
+        "Em 1960 saiu Quarto de Despejo, o diário que Carolina Maria de Jesus, catadora de papel na " +
+        "favela do Canindé, em São Paulo, escrevia em cadernos achados no lixo. O livro vendeu dezenas " +
+        "de milhares de exemplares e foi traduzido para mais de dez línguas.\n\n" +
+        "Na aula, a Bia pediu que os alunos lessem alguns trechos e contassem o que tinham entendido. " +
+        "A Júlia disse que Carolina anotava o preço de tudo e que a fome aparecia em quase todas as " +
+        "páginas. O Rafael comentou que ela chamava a favela de quarto de despejo da cidade, o lugar " +
+        "onde se jogava o que ninguém queria ver.\n\n" +
+        "Outro aluno perguntou se ela tinha ficado rica. A Bia respondeu que não, que o sucesso tinha " +
+        "durado pouco e que Carolina tinha morrido pobre, em 1977. Contou também que, hoje, ela era " +
+        "lida em escolas do país inteiro.",
+      gloss: { despejo: "trastos (quarto de despejo = cuarto de los trastos)", catadora: "recolectora", achados: "encontrados",
+               lixo: "basura", dezenas: "decenas", exemplares: "ejemplares", línguas: "idiomas", lessem: "leyeran",
+               trechos: "fragmentos", contassem: "contaran", preço: "precio", fome: "hambre", jogava: "tiraba",
+               sucesso: "éxito", rica: "rica" },
       questions: [
-        ["¿A quién le dio Giorgio el libro?", ["a su hermana", "a su madre", "a un amigo", "a la biblioteca"], "a su hermana"],
-        ["¿Quién le regaló el libro al narrador?", ["su madre", "Giorgio", "su hermana", "un autor"], "su madre"],
-        ["¿Qué pide la hermana al final?", ["que se lo preste otra vez", "otro libro", "perdón", "nada"], "que se lo preste otra vez"]
+        ["¿Dónde escribía Carolina su diario?", ["en cuadernos encontrados en la basura", "en una computadora", "en el diario de la ciudad", "en cartas"], "en cuadernos encontrados en la basura"],
+        ["Según Rafael, ¿cómo llamaba Carolina a la favela?", ["el cuarto de los trastos de la ciudad", "su casa", "el corazón de São Paulo", "un jardín"], "el cuarto de los trastos de la ciudad"],
+        ["¿Qué respondió Bia sobre el éxito de Carolina?", ["que duró poco y murió pobre", "que se hizo rica", "que nunca publicó", "que se fue a Europa"], "que duró poco y murió pobre"]
       ],
-      vf: [["Giorgio ha dato il libro a sua sorella.", "vero"], ["Il libro è di Giorgio.", "falso"], ["La sorella di Giorgio fa la scrittrice.", "non si dice"]],
-      hunt: { label: "Tocá los pronombres combinados (me lo, te lo, glielo…)", targets: ["gliel'ho", "me", "te", "glielo"] } },
+      vf: [["O livro foi traduzido para mais de dez línguas.", "verdadeiro"], ["Carolina morreu rica.", "falso"], ["A Júlia quer ser escritora.", "não se diz"]],
+      hunt: { label: "Tocá los verbos que introducen lo que dijo otro", targets: ["pediu", "disse", "comentou", "perguntou", "respondeu", "contou"] } },
 
-    { id: "w-24", week: 24, level: "B1", emoji: "🎂", title: "Il nuovo collega",
-      grammar: "congiuntivo presente",
+    { id: "w-32", week: 32, n: 32, level: "B2", emoji: "🏛️", title: "A Era Vargas",
+      grammar: "voz passiva sintética e sujeito indeterminado",
       text:
-        "Al lavoro è arrivato un nuovo collega, Stefano. Tutti hanno un'opinione su di lui. Chiara pensa " +
-        "che sia simpatico, ma crede che parli troppo. Marco, invece, pensa che lavori poco e che arrivi sempre tardi.\n\n" +
-        "Io non lo conosco bene. Credo che abbia bisogno di tempo: è nuovo e forse è timido. " +
-        "Spero che si trovi bene con noi.\n\n" +
-        "Oggi Stefano ha portato una torta per tutti. \"È il mio compleanno\", ha detto. " +
-        "Adesso tutti pensano che sia il collega migliore dell'ufficio!",
-      gloss: { collega: "compañero de trabajo", opinione: "opinión", troppo: "demasiado", bisogno: "necesidad (avere bisogno = necesitar)",
-               forse: "quizás", timido: "tímido", trovi: "encuentre (trovarsi bene = sentirse a gusto)", torta: "torta",
-               compleanno: "cumpleaños", migliore: "mejor", ufficio: "oficina" },
+        "Em 1930, Getúlio Vargas chegou ao poder, e o Rio, então capital, viu mudanças enormes. " +
+        "Criou-se o Ministério do Trabalho, instituiu-se o salário mínimo em 1940 e, em 1943, " +
+        "reuniram-se as leis trabalhistas na CLT, que até hoje se discute no Congresso. Criaram-se também " +
+        "a Companhia Siderúrgica Nacional e, em 1953, a Petrobras, depois da campanha \"O petróleo é nosso\".\n\n" +
+        "Mas não se pode esquecer o outro lado: no Estado Novo, entre 1937 e 1945, fechou-se o Congresso, " +
+        "censurava-se a imprensa e prendiam-se os opositores.\n\n" +
+        "Dizem que Vargas ainda divide os brasileiros. Em 1954, no meio de uma grave crise política, ele " +
+        "se matou no Palácio do Catete, hoje Museu da República. Na carta-testamento, escreveu: \"Saio da " +
+        "vida para entrar na História.\" A Sofía passa pela porta do museu todos os dias, a caminho do metrô.",
+      gloss: { mudanças: "cambios", mínimo: "mínimo", trabalhistas: "laborales", siderúrgica: "siderúrgica",
+               esquecer: "olvidar", fechou: "cerró", censurava: "censuraba", imprensa: "prensa",
+               prendiam: "encarcelaban", opositores: "opositores", matou: "mató (se matou = se suicidó)",
+               saio: "salgo", caminho: "camino" },
       questions: [
-        ["¿Qué piensa Chiara de Stefano?", ["que es simpático pero habla mucho", "que trabaja poco", "que llega tarde", "que es tímido"], "que es simpático pero habla mucho"],
-        ["¿Qué cree el narrador?", ["que necesita tiempo", "que es antipático", "que se va a ir", "que es el jefe"], "que necesita tiempo"],
-        ["¿Por qué trajo una torta?", ["era su cumpleaños", "para pedir perdón", "se iba", "era viernes"], "era su cumpleaños"]
+        ["¿Qué se creó en 1953?", ["Petrobras", "el salario mínimo", "la CLT", "el Ministerio de Trabajo"], "Petrobras"],
+        ["¿Qué pasó durante el Estado Novo?", ["se cerró el Congreso y se censuró la prensa", "se votó libremente", "se fundó Brasilia", "Vargas vivió en el exilio"], "se cerró el Congreso y se censuró la prensa"],
+        ["¿Qué es hoy el Palacio del Catete?", ["el Museo de la República", "una escuela", "la casa de Sofía", "un ministerio"], "el Museo de la República"]
       ],
-      vf: [["Stefano è un nuovo collega.", "vero"], ["Chiara pensa che Stefano parli poco.", "falso"], ["Stefano ha fatto la torta da solo.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en congiuntivo", targets: ["sia", "parli", "lavori", "arrivi", "abbia", "trovi"] } },
+      vf: [["A CLT reuniu as leis trabalhistas em 1943.", "verdadeiro"], ["Vargas morreu no exílio.", "falso"], ["A Sofía já visitou o Museu da República.", "não se diz"]],
+      hunt: { label: "Tocá los verbos de la pasiva con se (criou-se, fechou-se…)", targets: ["criou-se", "instituiu-se", "reuniram-se", "criaram-se", "fechou-se", "censurava-se", "prendiam-se"] } },
 
-    { id: "w-25", week: 25, level: "B1", emoji: "👔", title: "Consigli per un colloquio",
-      grammar: "congiuntivo: quando si usa",
+    { id: "w-33", week: 33, n: 33, level: "B2", emoji: "🪶", title: "O bruxo do Cosme Velho",
+      grammar: "colocação pronominal na escrita",
       text:
-        "Domani Elena ha un colloquio importante. Sua sorella le dà qualche consiglio. \"È importante che tu " +
-        "arrivi dieci minuti prima. Bisogna che ti vesta in modo semplice ed elegante.\"\n\n" +
-        "\"E se mi fanno domande difficili?\" \"È normale che tu sia nervosa. Prima di rispondere, ascolta " +
-        "bene la domanda. Anche se non sai tutto, è meglio che tu dica la verità.\"\n\n" +
-        "Elena ha paura che il direttore sia antipatico. \"Non credo che sia così\", dice la sorella. " +
-        "\"Basta che tu sorrida e che parli con calma. Sono sicura che andrà bene.\"",
-      gloss: { colloquio: "entrevista de trabajo", consiglio: "consejo", bisogna: "hace falta", vesta: "vistas",
-               semplice: "simple", nervosa: "nerviosa", verità: "verdad", paura: "miedo", direttore: "director",
-               basta: "alcanza con", sorrida: "sonrías", calma: "calma" },
+        "Joaquim Maria Machado de Assis nasceu em 1839, no Morro do Livramento, filho de um pintor de " +
+        "paredes e de uma lavadeira dos Açores. Sem ter feito universidade, tornou-se o escritor mais " +
+        "admirado do país e, em 1897, ajudou a fundar a Academia Brasileira de Letras, que o elegeu seu " +
+        "primeiro presidente. Chamam-no de Bruxo do Cosme Velho, o bairro onde morou, por causa de um " +
+        "poema de Carlos Drummond de Andrade.\n\n" +
+        "Em Memórias Póstumas de Brás Cubas (1881), o narrador é um defunto que conta a própria vida. " +
+        "Dedicou-a \"ao verme que primeiro roeu as frias carnes do meu cadáver\". Em Dom Casmurro (1899), " +
+        "Bentinho nunca nos diz com certeza se Capitu o traiu: deixa-nos a dúvida.\n\n" +
+        "A Sofía comprou os dois romances num sebo da Rua do Carmo e prometeu à Bia, rindo: " +
+        "\"Lê-los-ei em português, sem tradução!\"",
+      gloss: { pintor: "pintor", paredes: "paredes", lavadeira: "lavandera", tornou: "volvió (tornou-se = se volvió)",
+               elegeu: "eligió", bruxo: "brujo", defunto: "difunto", verme: "gusano", roeu: "royó",
+               frias: "frías", traiu: "traicionó", romances: "novelas", sebo: "librería de usados",
+               "lê-los-ei": "los leeré", certeza: "certeza" },
       questions: [
-        ["¿Cuándo tiene que llegar Elena?", ["diez minutos antes", "a la hora justa", "una hora antes", "tarde"], "diez minutos antes"],
-        ["¿Qué hacer si no sabe algo?", ["decir la verdad", "inventar", "cambiar de tema", "irse"], "decir la verdad"],
-        ["¿De qué tiene miedo Elena?", ["de que el director sea antipático", "de llegar tarde", "de la ropa", "de su hermana"], "de que el director sea antipático"]
+        ["¿Qué fundó Machado de Assis en 1897?", ["la Academia Brasileña de Letras", "una universidad", "un diario", "un teatro"], "la Academia Brasileña de Letras"],
+        ["¿Quién narra Memórias Póstumas de Brás Cubas?", ["un difunto", "Capitu", "un gusano", "Machado de niño"], "un difunto"],
+        ["¿Qué deja Bentinho sin resolver?", ["si Capitu lo traicionó", "dónde nació", "quién escribió el libro", "cuándo murió"], "si Capitu lo traicionó"]
       ],
-      vf: [["Elena ha un colloquio domani.", "vero"], ["La sorella le consiglia di arrivare in ritardo.", "falso"], ["Il colloquio è in una banca.", "non si dice"]],
-      hunt: { label: "Tocá los congiuntivi", targets: ["arrivi", "vesta", "sia", "dica", "sorrida", "parli"] } },
+      vf: [["Machado de Assis nasceu no Rio de Janeiro.", "verdadeiro"], ["Machado estudou numa universidade europeia.", "falso"], ["A Sofía pagou pouco pelos livros.", "não se diz"]],
+      hunt: { label: "Tocá los pronombres pegados al verbo (ênclise y mesóclise)", targets: ["tornou-se", "chamam-no", "dedicou-a", "deixa-nos", "lê-los-ei"] } },
 
-    { id: "w-26", week: 26, level: "B1", emoji: "📔", title: "Caro diario",
-      grammar: "ripasso: futuro, congiuntivo, pronomi",
+    { id: "w-34", week: 34, n: 34, level: "B2", emoji: "🏚️", title: "Casa-grande e senzala",
+      grammar: "conectores e coesão",
       text:
-        "Caro diario, domani comincia il mio nuovo lavoro a Torino e sono un po' agitato. Ho già preparato " +
-        "tutto: i vestiti, la borsa e i documenti. Mia madre me li ha controllati due volte.\n\n" +
-        "Spero che i colleghi siano gentili e che il capo non sia troppo severo. Penso che all'inizio farò " +
-        "qualche errore, ma imparerò in fretta.\n\n" +
-        "Quando ero studente sognavo un lavoro così. Ora ci sono quasi: domani alle nove entrerò in ufficio " +
-        "e dirò \"Buongiorno!\" con il mio sorriso migliore. Chissà come andrà!",
-      gloss: { diario: "diario (íntimo)", agitato: "nervioso", vestiti: "ropa", documenti: "papeles",
-               controllati: "revisado", volte: "veces", severo: "severo", inizio: "principio", fretta: "apuro (in fretta = rápido)",
-               sognavo: "soñaba", quasi: "casi", sorriso: "sonrisa", chissà: "quién sabe" },
+        "Em 1933, o pernambucano Gilberto Freyre publicou Casa-Grande & Senzala, um dos livros mais " +
+        "influentes sobre o Brasil. A casa-grande era a moradia do senhor de engenho; a senzala, o lugar " +
+        "onde viviam os escravizados. Freyre valorizou a contribuição africana e indígena, o que, aliás, " +
+        "era raro na época. Por isso, o livro foi recebido como uma revolução.\n\n" +
+        "No entanto, a obra também idealizava a convivência entre senhores e escravizados, como se a " +
+        "mistura tivesse suavizado a violência. A ideia de uma democracia racial, associada ao livro, foi " +
+        "então duramente criticada. Nos anos 1950 e 1960, o sociólogo Florestan Fernandes, entre outros, " +
+        "mostrou que o racismo continuava a organizar a sociedade, ou seja, que a abolição não tinha " +
+        "trazido igualdade.\n\n" +
+        "Contudo, poucos negam que Freyre mudou o modo como o Brasil se olha. Portanto, vale a pena " +
+        "lê-lo, desde que se leiam também os seus críticos.",
+      gloss: { moradia: "vivienda", engenho: "ingenio (azucarero)", senzala: "barracón de los esclavos",
+               aliás: "por cierto", entanto: "sin embargo (no entanto)", convivência: "convivencia",
+               suavizado: "suavizado", duramente: "duramente", igualdade: "igualdad", contudo: "sin embargo",
+               negam: "niegan", pena: "pena (vale a pena = vale la pena)", "lê-lo": "leerlo", leiam: "lean" },
       questions: [
-        ["¿Dónde empieza a trabajar?", ["en Turín", "en Roma", "en Milán", "en casa"], "en Turín"],
-        ["¿Quién revisó los papeles?", ["su madre", "el jefe", "un colega", "nadie"], "su madre"],
-        ["¿Qué espera de los colegas?", ["que sean amables", "que lo ayuden con plata", "que no estén", "que hablen inglés"], "que sean amables"]
+        ["¿Qué era la senzala?", ["el lugar donde vivían los esclavizados", "la casa del dueño", "el ingenio", "una iglesia"], "el lugar donde vivían los esclavizados"],
+        ["¿Qué se le critica a Freyre?", ["que idealizaba la convivencia entre amos y esclavizados", "que ignoraba a los africanos", "que escribía mal", "que no era brasileño"], "que idealizaba la convivencia entre amos y esclavizados"],
+        ["¿Qué mostró Florestan Fernandes?", ["que el racismo seguía organizando la sociedad", "que la abolición trajo igualdad", "que Freyre tenía razón en todo", "que no hubo esclavitud"], "que el racismo seguía organizando la sociedad"]
       ],
-      vf: [["Il nuovo lavoro è a Torino.", "vero"], ["La madre ha controllato i documenti una volta sola.", "falso"], ["Il capo è una donna.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en futuro", targets: ["farò", "imparerò", "entrerò", "dirò", "andrà"] } },
+      vf: [["Casa-Grande & Senzala foi publicado em 1933.", "verdadeiro"], ["Florestan Fernandes defendeu a ideia de democracia racial.", "falso"], ["Freyre e Florestan eram amigos.", "não se diz"]],
+      hunt: { label: "Tocá los conectores (aliás, no entanto, contudo, portanto…)", targets: ["aliás", "isso", "entanto", "então", "seja", "contudo", "portanto"] } },
 
-    { id: "w-29", week: 29, level: "B2", emoji: "🎸", title: "Il concerto",
-      grammar: "congiuntivo passato",
+    { id: "w-35", week: 35, n: 35, level: "B2", emoji: "❤️", title: "O homem cordial",
+      grammar: "regência verbal",
       text:
-        "Ieri sera c'era il concerto di Vasco Rossi, ma Luca non è venuto. I suoi amici non capiscono perché. " +
-        "\"Credo che abbia perso il treno\", dice Sara. \"Penso che se ne sia dimenticato\", risponde Paolo. " +
-        "\"È strano che non ci abbia scritto niente.\"\n\n" +
-        "Stamattina Luca ha telefonato: \"Scusate! Mi dispiace che siate rimasti ad aspettarmi. Ho avuto " +
-        "la febbre tutta la notte.\"\n\n" +
-        "\"Speriamo che tu sia guarito, almeno\", ha detto Sara. \"Sì, sto meglio. Ma mi dispiace " +
-        "che il concerto sia finito senza di me!\"",
-      gloss: { concerto: "recital", perso: "perdido", dimenticato: "olvidado", strano: "raro", scusate: "disculpen",
-               dispiace: "da pena (mi dispiace = lo siento)", rimasti: "quedado", aspettarmi: "esperarme",
-               febbre: "fiebre", guarito: "curado", almeno: "al menos" },
+        "Em Raízes do Brasil, de 1936, Sérgio Buarque de Holanda, pai do compositor Chico Buarque, " +
+        "referiu-se ao brasileiro como \"homem cordial\". Muita gente confunde a expressão com gentileza, " +
+        "mas o autor aludia à palavra latina cor, cordis, coração: o homem cordial age pelo coração, " +
+        "não pela regra. A expressão, aliás, ele a tomou emprestada do escritor Ribeiro Couto.\n\n" +
+        "Segundo Sérgio Buarque, o homem cordial prefere a intimidade à distância e resiste a obedecer " +
+        "a normas impessoais. Na política, isso significa confundir o público com o privado: o chefe que " +
+        "ajuda os amigos e esquece a lei.\n\n" +
+        "Na semana passada, a Sofía assistiu a uma palestra sobre o livro no Instituto Moreira Salles, " +
+        "na Gávea. Na volta, namorou a ideia de escrever sobre a Argentina: \"Será que nós também somos " +
+        "cordiais?\" A Bia lembrou-se de um detalhe: o próprio autor avisou que cordialidade não quer " +
+        "dizer bondade.",
+      gloss: { raízes: "raíces", referiu: "refirió (referiu-se = se refirió)", gentileza: "amabilidad", aludia: "aludía",
+               coração: "corazón", age: "actúa", regra: "regla", emprestada: "prestada (tomar emprestado = tomar prestado)",
+               obedecer: "obedecer", chefe: "jefe", assistiu: "asistió (assistir a = ver, presenciar)",
+               palestra: "charla, conferencia", namorou: "acarició (la idea)", avisou: "advirtió", bondade: "bondad" },
       questions: [
-        ["¿Qué cree Sara que pasó?", ["que perdió el tren", "que se olvidó", "que estaba enojado", "que se quedó dormido"], "que perdió el tren"],
-        ["¿Qué le pasó a Luca en realidad?", ["tuvo fiebre", "perdió el tren", "se olvidó", "trabajó"], "tuvo fiebre"],
-        ["¿Qué lamenta Luca al final?", ["que el recital terminara sin él", "haber llamado", "estar enfermo de nuevo", "nada"], "que el recital terminara sin él"]
+        ["¿De dónde viene «cordial» según el autor?", ["del latín cor, cordis: corazón", "de la palabra cortesía", "de un apellido", "del portugués antiguo"], "del latín cor, cordis: corazón"],
+        ["¿Qué hace el hombre cordial en la política?", ["confunde lo público con lo privado", "obedece las normas", "respeta la distancia", "no ayuda a nadie"], "confunde lo público con lo privado"],
+        ["¿Qué hizo Sofía la semana pasada?", ["asistió a una charla sobre el libro", "leyó el libro en español", "conoció a Chico Buarque", "escribió sobre Argentina"], "asistió a una charla sobre el libro"]
       ],
-      vf: [["Luca non è andato al concerto.", "vero"], ["Luca ha perso il treno.", "falso"], ["Il concerto è finito a mezzanotte.", "non si dice"]],
-      hunt: { label: "Tocá los auxiliares del congiuntivo passato (abbia, sia, siate)", targets: ["abbia", "sia", "siate"] } },
+      vf: [["Sérgio Buarque é o pai de Chico Buarque.", "verdadeiro"], ["Para o autor, cordial quer dizer bondoso.", "falso"], ["A palestra foi muito longa.", "não se diz"]],
+      hunt: { label: "Tocá los verbos cuyo régimen difiere del español (assistir a, namorar…)", targets: ["referiu-se", "aludia", "prefere", "obedecer", "assistiu", "namorou", "lembrou-se"] } },
 
-    { id: "w-30", week: 30, level: "B2", emoji: "🎹", title: "Il pianoforte",
-      grammar: "congiuntivo imperfetto e trapassato",
+    { id: "w-36", week: 36, n: 36, level: "B2", emoji: "🎨", title: "Uma noite na Lapa",
+      grammar: "crase",
       text:
-        "Da piccola Marta voleva che suo padre la portasse ogni domenica al mare. Sperava che il sole " +
-        "non finisse mai e che l'estate durasse tutto l'anno.\n\n" +
-        "Sua madre, invece, voleva che studiasse il pianoforte. \"Se non studi, non imparerai mai\", diceva. " +
-        "Marta faceva finta che le piacesse, ma pensava solo al mare.\n\n" +
-        "Anni dopo, Marta ha scoperto che sua madre da giovane aveva suonato in un'orchestra. Non immaginava " +
-        "che avesse avuto quel sogno e che ci avesse rinunciato per la famiglia. Quella sera ha riaperto il pianoforte.",
-      gloss: { portasse: "llevara", sperava: "esperaba", durasse: "durara", studiasse: "estudiara",
-               pianoforte: "piano", finta: "de cuenta (fare finta = hacer de cuenta)", scoperto: "descubierto",
-               suonato: "tocado", orchestra: "orquesta", sogno: "sueño", rinunciato: "renunciado", riaperto: "vuelto a abrir" },
+        "Às sextas-feiras, a Lapa se transforma. A Sofía e o João chegaram à Rua Joaquim Silva às dez e, " +
+        "antes de irem à roda de choro, subiram a Escadaria Selarón, que liga a Lapa a Santa Teresa. " +
+        "O artista chileno Jorge Selarón começou a cobrir os degraus com azulejos em 1990 e, até sua morte, " +
+        "em 2013, recebeu peças enviadas por visitantes de dezenas de países.\n\n" +
+        "Logo abaixo ficam os Arcos da Lapa, o antigo aqueduto da Carioca, concluído no século XVIII. " +
+        "Graças àquela obra, a água chegava às fontes do Centro. Hoje, sobre os arcos, passa o bonde " +
+        "que vai a Santa Teresa.\n\n" +
+        "No bar, pediram bolinhos de bacalhau à moda portuguesa e ouviram choro até as duas da manhã. " +
+        "A Sofía, que antes errava a crase, agora a vê em toda parte: à esquerda, à direita, às vezes.",
+      gloss: { choro: "choro (género musical)", escadaria: "escalinata", liga: "une", cobrir: "cubrir",
+               degraus: "escalones", azulejos: "azulejos", peças: "piezas", abaixo: "abajo",
+               aqueduto: "acueducto", concluído: "terminado", graças: "gracias (graças a = gracias a)",
+               bolinhos: "croquetas", bacalhau: "bacalao", errava: "le erraba a", esquerda: "izquierda", direita: "derecha" },
       questions: [
-        ["¿Qué quería Marta de chica?", ["ir al mar los domingos", "tocar el piano", "tocar en una orquesta", "estudiar"], "ir al mar los domingos"],
-        ["¿Qué descubrió después?", ["que su madre había tocado en una orquesta", "que su padre era músico", "que el mar estaba lejos", "que no le gustaba el piano"], "que su madre había tocado en una orquesta"],
-        ["¿Qué hizo esa noche?", ["volvió a abrir el piano", "fue al mar", "llamó a su padre", "lloró"], "volvió a abrir el piano"]
+        ["¿Qué une la Escadaria Selarón?", ["la Lapa con Santa Teresa", "el Centro con Botafogo", "dos playas", "dos iglesias"], "la Lapa con Santa Teresa"],
+        ["¿Qué eran los Arcos de la Lapa?", ["un antiguo acueducto", "un puente para autos", "una iglesia", "un teatro"], "un antiguo acueducto"],
+        ["¿Qué comieron en el bar?", ["croquetas de bacalao", "feijoada", "pizza", "brigadeiros"], "croquetas de bacalao"]
       ],
-      vf: [["Da piccola Marta amava il mare.", "vero"], ["Il padre voleva che Marta suonasse il pianoforte.", "falso"], ["La madre suonava il violino.", "non si dice"]],
-      hunt: { label: "Tocá los congiuntivi imperfetti y trapassati", targets: ["portasse", "finisse", "durasse", "studiasse", "piacesse", "avesse"] } },
+      vf: [["Selarón era chileno.", "verdadeiro"], ["Os Arcos da Lapa são do século XX.", "falso"], ["O João toca na roda de choro.", "não se diz"]],
+      hunt: { label: "Tocá las crases (à, às, àquela)", targets: ["às", "à", "àquela"] } },
 
-    { id: "w-31", week: 31, level: "B2", emoji: "🚕", title: "Il treno perso",
-      grammar: "condizionale passato",
+    { id: "w-37", week: 37, n: 37, level: "B2", emoji: "✈️", title: "Brasília, a capital inventada",
+      grammar: "verbos irregulares e derivados",
       text:
-        "Venerdì Paolo doveva partire per Roma alle sette. Avrebbe voluto dormire di più, ma aveva un " +
-        "appuntamento importante. Purtroppo il taxi è arrivato tardi e il treno è partito senza di lui.\n\n" +
-        "\"Sarei dovuto uscire prima\", ha pensato. \"Avrei potuto prendere la metro.\" Ha telefonato al " +
-        "cliente: \"Mi dispiace, sarei arrivato alle dieci, ma adesso arriverò a mezzogiorno.\"\n\n" +
-        "Il cliente è stato gentile: \"Non si preoccupi. Anch'io avrei preferito vederla più tardi: " +
-        "ho avuto una mattinata terribile!\" Paolo ha riso, finalmente tranquillo.",
-      gloss: { appuntamento: "cita", purtroppo: "lamentablemente", metro: "subte",
-               cliente: "cliente", dispiace: "lamento", mezzogiorno: "mediodía", preoccupi: "preocupe",
-               preferito: "preferido", mattinata: "mañana" },
+        "Em 1956, o presidente Juscelino Kubitschek propôs uma meta ousada: construir uma nova capital " +
+        "no Planalto Central em menos de cinco anos. A ideia não era nova, pois a Constituição de 1891 " +
+        "já previa a mudança, mas foi JK quem a manteve contra todas as críticas.\n\n" +
+        "O urbanista Lúcio Costa venceu o concurso com o Plano Piloto, em forma de cruz, ou de avião, " +
+        "e Oscar Niemeyer desenhou os palácios, a catedral e o Congresso. Milhares de trabalhadores, os " +
+        "candangos, vieram de todo o país, sobretudo do Nordeste, e intervieram em cada etapa da obra.\n\n" +
+        "Brasília foi inaugurada em 21 de abril de 1960, e o Rio perdeu o título de capital. Os cariocas, " +
+        "meio de brincadeira, dizem que a cidade nunca deixou de ser a capital cultural do país. Quem " +
+        "visita Brasília hoje obtém uma aula de arquitetura moderna ao ar livre: desde 1987, a cidade é " +
+        "Patrimônio Mundial da Unesco.",
+      gloss: { propôs: "propuso", meta: "meta", ousada: "audaz", planalto: "meseta", previa: "preveía",
+               manteve: "mantuvo", venceu: "ganó", concurso: "concurso", candangos: "obreros que construyeron Brasilia",
+               sobretudo: "sobre todo", intervieram: "intervinieron", etapa: "etapa", perdeu: "perdió",
+               brincadeira: "broma", obtém: "obtiene", livre: "libre" },
       questions: [
-        ["¿Por qué perdió el tren?", ["el taxi llegó tarde", "se quedó dormido", "hubo paro", "se olvidó"], "el taxi llegó tarde"],
-        ["¿Qué habría podido hacer?", ["tomar el subte", "ir en auto", "no viajar", "llamar antes"], "tomar el subte"],
-        ["¿Cómo reacciona el cliente?", ["es amable: él también tuvo una mañana terrible", "se enoja", "cancela la cita", "no contesta"], "es amable: él también tuvo una mañana terrible"]
+        ["¿Quién propuso construir Brasilia?", ["Juscelino Kubitschek", "Oscar Niemeyer", "Lúcio Costa", "Getúlio Vargas"], "Juscelino Kubitschek"],
+        ["¿Qué forma tiene el Plano Piloto?", ["de cruz o de avión", "de círculo", "de estrella", "de cuadrado"], "de cruz o de avión"],
+        ["¿Qué dicen los cariocas en broma?", ["que Río sigue siendo la capital cultural", "que Brasilia es más linda", "que Río nunca fue capital", "que quieren mudarse"], "que Río sigue siendo la capital cultural"]
       ],
-      vf: [["Paolo ha perso il treno delle sette.", "vero"], ["Il cliente si è arrabbiato.", "falso"], ["Paolo lavora a Roma.", "non si dice"]],
-      hunt: { label: "Tocá los condizionali passati (avrebbe voluto, sarei dovuto…)", targets: ["avrebbe", "sarei", "avrei"] } },
+      vf: [["Brasília foi inaugurada em 1960.", "verdadeiro"], ["A ideia de mudar a capital nasceu com JK.", "falso"], ["A Sofía já visitou Brasília.", "não se diz"]],
+      hunt: { label: "Tocá los derivados de pôr, ver, ter y vir (propôs, previa…)", targets: ["propôs", "previa", "manteve", "intervieram", "obtém"] } },
 
-    { id: "w-33", week: 33, level: "B2", emoji: "🏛️", title: "Se fossi sindaco",
-      grammar: "periodo ipotetico",
+    { id: "w-38", week: 38, n: 38, level: "B2", emoji: "🍺", title: "Papo de boteco",
+      grammar: "português falado do Brasil",
       text:
-        "A scuola la maestra chiede ai bambini: \"Che cosa fareste se foste sindaci della città?\" Luca risponde " +
-        "subito: \"Se fossi sindaco, costruirei un parco giochi in ogni quartiere.\"\n\n" +
-        "Giulia ci pensa un po': \"Se avessi tanti soldi, darei una casa a tutte le persone che non ce l'hanno.\" " +
-        "Marco, invece, ride: \"Se comandassi io, la scuola comincerebbe alle dieci!\"\n\n" +
-        "La maestra sorride. \"E se foste stati sindaci l'anno scorso, che cosa avreste cambiato?\" \"Avremmo " +
-        "chiuso le strade alle macchine\", dice Giulia. \"Così adesso potremmo giocare fuori!\"",
-      gloss: { maestra: "maestra", sindaco: "intendente", sindaci: "intendentes", costruirei: "construiría",
-               giochi: "juegos (parco giochi = plaza de juegos)", quartiere: "barrio", comandassi: "mandara",
-               chiuso: "cerrado", strade: "calles", fuori: "afuera" },
+        "— Cê vai mesmo pra Ouro Preto no feriado?\n" +
+        "— Vou, né. Tô doida pra conhecer. A Bia disse que é tipo voltar pro século XVIII.\n" +
+        "— É mesmo. Na época do ouro, Vila Rica, que hoje é Ouro Preto, era uma das cidades mais ricas " +
+        "da colônia. Tem igreja com ouro até no teto!\n" +
+        "— E o Aleijadinho?\n" +
+        "— Tá em tudo que é canto. Ele esculpiu doze profetas em pedra-sabão lá em Congonhas, pertinho.\n" +
+        "— E o feriado é de quê mesmo?\n" +
+        "— De Tiradentes, pô! Vinte e um de abril. O cara participou da Inconfidência Mineira, contra os " +
+        "impostos de Portugal, e foi enforcado aqui no Rio, em 1792. Por isso o JK escolheu esse dia pra " +
+        "inaugurar Brasília.\n" +
+        "— Nossa, cadê meu caderno? Vou anotar tudo.\n" +
+        "— Relaxa, tá tudo na internet. Pede mais um chope aí pra gente?",
+      gloss: { "cê": "vos, usted (você, coloquial)", pra: "para (coloquial)", "né": "¿no?", "tô": "estoy (coloquial)",
+               doida: "loca (tô doida pra = me muero por)", tipo: "como (muletilla: tipo)", pro: "para el (coloquial)",
+               ouro: "oro", teto: "techo", canto: "rincón (em tudo que é canto = por todos lados)",
+               profetas: "profetas", pertinho: "cerquita", "pô": "¡che! (muletilla)", impostos: "impuestos",
+               enforcado: "ahorcado", "cadê": "¿dónde está?", relaxa: "tranqui" },
       questions: [
-        ["¿Qué construiría Luca?", ["una plaza de juegos en cada barrio", "una escuela", "un estadio", "casas"], "una plaza de juegos en cada barrio"],
-        ["¿Qué cambiaría Marco?", ["la escuela empezaría a las diez", "cerraría las calles", "daría casas", "nada"], "la escuela empezaría a las diez"],
-        ["¿Qué habrían hecho el año pasado?", ["cerrar las calles a los autos", "construir un parque", "cambiar de maestra", "abrir más escuelas"], "cerrar las calles a los autos"]
+        ["¿Cómo se llamaba antes Ouro Preto?", ["Vila Rica", "Congonhas", "Tiradentes", "Minas Gerais"], "Vila Rica"],
+        ["¿Qué esculpió el Aleijadinho en Congonhas?", ["doce profetas en esteatita", "una iglesia de oro", "a Tiradentes", "un Cristo"], "doce profetas en esteatita"],
+        ["¿Qué le pasó a Tiradentes?", ["lo ahorcaron en Río en 1792", "fue presidente", "se fue a Portugal", "fundó Brasilia"], "lo ahorcaron en Río en 1792"]
       ],
-      vf: [["Luca costruirebbe un parco giochi.", "vero"], ["Marco vorrebbe cominciare la scuola alle otto.", "falso"], ["La maestra è stata sindaca.", "non si dice"]],
-      hunt: { label: "Tocá los verbos de la «se» (foste, fossi, avessi, comandassi)", targets: ["foste", "fossi", "avessi", "comandassi"] } },
+      vf: [["Tiradentes foi enforcado no Rio.", "verdadeiro"], ["O feriado de Tiradentes é em novembro.", "falso"], ["A Bia vai junto para Ouro Preto.", "não se diz"]],
+      hunt: { label: "Tocá las formas del portugués hablado (cê, pra, né, tô, tá…)", targets: ["cê", "pra", "né", "tô", "tipo", "pro", "tá", "pô", "cadê"] } },
 
-    { id: "w-34", week: 34, level: "B2", emoji: "📖", title: "La mia libreria",
-      grammar: "pronomi relativi",
+    { id: "w-39", week: 39, n: 39, level: "B2", emoji: "🗳️", title: "Diretas Já",
+      grammar: "revisão B2",
       text:
-        "C'è una libreria in cui passo ore intere. È in una piccola via che pochi conoscono, vicino a un ponte " +
-        "da cui vedo il fiume.\n\n" +
-        "Il proprietario, che si chiama Ettore, è un signore anziano con cui parlo sempre di romanzi. " +
-        "Conosce ogni libro che ha sugli scaffali. Gli scaffali sono pieni di libri usati, alcuni dei quali " +
-        "hanno più di cent'anni.\n\n" +
-        "I clienti che entrano per la prima volta restano sorpresi. La cosa che mi piace di più è l'odore " +
-        "della carta. È il posto in cui mi sento a casa.",
-      gloss: { libreria: "librería", intere: "enteras", ponte: "puente", fiume: "río", proprietario: "dueño",
-               anziano: "mayor, viejo", romanzi: "novelas", scaffali: "estantes", usati: "usados",
-               sorpresi: "sorprendidos", odore: "olor", carta: "papel" },
+        "Em 10 de abril de 1984, cerca de um milhão de pessoas se reuniram diante da Igreja da Candelária, " +
+        "no Centro do Rio, para pedir eleições diretas para presidente. O país vivia sob uma ditadura militar " +
+        "desde o golpe de 1964, e havia duas décadas que os brasileiros não escolhiam o presidente pelo voto.\n\n" +
+        "No palanque estavam políticos como Ulysses Guimarães e Leonel Brizola, então governador do Rio, " +
+        "e artistas de todo o país. Mesmo assim, em 25 de abril, a emenda Dante de Oliveira não obteve os " +
+        "votos necessários no Congresso. Se tivesse sido aprovada, o povo teria votado já em 1985. Em vez " +
+        "disso, Tancredo Neves foi eleito de forma indireta, mas adoeceu na véspera da posse e morreu sem " +
+        "assumir; quem governou foi José Sarney.\n\n" +
+        "A Dona Lúcia estava lá. \"Quando vocês forem votar, lembrem-se daquela praça cheia\", diz aos jovens " +
+        "do prédio. \"Para vocês votarem, muita gente arriscou tudo.\"",
+      gloss: { diante: "delante (diante de = frente a)", eleições: "elecciones", ditadura: "dictadura",
+               palanque: "tarima (de un acto político)", emenda: "enmienda", obteve: "obtuvo", aprovada: "aprobada",
+               povo: "pueblo", adoeceu: "se enfermó", véspera: "víspera", posse: "asunción (del cargo)",
+               arriscou: "arriesgó", "lembrem-se": "acuérdense" },
       questions: [
-        ["¿Qué se ve desde el puente?", ["el río", "el mar", "la librería", "la plaza"], "el río"],
-        ["¿Quién es Ettore?", ["el dueño de la librería", "un cliente", "un escritor", "el narrador"], "el dueño de la librería"],
-        ["¿Qué le gusta más al narrador?", ["el olor del papel", "los precios", "los libros nuevos", "el café"], "el olor del papel"]
+        ["¿Qué pedían en la Candelária?", ["elecciones directas para presidente", "el fin del carnaval", "la vuelta del rey", "un nuevo estadio"], "elecciones directas para presidente"],
+        ["¿Qué pasó con la enmienda Dante de Oliveira?", ["no obtuvo los votos necesarios", "fue aprobada", "la firmó Tancredo", "nunca se votó"], "no obtuvo los votos necesarios"],
+        ["¿Quién gobernó finalmente?", ["José Sarney", "Tancredo Neves", "Leonel Brizola", "Ulysses Guimarães"], "José Sarney"]
       ],
-      vf: [["Il proprietario si chiama Ettore.", "vero"], ["La libreria vende solo libri nuovi.", "falso"], ["Ettore ha scritto un romanzo.", "non si dice"]],
-      hunt: { label: "Tocá los relativos (che, cui, quali)", targets: ["che", "cui", "quali"] } },
+      vf: [["Tancredo Neves morreu antes de assumir.", "verdadeiro"], ["A emenda foi aprovada em 1984.", "falso"], ["A Dona Lúcia foi à Candelária com o marido.", "não se diz"]],
+      hunt: { label: "Tocá las formas de B2: futuro do subjuntivo, infinitivo pessoal y compuestos", targets: ["tivesse", "teria", "forem", "votarem"] } },
 
-    { id: "w-36", week: 36, level: "B2", emoji: "🍝", title: "In Italia si fa così",
-      grammar: "si passivante e si impersonale",
+    // ------------------------------------------------ Estação 4 (B2 → C1)
+    { id: "w-40", week: 40, n: 40, level: "B2", emoji: "📜", title: "A Constituição Cidadã",
+      grammar: "registro formal e nominalização",
       text:
-        "In Italia, a tavola, si seguono alcune regole. Il cappuccino si beve solo la mattina, mai dopo pranzo. " +
-        "La pasta non si taglia con il coltello e sugli spaghetti al pesce non si mette il parmigiano.\n\n" +
-        "Al bar si paga prima alla cassa e poi si ordina al banco. Il caffè si prende in piedi, velocemente.\n\n" +
-        "La domenica si pranza con la famiglia e si sta a tavola per ore. Si parla di tutto: di politica, " +
-        "di calcio, di cucina. E quando si va a casa di qualcuno, non si arriva mai a mani vuote: " +
-        "si porta un dolce o una bottiglia di vino.",
-      gloss: { regole: "reglas", taglia: "corta", coltello: "cuchillo", pesce: "pescado", cassa: "caja",
-               banco: "barra", piedi: "pie (in piedi = parado)", velocemente: "rápido", calcio: "fútbol",
-               mani: "manos", vuote: "vacías", dolce: "postre" },
+        "Promulgada em 5 de outubro de 1988, a atual Constituição brasileira marcou o encerramento formal " +
+        "do período autoritário. Na ocasião, o presidente da Assembleia Constituinte, Ulysses Guimarães, " +
+        "chamou-a de \"Constituição Cidadã\".\n\n" +
+        "Entre as inovações do texto, destacam-se a ampliação dos direitos sociais, a criação do Sistema " +
+        "Único de Saúde (SUS), a definição do racismo como crime inafiançável e imprescritível, o " +
+        "reconhecimento dos direitos dos povos indígenas às terras que tradicionalmente ocupam e a extensão " +
+        "do voto facultativo aos jovens de 16 e 17 anos.\n\n" +
+        "Há, contudo, quem aponte a extensão do próprio texto, com mais de duzentos artigos, como fonte de " +
+        "dificuldades para a sua aplicação. A frequente aprovação de emendas constitucionais, que já passam " +
+        "de cem, é outro dado relevante.\n\n" +
+        "Na biblioteca da escola, a Bia afixou um trecho do artigo 5º: \"Todos são iguais perante a lei, " +
+        "sem distinção de qualquer natureza.\"",
+      gloss: { promulgada: "promulgada", encerramento: "cierre, fin", cidadã: "ciudadana", destacam: "destacan",
+               ampliação: "ampliación", direitos: "derechos", inafiançável: "sin derecho a fianza",
+               imprescritível: "imprescriptible", reconhecimento: "reconocimiento", povos: "pueblos",
+               aponte: "señale", fonte: "fuente", afixou: "colgó, fijó", perante: "ante", qualquer: "cualquier" },
       questions: [
-        ["¿Cuándo se toma el capuchino?", ["solo a la mañana", "después del almuerzo", "a la noche", "siempre"], "solo a la mañana"],
-        ["¿Qué se hace primero en el bar?", ["pagar en la caja", "pedir en la barra", "sentarse", "tomar el café"], "pagar en la caja"],
-        ["¿Qué se lleva a una casa?", ["un postre o una botella de vino", "flores", "nada", "pan"], "un postre o una botella de vino"]
+        ["¿Cómo llamó Ulysses Guimarães a la Constitución?", ["«Constitución Ciudadana»", "«Constitución del Pueblo»", "«Ley Áurea»", "«Carta Magna Indígena»"], "«Constitución Ciudadana»"],
+        ["¿Qué sistema creó la Constitución?", ["el Sistema Único de Salud", "el salario mínimo", "la CLT", "Petrobras"], "el Sistema Único de Salud"],
+        ["¿Qué se critica del texto?", ["su extensión", "que es muy corto", "que no tiene derechos sociales", "que es de 1964"], "su extensión"]
       ],
-      vf: [["In Italia il cappuccino si beve la mattina.", "vero"], ["Al bar si ordina prima di pagare.", "falso"], ["In Italia si cena alle nove.", "non si dice"]],
-      hunt: { label: "Tocá el «si»", targets: ["si"] } },
+      vf: [["O voto é facultativo aos 16 e 17 anos.", "verdadeiro"], ["A Constituição tem menos de cem artigos.", "falso"], ["Os alunos da Bia leram a Constituição inteira.", "não se diz"]],
+      hunt: { label: "Tocá las nominalizaciones (sustantivos en -ção, -mento, -são…)", targets: ["encerramento", "ocasião", "inovações", "ampliação", "criação", "definição", "reconhecimento", "extensão", "aplicação", "aprovação", "distinção"] } },
 
-    { id: "w-37", week: 37, level: "B2", emoji: "🌊", title: "La leggenda di Colapesce",
-      grammar: "passato remoto",
+    { id: "w-41", week: 41, n: 41, level: "C1", emoji: "⭐", title: "Clarice no Leme",
+      grammar: "pretérito mais-que-perfeito simples e narrativa",
       text:
-        "Tanto tempo fa, a Messina, visse un ragazzo che si chiamava Cola. Passava le giornate in mare e nuotava " +
-        "come un pesce: per questo lo chiamarono Colapesce.\n\n" +
-        "Un giorno il re volle metterlo alla prova. Gettò una coppa d'oro in mare e Cola la riportò. Poi gettò " +
-        "una corona, e Cola la ritrovò.\n\n" +
-        "Alla fine il re lanciò un anello nel punto più profondo. Cola si tuffò e scoprì che la Sicilia " +
-        "poggiava su tre colonne, e che una era rotta. Decise di restare sotto il mare a sostenerla. " +
-        "Da quel giorno nessuno lo vide più.",
-      gloss: { nuotava: "nadaba", pesce: "pez", prova: "prueba", gettò: "tiró",
-               coppa: "copa", oro: "oro", corona: "corona", anello: "anillo", profondo: "profundo",
-               tuffò: "zambulló", poggiava: "se apoyaba", colonne: "columnas", rotta: "rota", sostenerla: "sostenerla" },
+        "Quando Clarice Lispector publicou A Hora da Estrela, em 1977, já se tornara uma lenda. Nascera em " +
+        "1920 na Ucrânia, numa família judia que fugira da guerra e da perseguição, e chegara ao Brasil ainda " +
+        "bebê. Crescera em Maceió e no Recife antes de se mudar para o Rio, onde passou os últimos anos, " +
+        "no Leme.\n\n" +
+        "No romance, o narrador, Rodrigo S. M., conta a história de Macabéa, uma moça alagoana que viera " +
+        "para o Rio e que quase não percebia a própria existência. Datilógrafa, Macabéa comia cachorro-quente, " +
+        "ouvia a Rádio Relógio e recortava anúncios de jornal.\n\n" +
+        "Clarice morreu em dezembro de 1977, pouco depois de o livro sair, na véspera de completar 57 anos. " +
+        "Hoje, no calçadão do Leme, uma estátua a mostra sentada com o seu cachorro, Ulisses. A Sofía " +
+        "sentou-se ao lado dela e leu o primeiro capítulo, que já lera duas vezes em espanhol.",
+      gloss: { tornara: "había vuelto (se tornara = se había vuelto)", lenda: "leyenda", nascera: "había nacido",
+               judia: "judía", fugira: "había huido", perseguição: "persecución", chegara: "había llegado",
+               crescera: "había crecido", mudar: "mudarse", romance: "novela", alagoana: "de Alagoas",
+               viera: "había venido", percebia: "notaba", datilógrafa: "dactilógrafa", "cachorro-quente": "pancho",
+               recortava: "recortaba", anúncios: "avisos", calçadão: "rambla, paseo costero", lera: "había leído" },
       questions: [
-        ["¿Por qué lo llamaron Colapesce?", ["nadaba como un pez", "vendía pescado", "era pescador", "tenía escamas"], "nadaba como un pez"],
-        ["¿Qué descubrió en el fondo?", ["que Sicilia se apoya en tres columnas, una rota", "un tesoro", "una ciudad", "al rey"], "que Sicilia se apoya en tres columnas, una rota"],
-        ["¿Qué hizo al final?", ["se quedó bajo el mar sosteniendo la columna", "volvió con el anillo", "se casó", "se fue de Messina"], "se quedó bajo el mar sosteniendo la columna"]
+        ["¿Dónde nació Clarice Lispector?", ["en Ucrania", "en Recife", "en Río", "en Alagoas"], "en Ucrania"],
+        ["¿Quién es Macabéa?", ["una chica de Alagoas que vino a Río", "la madre de Clarice", "una periodista", "la narradora del libro"], "una chica de Alagoas que vino a Río"],
+        ["¿Qué hay hoy en el paseo del Leme?", ["una estatua de Clarice con su perro", "una biblioteca", "un museo", "una radio"], "una estatua de Clarice con su perro"]
       ],
-      vf: [["Cola nuotava come un pesce.", "vero"], ["Cola non riuscì a riportare la coppa.", "falso"], ["Il re aveva tre figlie.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en passato remoto", targets: ["visse", "chiamarono", "volle", "gettò", "riportò", "ritrovò", "lanciò", "tuffò", "scoprì", "decise", "vide"] } },
+      vf: [["Clarice morreu no mesmo ano em que publicou A Hora da Estrela.", "verdadeiro"], ["Macabéa era uma moça rica de Ipanema.", "falso"], ["A Sofía chorou ao ler o livro.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en pretérito mais-que-perfeito simples", targets: ["tornara", "nascera", "fugira", "chegara", "crescera", "viera", "lera"] } },
 
-    { id: "w-38", week: 38, level: "B2", emoji: "☎️", title: "La telefonata di Anna",
-      grammar: "discorso indiretto",
+    { id: "w-42", week: 42, n: 42, level: "C1", emoji: "🎸", title: "Chega de Saudade",
+      grammar: "orações reduzidas",
       text:
-        "Ieri Anna mi ha telefonato. Mi ha detto che aveva trovato un nuovo lavoro a Milano e che sarebbe " +
-        "partita la settimana dopo. Mi ha chiesto se potevo aiutarla con il trasloco.\n\n" +
-        "Le ho risposto che quel sabato lavoravo, ma che la domenica ero libero. Lei ha detto che andava " +
-        "benissimo e che mi avrebbe offerto la cena.\n\n" +
-        "Poi mi ha raccontato che il suo capo le aveva promesso uno stipendio più alto. Mi ha detto di non " +
-        "dirlo a nessuno, perché non era ancora sicura. Io le ho promesso che avrei mantenuto il segreto.",
-      gloss: { trasloco: "mudanza", libero: "libre", offerto: "invitado, ofrecido",
-               capo: "jefe", promesso: "prometido", stipendio: "sueldo", sicura: "segura", mantenuto: "guardado",
-               segreto: "secreto" },
+        "Lançada em 1958, a gravação de \"Chega de Saudade\" por João Gilberto é considerada o marco inicial " +
+        "da bossa nova. Composta por Tom Jobim e Vinicius de Moraes, a canção já tinha sido gravada naquele " +
+        "ano por Elizeth Cardoso, com o próprio João ao violão. Ouvindo aquela batida diferente, muitos jovens " +
+        "de Copacabana e Ipanema decidiram aprender a tocar.\n\n" +
+        "Cantando baixinho, quase falando, João mudou a maneira de cantar no Brasil. Passados poucos anos, " +
+        "a bossa nova conquistou o mundo: o disco Getz/Gilberto, gravado nos Estados Unidos, ganhou o " +
+        "Grammy de álbum do ano.\n\n" +
+        "Ao passar pelo Beco das Garrafas, em Copacabana, a Sofía lembrou-se das histórias da Dona Lúcia " +
+        "sobre as noites de música daquele lugar. Chegando em casa, pôs o disco para tocar e, fechados " +
+        "os olhos, imaginou o Rio de 1958.",
+      gloss: { lançada: "lanzada", gravação: "grabación", marco: "hito", composta: "compuesta", gravada: "grabada",
+               batida: "rasgueo, ritmo", maneira: "manera", passados: "pasados", conquistou: "conquistó",
+               beco: "callejón", garrafas: "botellas", fechados: "cerrados", saudade: "nostalgia" },
       questions: [
-        ["¿Qué le pidió Anna?", ["ayuda con la mudanza", "plata", "un trabajo", "un consejo"], "ayuda con la mudanza"],
-        ["¿Qué día puede ayudar el narrador?", ["el domingo", "el sábado", "el viernes", "nunca"], "el domingo"],
-        ["¿Qué tiene que guardar en secreto?", ["el sueldo más alto", "la mudanza", "la cena", "el nuevo trabajo"], "el sueldo más alto"]
+        ["¿Qué se considera el punto de partida de la bossa nova?", ["la grabación de «Chega de Saudade» de João Gilberto", "un disco de Elizeth Cardoso de 1970", "un recital en Brasilia", "un premio Grammy"], "la grabación de «Chega de Saudade» de João Gilberto"],
+        ["¿Cómo cantaba João Gilberto?", ["bajito, casi hablando", "a los gritos", "solo en inglés", "sin guitarra"], "bajito, casi hablando"],
+        ["¿Qué hizo Sofía al llegar a casa?", ["puso el disco y cerró los ojos", "llamó a doña Lúcia", "fue al Beco das Garrafas", "tocó la guitarra"], "puso el disco y cerró los ojos"]
       ],
-      vf: [["Anna ha trovato un lavoro a Milano.", "vero"], ["Il narratore è libero il sabato.", "falso"], ["Anna si trasferisce con il fidanzato.", "non si dice"]],
-      hunt: { label: "Tocá los condizionali passati del discurso indirecto", targets: ["sarebbe", "avrebbe", "avrei"] } },
+      vf: [["Elizeth Cardoso gravou a canção com João Gilberto ao violão.", "verdadeiro"], ["O disco Getz/Gilberto foi gravado no Rio.", "falso"], ["A Dona Lúcia conheceu João Gilberto.", "não se diz"]],
+      hunt: { label: "Tocá las formas de las oraciones reducidas (gerundio, participio, ao + infinitivo)", targets: ["lançada", "composta", "ouvindo", "cantando", "falando", "passados", "passar", "chegando", "fechados"] } },
 
-    { id: "w-39", week: 39, level: "B2", emoji: "🚢", title: "Il nonno emigrante",
-      grammar: "ripasso: passato remoto, periodo ipotetico, congiuntivo",
+    { id: "w-43", week: 43, n: 43, level: "C1", emoji: "🏛️", title: "Carta à Biblioteca Nacional",
+      grammar: "correspondência formal",
       text:
-        "Mio nonno partì per l'Argentina nel 1951. Aveva vent'anni e non parlava una parola di spagnolo. " +
-        "Raccontava sempre che, se non fosse partito, avrebbe fatto il contadino come suo padre.\n\n" +
-        "A Buenos Aires trovò lavoro in una fabbrica, dove conobbe mia nonna, che era figlia di italiani. " +
-        "Si sposarono due anni dopo.\n\n" +
-        "Quando gli chiedevo se gli mancasse l'Italia, mi rispondeva che l'Italia era nei suoi ricordi, " +
-        "ma che la sua casa era lì. Credo che sia stato un uomo coraggioso: non so se io ci sarei riuscito.",
-      gloss: { raccontava: "contaba", contadino: "campesino", fabbrica: "fábrica",
-               conobbe: "conoció", sposarono: "casaron", mancasse: "extrañara", ricordi: "recuerdos",
-               coraggioso: "valiente", riuscito: "logrado" },
+        "Rio de Janeiro, 12 de maio.\n\n" +
+        "Prezados Senhores,\n\n" +
+        "Venho por meio desta solicitar autorização para consultar a primeira edição de Os Sertões, de " +
+        "Euclides da Cunha, publicada em 1902, que integra o acervo de obras raras desta instituição.\n\n" +
+        "Sou designer gráfica e desenvolvo, no âmbito de um curso de extensão universitária, uma pesquisa " +
+        "sobre as capas das primeiras edições brasileiras. Interessa-me, em particular, o modo como foi " +
+        "apresentada aos leitores uma obra que narra a destruição do arraial de Canudos, no sertão da Bahia, " +
+        "pelo Exército, em 1897, e cuja frase \"O sertanejo é, antes de tudo, um forte\" se tornou célebre.\n\n" +
+        "Informo que disponho de carta de apresentação da coordenação do curso, que segue em anexo. " +
+        "Agradeceria se V. Sas. pudessem indicar-me os procedimentos necessários e as datas disponíveis.\n\n" +
+        "Desde já, agradeço a atenção e fico no aguardo de uma resposta.\n\n" +
+        "Atenciosamente,\n" +
+        "Sofía Martínez",
+      gloss: { prezados: "estimados", desta: "de esta (por meio desta = por la presente)", acervo: "fondo, colección",
+               âmbito: "marco", pesquisa: "investigación", capas: "tapas", arraial: "caserío",
+               sertão: "interior semiárido", sertanejo: "hombre del sertão", disponho: "dispongo",
+               anexo: "adjunto", agradeceria: "agradecería", procedimentos: "trámites",
+               aguardo: "espera (fico no aguardo = quedo a la espera)", atenciosamente: "atentamente", leitores: "lectores" },
       questions: [
-        ["¿Cuándo se fue el abuelo?", ["en 1951", "en 1915", "en 1981", "en 1961"], "en 1951"],
-        ["¿Dónde conoció a la abuela?", ["en una fábrica", "en el barco", "en Italia", "en una fiesta"], "en una fábrica"],
-        ["¿Qué respondía sobre Italia?", ["estaba en sus recuerdos, pero su casa era Argentina", "quería volver", "no la extrañaba nada", "odiaba Italia"], "estaba en sus recuerdos, pero su casa era Argentina"]
+        ["¿Qué pide Sofía en la carta?", ["consultar la primera edición de Os Sertões", "trabajar en la biblioteca", "comprar un libro", "donar un libro"], "consultar la primera edición de Os Sertões"],
+        ["¿Sobre qué es su investigación?", ["las tapas de las primeras ediciones brasileñas", "la guerra de Canudos", "Euclides da Cunha", "la historia de la biblioteca"], "las tapas de las primeras ediciones brasileñas"],
+        ["¿Qué adjunta?", ["una carta de presentación del curso", "su pasaporte", "un libro", "nada"], "una carta de presentación del curso"]
       ],
-      vf: [["Il nonno partì per l'Argentina a vent'anni.", "vero"], ["Il nonno parlava bene lo spagnolo.", "falso"], ["Il nonno tornò in Italia da vecchio.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en passato remoto", targets: ["partì", "trovò", "conobbe", "sposarono"] } },
+      vf: [["Os Sertões foi publicado em 1902.", "verdadeiro"], ["Canudos fica no litoral do Rio.", "falso"], ["A biblioteca respondeu no dia seguinte.", "não se diz"]],
+      hunt: { label: "Tocá las fórmulas de la carta formal", targets: ["prezados", "venho", "solicitar", "informo", "segue", "agradeceria", "agradeço", "aguardo", "atenciosamente"] } },
 
-    { id: "w-40", week: 40, level: "C1", emoji: "🏡", title: "Una casa da sistemare",
-      grammar: "causativo: fare e lasciare",
+    { id: "w-44", week: 44, n: 44, level: "C1", emoji: "🧬", title: "Darcy Ribeiro e o povo novo",
+      grammar: "formação de palavras",
       text:
-        "Io e mio marito abbiamo comprato una casa vecchia in campagna. Non sappiamo fare niente, quindi " +
-        "facciamo fare tutto agli altri.\n\n" +
-        "Abbiamo fatto rifare il tetto da un'impresa e abbiamo fatto dipingere le pareti da un amico pittore. " +
-        "Ieri ho fatto controllare l'impianto elettrico, perché le luci si spegnevano da sole.\n\n" +
-        "I vicini ci guardano curiosi. La signora Rosa ci ha lasciato usare il suo giardino per i materiali, " +
-        "e suo figlio ci ha fatto vedere dove comprare la legna. Mio marito dice che si farà crescere la barba " +
-        "e vivrà come un contadino. Io lo lascio sognare.",
-      gloss: { marito: "marido", campagna: "campo", tetto: "techo", impresa: "empresa",
-               dipingere: "pintar", pareti: "paredes", pittore: "pintor", impianto: "instalación",
-               spegnevano: "apagaban", legna: "leña", barba: "barba", contadino: "campesino", sognare: "soñar" },
+        "O antropólogo mineiro Darcy Ribeiro dedicou a vida a entender a formação do povo brasileiro. Em " +
+        "O Povo Brasileiro (1995), descreve o encontro, e o desencontro, das matrizes indígena, europeia e " +
+        "africana, que teria dado origem a um \"povo novo\". Para ele, a mestiçagem não foi uma convivência " +
+        "pacífica, e sim um processo marcado pela violência, pela desigualdade e pelo desenraizamento.\n\n" +
+        "Inquieto e inventivo, Darcy foi também político: ajudou a fundar a Universidade de Brasília e, " +
+        "como vice-governador do Rio, idealizou com Niemeyer o Sambódromo, inaugurado em 1984, e os CIEPs, " +
+        "escolas de horário integral apelidadas de \"Brizolões\", por causa do governador Leonel Brizola.\n\n" +
+        "A Sofía anotou as palavras derivadas que encontrou no livro: brasilidade, mestiçagem, ninguendade. " +
+        "\"Seu português tá ficando chiquérrimo\", brincou o João.",
+      gloss: { antropólogo: "antropólogo", mineiro: "de Minas Gerais", desencontro: "desencuentro", matrizes: "matrices",
+               mestiçagem: "mestizaje", desigualdade: "desigualdad", desenraizamento: "desarraigo",
+               inquieto: "inquieto", inventivo: "ingenioso", idealizou: "ideó", apelidadas: "apodadas",
+               "brizolões": "brizolones (aumentativo de Brizola)", brasilidade: "brasileñidad",
+               ninguendade: "condición de no ser nadie (neologismo de Darcy)", "chiquérrimo": "elegantísimo (coloquial)",
+               brincou: "bromeó", horário: "horario" },
       questions: [
-        ["¿Quién pintó las paredes?", ["un amigo pintor", "ellos mismos", "una empresa", "la vecina"], "un amigo pintor"],
-        ["¿Por qué revisaron la instalación eléctrica?", ["las luces se apagaban solas", "era vieja", "la vecina se quejó", "no había luz"], "las luces se apagaban solas"],
-        ["¿Qué sueña el marido?", ["vivir como un campesino", "volver a la ciudad", "vender la casa", "ser pintor"], "vivir como un campesino"]
+        ["¿Qué tres matrices describe Darcy Ribeiro?", ["indígena, europea y africana", "portuguesa, española e italiana", "urbana, rural e indígena", "blanca, negra y asiática"], "indígena, europea y africana"],
+        ["¿Cómo fue el mestizaje para Darcy?", ["un proceso marcado por la violencia", "una convivencia pacífica", "algo sin importancia", "un invento de Freyre"], "un proceso marcado por la violencia"],
+        ["¿Qué ideó con Niemeyer?", ["el Sambódromo y los CIEPs", "Brasilia", "la Universidad de São Paulo", "el Cristo"], "el Sambódromo y los CIEPs"]
       ],
-      vf: [["La casa è in campagna.", "vero"], ["Hanno rifatto il tetto da soli.", "falso"], ["La signora Rosa vive da sola.", "non si dice"]],
-      hunt: { label: "Tocá fare y lasciare seguidos de infinitivo", targets: ["fare", "fatto", "lasciato", "farà", "lascio"] } },
+      vf: [["Darcy Ribeiro ajudou a fundar a Universidade de Brasília.", "verdadeiro"], ["Para Darcy, a mestiçagem foi pacífica.", "falso"], ["A Bia estudou num CIEP.", "não se diz"]],
+      hunt: { label: "Tocá las palabras derivadas (prefijos, sufijos, aumentativos, superlativos)", targets: ["desencontro", "mestiçagem", "desigualdade", "desenraizamento", "inventivo", "sambódromo", "brizolões", "brasilidade", "ninguendade", "chiquérrimo"] } },
 
-    { id: "w-41", week: 41, level: "C1", emoji: "🌙", title: "Una notte in campagna",
-      grammar: "verbi di percezione",
+    { id: "w-45", week: 45, n: 45, level: "C1", emoji: "🌵", title: "Tupi or not tupi",
+      grammar: "falsos amigos e heterossemânticos",
       text:
-        "La prima notte in campagna non riuscivo a dormire. Sentivo le cicale cantare e i cani abbaiare " +
-        "lontano. Dalla finestra vedevo la luna salire dietro le colline.\n\n" +
-        "A un certo punto ho sentito qualcuno camminare in giardino. Ho visto un'ombra passare vicino alla " +
-        "porta e ho sentito il cuore battere forte.\n\n" +
-        "Ho acceso la luce e ho visto... un gatto nero mangiare dalla ciotola del cane! Mi ha guardato un " +
-        "momento e poi è scappato. Ho riso da sola e finalmente mi sono addormentata, mentre sentivo il " +
-        "vento muovere le foglie.",
-      gloss: { riuscivo: "lograba", cicale: "chicharras", abbaiare: "ladrar", lontano: "lejos", colline: "colinas",
-               ombra: "sombra", cuore: "corazón", battere: "latir", acceso: "prendido", ciotola: "cuenco",
-               scappato: "escapado", vento: "viento", foglie: "hojas" },
+        "Em 1928, Oswald de Andrade publicou o Manifesto Antropófago, com uma frase que parece brincadeira: " +
+        "\"Tupi, or not tupi, that is the question.\" A proposta pareceu esquisita a muitos leitores: assim " +
+        "como alguns povos tupis comiam o inimigo num ritual para absorver a sua força, a cultura brasileira " +
+        "deveria devorar a cultura estrangeira e transformá-la em algo próprio.\n\n" +
+        "O manifesto nasceu de um presente: o quadro Abaporu, que Tarsila do Amaral, então mulher de Oswald, " +
+        "lhe deu de aniversário. O nome vem do tupi e quer dizer, mais ou menos, \"homem que come gente\". " +
+        "Hoje o quadro está no MALBA, em Buenos Aires, o que a Sofía adora contar aos amigos cariocas.\n\n" +
+        "No escritório de casa, ela colou um cartaz com a frase de Oswald e uma lista de palavras " +
+        "traiçoeiras: esquisito não é exquisito, apelido não é apellido, e polvo se come com arroz, " +
+        "enquanto o pó se limpa da estante.",
+      gloss: { antropófago: "antropófago", esquisito: "raro, extraño", inimigo: "enemigo", absorver: "absorber",
+               estrangeira: "extranjera", "transformá-la": "transformarla", escritório: "oficina, estudio",
+               colou: "pegó", cartaz: "cartel", traiçoeiras: "traicioneras", exquisito: "exquisito (en español; en portugués: delicioso)",
+               apelido: "apodo", apellido: "apellido (en español; en portugués: sobrenome)", polvo: "pulpo",
+               "pó": "polvo, tierra", estante: "estante", brincadeira: "broma" },
       questions: [
-        ["¿Qué oía al principio?", ["las chicharras y perros a lo lejos", "música", "el mar", "autos"], "las chicharras y perros a lo lejos"],
-        ["¿Quién estaba en el jardín?", ["un gato negro", "un ladrón", "el perro", "el vecino"], "un gato negro"],
-        ["¿Cómo termina la noche?", ["se duerme mientras oye el viento", "no duerme nada", "llama a la policía", "se va a la ciudad"], "se duerme mientras oye el viento"]
+        ["¿Qué proponía el Manifiesto Antropófago?", ["devorar la cultura extranjera y transformarla", "rechazar todo lo extranjero", "volver a Portugal", "hablar solo tupí"], "devorar la cultura extranjera y transformarla"],
+        ["¿Qué significa Abaporu?", ["hombre que come gente", "sol del sertão", "mujer de Oswald", "cactus gigante"], "hombre que come gente"],
+        ["¿Dónde está hoy el cuadro?", ["en el MALBA, en Buenos Aires", "en São Paulo", "en Río", "en París"], "en el MALBA, en Buenos Aires"]
       ],
-      vf: [["La prima notte la narratrice non riusciva a dormire.", "vero"], ["In giardino c'era un ladro.", "falso"], ["Il cane dormiva in casa.", "non si dice"]],
-      hunt: { label: "Tocá los verbos de percepción (sentivo, vedevo, ho visto…)", targets: ["sentivo", "vedevo", "sentito", "visto"] } },
+      vf: [["O Abaporu foi um presente de aniversário.", "verdadeiro"], ["Em português, apelido quer dizer sobrenome.", "falso"], ["Oswald e Tarsila se conheceram em Paris.", "não se diz"]],
+      hunt: { label: "Tocá los falsos amigos (palabras que en español significan otra cosa)", targets: ["brincadeira", "esquisito", "escritório", "apelido", "polvo"] } },
 
-    { id: "w-42", week: 42, level: "C1", emoji: "🏃", title: "Buoni propositi",
-      grammar: "verbi e preposizioni",
+    { id: "w-46", week: 46, n: 46, level: "C1", emoji: "🎩", title: "O poeta é um fingidor",
+      grammar: "variação: Brasil, Portugal e África",
       text:
-        "A gennaio Luca ha deciso di cambiare vita. Ha smesso di fumare e ha cominciato a correre ogni mattina. " +
-        "Ha promesso alla moglie di tornare a casa prima la sera e ha provato a imparare a cucinare.\n\n" +
-        "Ha anche pensato di iscriversi a un corso di chitarra, ma non è riuscito a trovare il tempo. " +
-        "Si è abituato a svegliarsi alle sei, però si è stancato di mangiare solo insalata.\n\n" +
-        "A marzo sua moglie gli ha chiesto: \"Continui a correre?\" Luca ha finto di non sentire. " +
-        "\"Almeno hai smesso di fumare\", ha detto lei. \"Quello sì\", ha risposto lui, orgoglioso.",
-      gloss: { smesso: "dejado", fumare: "fumar", provato: "intentado",
-               iscriversi: "anotarse", chitarra: "guitarra", riuscito: "logrado", abituato: "acostumbrado",
-               stancato: "cansado", insalata: "ensalada", finto: "fingido", orgoglioso: "orgulloso" },
+        "O seu Manuel emprestou à Sofía um livro de Fernando Pessoa numa edição de Lisboa. Pessoa " +
+        "(1888-1935) inventou dezenas de heterónimos, assim, com acento agudo, na grafia de Portugal: " +
+        "poetas com biografia, estilo e filosofia próprios. Alberto Caeiro é o mestre que só acredita no " +
+        "que vê; Ricardo Reis, o clássico; Álvaro de Campos, o engenheiro moderno e angustiado.\n\n" +
+        "A Sofía estranhou algumas coisas no prefácio: \"estou a ler\" em vez de \"estou lendo\", \"o " +
+        "autocarro\" em vez de \"o ônibus\", e os pronomes depois do verbo: \"disse-lhe\", \"conheci-o\". " +
+        "\"Em Portugal fala-se assim\", explicou o seu Manuel, \"e em Angola e em Moçambique há ainda " +
+        "outras palavras.\" O moçambicano Mia Couto, por exemplo, é famoso por inventar palavras novas.\n\n" +
+        "No boteco, ela leu em voz alta o começo de \"Autopsicografia\": \"O poeta é um fingidor. / Finge " +
+        "tão completamente / Que chega a fingir que é dor / A dor que deveras sente.\"",
+      gloss: { emprestou: "prestó", "heterónimos": "heterónimos (en Brasil: heterônimos)", agudo: "agudo",
+               grafia: "ortografía", mestre: "maestro", angustiado: "angustiado", estranhou: "le extrañó",
+               prefácio: "prólogo", autocarro: "colectivo (en Portugal)", "disse-lhe": "le dijo", "conheci-o": "lo conocí",
+               moçambicano: "mozambiqueño", fingidor: "fingidor", finge: "finge", dor: "dolor", deveras: "de verdad",
+               começo: "comienzo", sente: "siente" },
       questions: [
-        ["¿Qué dejó Luca en enero?", ["de fumar", "de correr", "de trabajar", "de cocinar"], "de fumar"],
-        ["¿Por qué no hizo el curso de guitarra?", ["no encontró tiempo", "era caro", "no le gustaba", "se lastimó"], "no encontró tiempo"],
-        ["¿Qué pasa en marzo?", ["finge no oír si sigue corriendo", "sigue corriendo", "vuelve a fumar", "empieza guitarra"], "finge no oír si sigue corriendo"]
+        ["¿Qué son los heterónimos de Pessoa?", ["poetas inventados con vida y estilo propios", "seudónimos de otros autores", "sus hermanos", "sus libros"], "poetas inventados con vida y estilo propios"],
+        ["¿Qué le llamó la atención a Sofía en el prólogo?", ["formas del portugués de Portugal", "errores de imprenta", "palabras en español", "que no tenía pronombres"], "formas del portugués de Portugal"],
+        ["¿Por qué es famoso Mia Couto?", ["por inventar palabras nuevas", "por ser portugués", "por traducir a Pessoa", "por vivir en Río"], "por inventar palabras nuevas"]
       ],
-      vf: [["Luca ha smesso di fumare.", "vero"], ["Luca si è iscritto a un corso di chitarra.", "falso"], ["Luca ha perso cinque chili.", "non si dice"]],
-      hunt: { label: "Tocá las preposiciones que siguen al verbo (di, a)", targets: ["di", "a"] } },
+      vf: [["Em Portugal se diz \"autocarro\" para ônibus.", "verdadeiro"], ["Álvaro de Campos é o poeta clássico.", "falso"], ["O seu Manuel conheceu Mia Couto.", "não se diz"]],
+      hunt: { label: "Tocá las formas típicas de Portugal", targets: ["heterónimos", "autocarro", "disse-lhe", "conheci-o"] } },
 
-    { id: "w-44", week: 44, level: "C1", emoji: "🌉", title: "Tornando a casa",
-      grammar: "gerundio e participio",
+    { id: "w-47", week: 47, n: 47, level: "C1", emoji: "⚖️", title: "O jeitinho: virtude ou vício?",
+      grammar: "argumentação e modalização",
       text:
-        "Tornando a casa dal lavoro, Silvia ha incontrato una vecchia amica. Parlando del passato, si sono " +
-        "accorte di non vedersi da dieci anni.\n\n" +
-        "Finita la cena, hanno camminato lungo il fiume, ridendo come ragazze. Arrivate al ponte, si sono " +
-        "fermate a guardare le luci della città.\n\n" +
-        "\"Pensando a quegli anni, mi viene nostalgia\", ha detto l'amica. Silvia, sorridendo, le ha preso il " +
-        "braccio: \"Vedendoti, mi sembra ieri.\" Prima di salutarsi davanti alla stazione, si sono promesse " +
-        "di rivedersi presto. E questa volta, conoscendole, lo faranno davvero.",
-      gloss: { accorte: "dado cuenta", lungo: "a lo largo de", fiume: "río", ridendo: "riéndose", ponte: "puente",
-               fermate: "detenido", nostalgia: "nostalgia", sorridendo: "sonriendo", braccio: "brazo",
-               salutarsi: "despedirse", promesse: "prometido", davvero: "de verdad" },
+        "Poucos temas geram tanto debate no Brasil quanto o jeitinho, a arte de encontrar uma saída para " +
+        "contornar uma regra. Em primeiro lugar, convém lembrar que a expressão é ambígua: tudo indica que, " +
+        "para muitos, o jeitinho é criatividade diante de uma burocracia absurda; para outros, é o primeiro " +
+        "passo para a corrupção.\n\n" +
+        "O antropólogo Roberto DaMatta, em Carnavais, Malandros e Heróis (1979), analisou o ritual do " +
+        "\"Você sabe com quem está falando?\", uma pergunta que transforma uma pessoa comum em alguém " +
+        "acima da regra. Segundo ele, o país oscila entre a igualdade da lei e a hierarquia das relações " +
+        "pessoais.\n\n" +
+        "Ainda que o jeitinho resolva pequenos problemas do dia a dia, é possível que reforce desigualdades " +
+        "maiores. Por mais que se admire a flexibilidade carioca, seria ingênuo ignorar quem nunca consegue " +
+        "dar um jeito. Em suma, talvez a pergunta não seja se o jeitinho é bom ou ruim, mas para quem ele " +
+        "funciona.",
+      gloss: { geram: "generan", jeitinho: "viveza para sortear reglas", contornar: "sortear, eludir", convém: "conviene",
+               passo: "paso", malandros: "pícaros", acima: "por encima", oscila: "oscila", resolva: "resuelva",
+               reforce: "refuerce", ingênuo: "ingenuo", jeito: "manera (dar um jeito = arreglárselas)",
+               suma: "suma (em suma = en resumen)", vício: "vicio" },
       questions: [
-        ["¿Hace cuánto no se veían?", ["diez años", "un año", "veinte años", "un mes"], "diez años"],
-        ["¿Dónde se detuvieron?", ["en el puente", "en la estación", "en un bar", "en la casa"], "en el puente"],
-        ["¿Qué se prometieron?", ["volver a verse pronto", "escribirse", "viajar juntas", "nada"], "volver a verse pronto"]
+        ["¿Qué es el jeitinho según el texto?", ["el arte de encontrar una salida para sortear una regla", "un baile carioca", "una ley", "un tipo de burocracia"], "el arte de encontrar una salida para sortear una regla"],
+        ["¿Qué analizó DaMatta?", ["el ritual de «¿Sabe con quién está hablando?»", "el carnaval de Salvador", "la Constitución", "el fútbol"], "el ritual de «¿Sabe con quién está hablando?»"],
+        ["¿Qué pregunta propone el final?", ["para quién funciona el jeitinho", "si el jeitinho existe", "cuándo nació", "quién lo inventó"], "para quién funciona el jeitinho"]
       ],
-      vf: [["Silvia e l'amica non si vedevano da dieci anni.", "vero"], ["Si sono salutate al ponte.", "falso"], ["L'amica abita in un'altra città.", "non si dice"]],
-      hunt: { label: "Tocá los gerundios y participios (tornando, finita…)", targets: ["tornando", "parlando", "finita", "ridendo", "arrivate", "pensando", "sorridendo", "vedendoti", "conoscendole"] } },
+      vf: [["Segundo DaMatta, o país oscila entre a lei e as relações pessoais.", "verdadeiro"], ["O texto afirma que o jeitinho é sempre corrupção.", "falso"], ["DaMatta é carioca.", "não se diz"]],
+      hunt: { label: "Tocá las palabras que matizan (convém, tudo indica, ainda que, é possível, talvez)", targets: ["convém", "indica", "ainda", "possível", "talvez"] } },
 
-    { id: "w-45", week: 45, level: "C1", emoji: "🏅", title: "La maratona",
-      grammar: "costruzioni verbali speciali",
+    { id: "w-48", week: 48, n: 48, level: "C1", emoji: "🧐", title: "As ideias fora do lugar",
+      grammar: "resumo e reformulação",
       text:
-        "Domenica Paolo ha corso la sua prima maratona. Ci ha messo quattro ore e mezza, ma ce l'ha fatta. " +
-        "Al trentesimo chilometro voleva andarsene a casa: le gambe non ce la facevano più.\n\n" +
-        "Un signore anziano l'ha superato sorridendo, e Paolo se l'è presa un po'. \"Se ce la fa lui, " +
-        "ce la faccio anch'io\", ha pensato.\n\n" +
-        "All'arrivo sua figlia gli ha detto: \"Te la sei cavata bene, papà!\" Paolo non ci credeva: era " +
-        "stanco morto ma felice. \"L'anno prossimo ci metterò meno\", ha promesso. \"Vedremo\", ha detto la moglie ridendo.",
-      gloss: { maratona: "maratón", messo: "tardado (metterci)", trentesimo: "trigésimo", andarsene: "irse",
-               gambe: "piernas", anziano: "mayor", superato: "pasado", presa: "ofendido (prendersela)",
-               arrivo: "llegada", cavata: "arreglado (cavarsela = arreglárselas)", morto: "muerto" },
+        "No ensaio \"As ideias fora do lugar\", publicado em 1973 e depois incluído em Ao Vencedor as Batatas " +
+        "(1977), o crítico Roberto Schwarz parte de uma contradição do Brasil do século XIX: o país importava " +
+        "o liberalismo europeu, que defendia a liberdade e o trabalho livre, mas a sua economia se apoiava " +
+        "na escravidão.\n\n" +
+        "Segundo o autor, entre o senhor e o escravizado havia um terceiro grupo, o dos homens livres e " +
+        "pobres, que dependiam do favor dos poderosos para sobreviver. Em outras palavras, era o favor, e não " +
+        "o direito, que organizava a vida social. Schwarz sustenta que as ideias liberais funcionavam como " +
+        "ornamento: eram repetidas nos discursos, mas desmentidas na prática. O crítico ressalta ainda que " +
+        "essa tensão aparece com precisão nos romances de Machado de Assis.\n\n" +
+        "Na aula, a Bia pediu um resumo de cinco linhas, sem opinião. A Sofía começou assim: \"De acordo com " +
+        "Schwarz, no Brasil do século XIX...\"",
+      gloss: { ensaio: "ensayo", vencedor: "vencedor", batatas: "papas", apoiava: "apoyaba", terceiro: "tercer",
+               favor: "favor", poderosos: "poderosos", sobreviver: "sobrevivir", sustenta: "sostiene",
+               ornamento: "adorno", desmentidas: "desmentidas", ressalta: "destaca", linhas: "líneas",
+               acordo: "acuerdo (de acordo com = según)" },
       questions: [
-        ["¿Cuánto tardó?", ["cuatro horas y media", "tres horas", "cinco horas", "dos horas"], "cuatro horas y media"],
-        ["¿Qué le molestó?", ["que un señor mayor lo pasara", "el calor", "la lluvia", "su hija"], "que un señor mayor lo pasara"],
-        ["¿Qué promete para el año próximo?", ["tardar menos", "no correr", "correr con su hija", "entrenar menos"], "tardar menos"]
+        ["¿Cuál es la contradicción que señala Schwarz?", ["liberalismo importado en una economía esclavista", "monarquía en un país republicano", "catolicismo y ateísmo", "campo y ciudad"], "liberalismo importado en una economía esclavista"],
+        ["¿De qué dependían los hombres libres y pobres?", ["del favor de los poderosos", "del salario", "de la ley", "del Estado"], "del favor de los poderosos"],
+        ["¿Cómo debe ser el resumen que pide Bia?", ["de cinco líneas, sin opinión", "largo y con opinión", "en español", "sobre Machado"], "de cinco líneas, sin opinión"]
       ],
-      vf: [["Paolo ci ha messo quattro ore e mezza.", "vero"], ["Paolo si è ritirato al trentesimo chilometro.", "falso"], ["La figlia di Paolo ha corso con lui.", "non si dice"]],
-      hunt: { label: "Tocá las partículas de los verbos pronominales (ce, ci, se, te)", targets: ["ce", "ci", "se", "te"] } },
+      vf: [["Para Schwarz, as ideias liberais funcionavam como ornamento.", "verdadeiro"], ["O ensaio foi publicado em 1990.", "falso"], ["A Sofía tirou nota dez no resumo.", "não se diz"]],
+      hunt: { label: "Tocá lo que atribuye y reformula (segundo, sustenta, ressalta, em outras palavras…)", targets: ["segundo", "outras", "sustenta", "ressalta", "acordo"] } },
 
-    { id: "w-48", week: 48, level: "C1", emoji: "☕", title: "Il barista Gino",
-      grammar: "ordine delle parole e dislocazioni",
+    { id: "w-49", week: 49, n: 49, level: "C1", emoji: "🌹", title: "Grândola, Vila Morena",
+      grammar: "registro culto e coloquial",
       text:
-        "Il caffè, lo prendo sempre al bar sotto casa. Il barista, Gino, lo conosco da vent'anni. Di calcio, " +
-        "con lui, ne parlo ogni mattina, anche se tifiamo per squadre diverse.\n\n" +
-        "\"La Juve, quest'anno, non la ferma nessuno\", dice lui. \"Ma che dici? Lo scudetto lo vince l'Inter\", " +
-        "rispondo io.\n\n" +
-        "È stato lui a farmi conoscere mia moglie: era una cliente anche lei. Il cornetto, invece, l'ho sempre " +
-        "preso altrove, perché quelli di Gino sono duri come pietre. Ma questo, a lui, non l'ho mai detto.",
-      gloss: { tifiamo: "somos hinchas", squadre: "equipos", ferma: "para", scudetto: "campeonato",
-               cornetto: "medialuna", altrove: "en otro lado", duri: "duros", pietre: "piedras" },
+        "Pouco depois da meia-noite de 25 de abril de 1974, a Rádio Renascença tocou \"Grândola, Vila Morena\", " +
+        "de Zeca Afonso. Era o sinal combinado para que os capitães do Movimento das Forças Armadas saíssem " +
+        "dos quartéis. No fim do dia, caía o regime do Estado Novo, criado por Salazar e mantido desde 1968 " +
+        "por Marcelo Caetano. Uma mulher, Celeste Caeiro, distribuiu cravos aos soldados, que os puseram nos " +
+        "canos das espingardas: daí o nome Revolução dos Cravos. Pouco depois, começou a independência de " +
+        "Angola, Moçambique, Guiné-Bissau, Cabo Verde e São Tomé e Príncipe.\n\n" +
+        "À noite, o João mandou um áudio: \"Cara, cê viu o vídeo do seu Manuel cantando Grândola? O homem " +
+        "chorou, mano. Ele tava lá em Lisboa em 74!\"\n\n" +
+        "A Sofía respondeu, caprichando: \"Vi, sim. Emocionou-me profundamente. O seu Manuel estava em Lisboa " +
+        "em 1974 e presenciou os acontecimentos.\"",
+      gloss: { sinal: "señal", combinado: "acordado", capitães: "capitanes", saíssem: "salieran", quartéis: "cuarteles",
+               caía: "caía", cravos: "claveles", puseram: "pusieron", canos: "caños", espingardas: "fusiles",
+               "daí": "de ahí", cara: "che (vocativo coloquial)", mano: "hermano (vocativo coloquial)",
+               tava: "estaba (coloquial)", caprichando: "esmerándose", "emocionou-me": "me emocionó",
+               presenciou: "presenció", acontecimentos: "sucesos", chorou: "lloró" },
       questions: [
-        ["¿Hace cuánto conoce a Gino?", ["veinte años", "dos años", "diez años", "desde chico"], "veinte años"],
-        ["¿Qué le debe a Gino?", ["haber conocido a su esposa", "un trabajo", "plata", "un café gratis"], "haber conocido a su esposa"],
-        ["¿Qué nunca le dijo?", ["que sus medialunas son duras", "que es de otro equipo", "que no le gusta el café", "que se muda"], "que sus medialunas son duras"]
+        ["¿Qué era «Grândola, Vila Morena» esa noche?", ["la señal para que salieran los capitanes", "el himno de Portugal", "una canción prohibida por el MFA", "la canción del carnaval"], "la señal para que salieran los capitanes"],
+        ["¿Por qué se llama Revolución de los Claveles?", ["los soldados pusieron claveles en los fusiles", "era primavera", "Salazar amaba los claveles", "la radio regaló flores"], "los soldados pusieron claveles en los fusiles"],
+        ["¿Cómo responde Sofía al audio de João?", ["en registro formal", "con un audio", "en español", "no responde"], "en registro formal"]
       ],
-      vf: [["Il narratore conosce Gino da vent'anni.", "vero"], ["Il narratore compra i cornetti da Gino.", "falso"], ["Gino tifa per la Juventus.", "vero"]],
-      hunt: { label: "Tocá los pronombres que retoman lo dislocado (lo, la, ne, l')", targets: ["lo", "la", "ne", "l'ho"] } },
+      vf: [["O seu Manuel estava em Lisboa em 1974.", "verdadeiro"], ["Salazar ainda governava em 1974.", "falso"], ["O seu Manuel era soldado.", "não se diz"]],
+      hunt: { label: "Tocá las marcas del registro coloquial en el audio de João", targets: ["cara", "cê", "mano", "tava"] } },
 
-    { id: "w-49", week: 49, level: "C1", emoji: "📢", title: "Avviso ai condomini",
-      grammar: "registro alto e coesione",
+    { id: "w-50", week: 50, n: 50, level: "C1", emoji: "🌊", title: "Lisboa, 1755",
+      grammar: "colocações e expressões idiomáticas",
       text:
-        "Gentili condomini, si comunica che, a partire da lunedì 3 marzo, avranno inizio i lavori di " +
-        "manutenzione dell'ascensore. Durante tale periodo, la cui durata si prevede di due settimane, " +
-        "l'impianto non sarà utilizzabile.\n\n" +
-        "Si invitano pertanto i residenti a servirsi delle scale e a prestare particolare attenzione ai " +
-        "materiali depositati nell'atrio. Qualora vi fossero esigenze specifiche, in particolare per persone " +
-        "anziane o con disabilità, si prega di contattare l'amministrazione.\n\n" +
-        "Ci scusiamo per il disagio e confidiamo nella consueta collaborazione. Distinti saluti, l'Amministratore.",
-      gloss: { condomini: "vecinos del consorcio", manutenzione: "mantenimiento",
-               ascensore: "ascensor", tale: "dicho", impianto: "instalación", pertanto: "por lo tanto",
-               servirsi: "valerse", atrio: "hall", qualora: "en caso de que", esigenze: "necesidades", utilizzabile: "utilizable", depositati: "depositados", amministrazione: "administración", disabilità: "discapacidad", confidiamo: "confiamos", collaborazione: "colaboración", distinti: "atentos (distinti saluti = saludos atentos)",
-               prega: "ruega", disagio: "molestia", consueta: "habitual" },
+        "Na manhã de 1º de novembro de 1755, Dia de Todos os Santos, um terremoto seguido de um maremoto e de " +
+        "incêndios destruiu boa parte de Lisboa. Morreram dezenas de milhares de pessoas.\n\n" +
+        "O futuro Marquês de Pombal, ministro de D. José I, assumiu as rédeas da situação e tomou providências " +
+        "rápidas. Atribui-se a ele a frase \"Enterrar os mortos e cuidar dos vivos\", mas a autoria é duvidosa: " +
+        "há quem a atribua a outro nobre. Seja como for, Pombal levou a sério a reconstrução: a Baixa foi " +
+        "redesenhada com ruas retas e prédios com uma estrutura de madeira, a gaiola pombalina, pensada " +
+        "para resistir aos tremores.\n\n" +
+        "Na Europa, a tragédia deu o que falar: Voltaire escreveu um poema sobre o desastre e zombou do " +
+        "otimismo filosófico em Cândido.\n\n" +
+        "O seu Manuel resume: \"Lisboa deu a volta por cima. Como diz o ditado, depois da tempestade vem " +
+        "a bonança.\"",
+      gloss: { rédeas: "riendas", providências: "medidas", atribui: "atribuye", enterrar: "enterrar",
+               autoria: "autoría", duvidosa: "dudosa", nobre: "noble", sério: "serio (levar a sério = tomar en serio)",
+               retas: "rectas", madeira: "madera", gaiola: "jaula", tremores: "temblores", zombou: "se burló",
+               otimismo: "optimismo", ditado: "refrán", bonança: "calma" },
       questions: [
-        ["¿Cuánto duran los trabajos?", ["dos semanas", "un mes", "tres días", "no se sabe"], "dos semanas"],
-        ["¿Qué deben usar los vecinos?", ["las escaleras", "el ascensor de servicio", "la puerta de atrás", "nada"], "las escaleras"],
-        ["¿Quién debe contactar a la administración?", ["quien tenga necesidades específicas", "todos", "nadie", "los niños"], "quien tenga necesidades específicas"]
+        ["¿Qué destruyó Lisboa en 1755?", ["un terremoto, un maremoto e incendios", "una guerra", "una inundación del Tajo", "una epidemia"], "un terremoto, un maremoto e incendios"],
+        ["¿Qué se sabe de la frase atribuida a Pombal?", ["que su autoría es dudosa", "que la dijo el rey", "que es de Voltaire", "que está en la Constitución"], "que su autoría es dudosa"],
+        ["¿Qué era la gaiola pombalina?", ["una estructura de madera contra los temblores", "una cárcel", "una plaza", "un barco"], "una estructura de madera contra los temblores"]
       ],
-      vf: [["I lavori riguardano l'ascensore.", "vero"], ["I lavori durano un mese.", "falso"], ["I lavori costano mille euro.", "non si dice"]],
-      hunt: { label: "Tocá los conectores formales (pertanto, qualora, durante…)", targets: ["pertanto", "qualora", "durante", "tale"] } },
+      vf: [["O terremoto aconteceu no Dia de Todos os Santos.", "verdadeiro"], ["Está provado que Pombal disse a frase.", "falso"], ["O seu Manuel já visitou a Baixa de Lisboa.", "não se diz"]],
+      hunt: { label: "Tocá las palabras de las colocaciones y expresiones (assumir as rédeas, tomar providências…)", targets: ["rédeas", "providências", "sério", "falar", "volta", "bonança"] } },
 
-    { id: "w-51", week: 51, level: "C1", emoji: "✉️", title: "Lettera a me stesso",
-      grammar: "ripasso generale C1",
+    { id: "w-51", week: 51, n: 51, level: "C1", emoji: "✊🏿", title: "Palmares e a Consciência Negra",
+      grammar: "revisão B2-C1",
       text:
-        "Caro me, se stai leggendo queste righe, vuol dire che è passato un anno da quando hai cominciato " +
-        "a studiare italiano. Ti ricordi quanto faticavi a distinguere il passato prossimo dall'imperfetto? " +
-        "E quante volte hai sbagliato l'ausiliare di \"andare\"?\n\n" +
-        "Oggi, invece, leggi un giornale senza vocabolario e capisci quasi tutto quello che senti alla radio. " +
-        "Non che tu sia diventato perfetto, sia chiaro: il congiuntivo ti fa ancora qualche scherzo.\n\n" +
-        "Però, se ti fossi arreso a febbraio, non saresti arrivato fin qui. Continua così, e il prossimo anno " +
-        "scrivimi in italiano, possibilmente senza errori.",
-      gloss: { righe: "líneas", faticavi: "te costaba", distinguere: "distinguir", vocabolario: "diccionario",
-               quasi: "casi", chiaro: "claro", scherzo: "broma, jugada", volte: "veces", arreso: "rendido", possibilmente: "si es posible" },
+        "Na Serra da Barriga, em Alagoas, formou-se no século XVII o Quilombo dos Palmares, a maior comunidade " +
+        "de pessoas fugidas da escravidão na América portuguesa. Chegou a reunir milhares de habitantes e " +
+        "resistiu durante quase um século a sucessivas expedições. Seu último líder, Zumbi, foi morto em 20 de " +
+        "novembro de 1695.\n\n" +
+        "Desde 2024, essa data, o Dia Nacional de Zumbi e da Consciência Negra, é feriado em todo o país. " +
+        "A intelectual Lélia Gonzalez, que tem sido cada vez mais lida nas universidades, propôs o conceito " +
+        "de amefricanidade para pensar as culturas negras das Américas.\n\n" +
+        "Na escola, a Bia lançou um projeto: \"Quando vocês forem à Serra da Barriga, quero que tragam fotos " +
+        "para a gente montar uma exposição. Se eu pudesse, iria com vocês.\" Os alunos pediram para fazerem " +
+        "a viagem em novembro, a tempo de estarem lá no dia 20. \"Se tivéssemos começado antes, teríamos " +
+        "conseguido verba\", lamentou a Bia.",
+      gloss: { serra: "sierra", quilombo: "comunidad de esclavos fugados", fugidas: "fugadas", sucessivas: "sucesivas",
+               morto: "muerto", consciência: "conciencia", intelectual: "intelectual",
+               amefricanidade: "amefricanidad (concepto de Lélia Gonzalez)", lançou: "lanzó", tragam: "traigan",
+               montar: "armar", verba: "fondos", lamentou: "lamentó" },
       questions: [
-        ["¿Cuánto tiempo pasó?", ["un año", "un mes", "diez años", "una semana"], "un año"],
-        ["¿Qué le cuesta todavía?", ["el congiuntivo", "leer el diario", "entender la radio", "el passato prossimo"], "el congiuntivo"],
-        ["¿Qué habría pasado si se rendía en febrero?", ["no habría llegado hasta acá", "hablaría mejor", "nada", "habría viajado"], "no habría llegado hasta acá"]
+        ["¿Qué era Palmares?", ["la mayor comunidad de fugados de la esclavitud", "un ingenio azucarero", "una ciudad portuguesa", "un puerto"], "la mayor comunidad de fugados de la esclavitud"],
+        ["¿Por qué el 20 de noviembre es feriado?", ["es el día de Zumbi y de la Conciencia Negra", "es el día de la Abolición", "es el día de Tiradentes", "es la Independencia"], "es el día de Zumbi y de la Conciencia Negra"],
+        ["¿Qué lamenta Bia?", ["no haber empezado antes para conseguir fondos", "no ir al viaje", "que los alumnos no quieran ir", "que llueva en noviembre"], "no haber empezado antes para conseguir fondos"]
       ],
-      vf: [["È passato un anno da quando ha cominciato a studiare.", "vero"], ["Il congiuntivo non è più un problema.", "falso"], ["Ha studiato in Italia.", "non si dice"]],
-      hunt: { label: "Tocá los congiuntivi y el condizionale (sia, fossi, saresti)", targets: ["sia", "fossi", "saresti"] } },
+      vf: [["Zumbi foi morto em 1695.", "verdadeiro"], ["Palmares resistiu apenas dez anos.", "falso"], ["Lélia Gonzalez nasceu em Minas Gerais.", "não se diz"]],
+      hunt: { label: "Tocá las formas que más cuestan: futuro do subjuntivo, infinitivo pessoal, compuestos…", targets: ["forem", "tragam", "pudesse", "iria", "fazerem", "estarem", "tivéssemos", "teríamos", "sido"] } },
 
-    { id: "w-52", week: 52, level: "C1", emoji: "🎓", title: "Il giorno dell'esame",
-      grammar: "tutto l'anno",
+    { id: "w-52", week: 52, n: 52, level: "C1", emoji: "🎓", title: "O mar da nossa língua",
+      grammar: "exame final: todo o ano",
       text:
-        "Alle otto e mezza Martina era già davanti all'università, con il documento in mano e il cuore che " +
-        "batteva forte. Aveva studiato per un anno intero e ora doveva dimostrare di aver raggiunto il livello C1.\n\n" +
-        "La prova di ascolto fu la più difficile: due giornalisti parlavano velocissimi di economia. Nella " +
-        "produzione scritta, invece, si sentì a suo agio: le chiedevano di argomentare sui pro e i contro " +
-        "del lavoro da casa.\n\n" +
-        "Un mese dopo arrivò la mail: \"Esame superato.\" Martina la lesse tre volte prima di crederci. " +
-        "Poi chiamò la sua insegnante: \"Ce l'ho fatta!\"",
-      gloss: { documento: "documento", cuore: "corazón", batteva: "latía", dimostrare: "demostrar",
-               raggiunto: "alcanzado", prova: "prueba", ascolto: "escucha", giornalisti: "periodistas",
-               agio: "gusto (a suo agio = cómoda)", produzione: "producción", volte: "veces", argomentare: "argumentar", superato: "aprobado",
-               insegnante: "profesora" },
+        "No dia do exame, a Sofía chegou cedo ao campus da universidade, na Ilha do Fundão, com o documento " +
+        "na mão e o coração acelerado. Na prova escrita, pediram-lhe um texto sobre o mar na cultura de " +
+        "língua portuguesa. Ela respirou fundo e escreveu:\n\n" +
+        "\"Poucas línguas devem tanto ao mar quanto a nossa. Em 1572, Camões publicou Os Lusíadas, epopeia " +
+        "da viagem de Vasco da Gama à Índia, em que o gigante Adamastor encarna os perigos do cabo das " +
+        "Tormentas. Em 1654, em São Luís do Maranhão, o Padre Antônio Vieira pregou o Sermão de Santo " +
+        "Antônio aos Peixes, criticando os colonos por meio dos peixes. E Fernando Pessoa escreveu, em " +
+        "Mensagem: 'Ó mar salgado, quanto do teu sal / São lágrimas de Portugal!'\"\n\n" +
+        "Semanas depois, chegou o resultado do Celpe-Bras: Avançado Superior. A Sofía foi ao Arpoador e, " +
+        "quando o sol se pôs atrás do Dois Irmãos, aplaudiu mais alto do que todo mundo.",
+      gloss: { campus: "campus", ilha: "isla", mão: "mano", coração: "corazón", acelerado: "acelerado",
+               prova: "prueba", "pediram-lhe": "le pidieron", respirou: "respiró", devem: "deben",
+               epopeia: "epopeya", encarna: "encarna", perigos: "peligros", tormentas: "tormentas",
+               pregou: "predicó", sermão: "sermón", colonos: "colonos", salgado: "salado", "lágrimas": "lágrimas",
+               aplaudiu: "aplaudió" },
       questions: [
-        ["¿Qué prueba fue la más difícil?", ["la de escucha", "la escrita", "la oral", "la de lectura"], "la de escucha"],
-        ["¿Sobre qué tuvo que argumentar?", ["el trabajo desde casa", "la economía", "la universidad", "el deporte"], "el trabajo desde casa"],
-        ["¿A quién llamó al final?", ["a su profesora", "a su madre", "a un periodista", "a la universidad"], "a su profesora"]
+        ["¿Sobre qué tema escribió Sofía?", ["el mar en la cultura de lengua portuguesa", "la bossa nova", "la historia de Río", "su año en Brasil"], "el mar en la cultura de lengua portuguesa"],
+        ["¿A quién critica Vieira a través de los peces?", ["a los colonos", "a los portugueses de Lisboa", "a los pescadores", "a los poetas"], "a los colonos"],
+        ["¿Qué hizo Sofía al saber el resultado?", ["fue al Arpoador y aplaudió el atardecer", "volvió a Buenos Aires", "hizo una fiesta en la Lapa", "llamó a su madre"], "fue al Arpoador y aplaudió el atardecer"]
       ],
-      vf: [["La prova di ascolto è stata la più difficile.", "vero"], ["Martina ha saputo il risultato il giorno stesso.", "falso"], ["Martina ha preso il voto massimo.", "non si dice"]],
-      hunt: { label: "Tocá los verbos en passato remoto", targets: ["fu", "sentì", "arrivò", "lesse", "chiamò"] } }
+      vf: [["Os Lusíadas foram publicados em 1572.", "verdadeiro"], ["Vieira pregou o sermão em Lisboa.", "falso"], ["A Bia foi ao Arpoador com a Sofía.", "não se diz"]],
+      hunt: { label: "Tocá los verbos en pretérito perfeito", targets: ["chegou", "pediram-lhe", "respirou", "escreveu", "publicou", "pregou", "foi", "pôs", "aplaudiu"] } }
   ];
 
-  // «Vero, falso o non si dice?»: comprehension in Italian, as in the CILS.
-  var api = { TESTI: TESTI };
+  // «Verdadeiro, falso ou não se diz?»: comprensión en portugués, como en el
+  // Celpe-Bras.  Las respuestas de vf son "verdadeiro", "falso" o "não se diz".
+  var VF_OPTIONS = ["verdadeiro", "falso", "não se diz"];
+  var api = { TESTI: TESTI, VF_OPTIONS: VF_OPTIONS };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.LettureSettimana = api;
 })(typeof window !== "undefined" ? window : globalThis);

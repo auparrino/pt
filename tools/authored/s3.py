@@ -245,3 +245,891 @@ cb(2, "Talvez você queira. A gente vai ao Pão de Açúcar amanhã. (se)", "Se 
    "Condición futura: se + futuro do subjuntivo (quiser).",
    alt=["A gente vai ao Pão de Açúcar amanhã, se você quiser.", "Se você quiser, amanhã a gente vai ao Pão de Açúcar.",
         "Se quiser, a gente vai ao Pão de Açúcar amanhã.", "Se você quiser a gente vai ao Pão de Açúcar amanhã."])
+
+
+# ============================================================================
+# Semana 28 — Imperfeito do subjuntivo e condicionais
+# partes: 0 la forma en -sse · 1 se eu pudesse, viajaria ·
+#         2 queria que, como se, la trampa del -ra
+# ============================================================================
+wk(28, "B2", "imperfeito do subjuntivo")
+
+ch(0, "Se eu ___ carioca, iria à praia todo dia.", ["fosse", "for", "seria"], "fosse",
+   "Hipótesis del presente: se + imperfeito do subjuntivo. «For» es para condiciones futuras reales; «seria» nunca va tras «se».")
+ch(0, "Se nós ___ mais tempo, ficaríamos em Paraty.", ["tivéssemos", "tivemos", "tivermos"], "tivéssemos",
+   "ter → tiveram → tivesse; nós: tivéssemos, con tilde. «Tivermos» es futuro do subjuntivo (condición real).")
+ch(0, "Se você ___ o que eu sei…", ["soubesse", "sabesse", "souber"], "soubesse",
+   "saber → souberam → soubesse. El tronco sale del perfeito, nunca del infinitivo: «sabesse» no existe.")
+ch(0, "Se eles ___ ao Brasil, adorariam.", ["viessem", "vissem", "venham"], "viessem",
+   "vir → vieram → viessem. «Vissem» es de ver (viram → visse).")
+ch(1, "Se eu pudesse, ___ em Santa Teresa.", ["moraria", "morasse", "moraría"], "moraria",
+   "En la otra mitad va futuro do pretérito: moraria, sin tilde (el acento cae en -ri-, pero no se marca).")
+ch(1, "Se ela ___ mais cedo, pegaria o BRT vazio.", ["saísse", "sairia", "saia"], "saísse",
+   "sair → saíram → saísse, con tilde en la í. Nunca condicional tras «se».")
+ch(1, "O que você faria se ___ na Mega-Sena?", ["ganhasse", "ganharia", "ganhar"], "ganhasse",
+   "Pregunta hipotética: faria + se ganhasse. «Se ganhar» sería una posibilidad real y futura, con «vai fazer».")
+ch(1, "Se D. Pedro II ___ hoje, o que pensaria do Brasil?", ["vivesse", "viveria", "vivera"], "vivesse",
+   "Hipótesis irreal del presente: se vivesse. «Vivera» es el pluscuamperfecto literario (semana 41), no «viviera».")
+ch(2, "Ela queria que você ___ ao Maracanã com ela.", ["fosse", "vá", "for"], "fosse",
+   "Principal en pasado (queria) → imperfeito do subjuntivo: que você fosse. «Que vá» es el calco rioplatense.")
+ch(2, "Era importante que eles ___ a verdade.", ["soubessem", "saibam", "sabessem"], "soubessem",
+   "«Era importante que» está en pasado: imperfeito do subjuntivo, soubessem.")
+ch(2, "Ele fala como se ___ o dono do bar.", ["fosse", "é", "seja"], "fosse",
+   "«Como se» pide siempre imperfeito do subjuntivo, como «como si fuera».")
+ch(2, "Seria ótimo que vocês ___ o violão.", ["trouxessem", "trazessem", "tragam"], "trouxessem",
+   "Principal en condicional → imperfeito do subjuntivo. trazer → trouxeram → trouxessem.")
+
+cl(0, "Se eu ___ (ter) grana, comprava um apê no Leblon.", "tivesse",
+   "ter → tiveram → tivesse. En el habla, la otra mitad en imperfeito (comprava) es normal.")
+cl(0, "Se nós ___ (poder), viajaríamos para Portugal.", "pudéssemos",
+   "poder → puderam → pudéssemos, con tilde aguda en la é.")
+cl(0, "Se você ___ (dizer) a verdade, ninguém ficaria bravo.", "dissesse",
+   "dizer → disseram → dissesse, con doble s.")
+cl(0, "Se eles ___ (fazer) o trabalho direito, não haveria problema.", "fizessem",
+   "fazer → fizeram → fizessem.")
+cl(0, "Se a gente ___ (ir) de barca para Niterói, chegaria antes.", "fosse",
+   "«a gente» va con verbo en singular: se a gente fosse. ir y ser comparten fosse.")
+cl(1, "Se eu fosse você, ___ (aceitar) a proposta.", "aceitaria",
+   "Consejo con «se eu fosse você»: la otra mitad en futuro do pretérito (en el habla, aceitava).",
+   alt=["aceitava"])
+cl(1, "Se ela estudasse mais, ___ (passar) no vestibular.", "passaria",
+   "Consecuencia hipotética: futuro do pretérito. En el habla también passava.",
+   alt=["passava"])
+cl(1, "Se Machado de Assis ___ (viver) hoje, escreveria crônicas sobre as redes.", "vivesse",
+   "Hipótesis irreal: se + imperfeito do subjuntivo. Machado también fue cronista de la Río del siglo XIX.")
+cl(2, "Queria que você ___ (vir) no meu aniversário.", "viesse",
+   "Principal en pasado → imperfeito do subjuntivo: viesse (de vir).")
+cl(2, "Pedi que eles ___ (pôr) a mesa.", "pusessem",
+   "pôr → puseram → pusessem. Principal en perfeito (pedi) → imperfeito do subjuntivo.")
+cl(2, "Os sebastianistas esperavam como se D. Sebastião ___ (ir) voltar a qualquer momento.", "fosse",
+   "«Como se» + imperfeito do subjuntivo: como se fosse voltar. D. Sebastião desapareció en Alcácer-Quibir (1578) y nació el mito de su regreso.")
+cl(2, "Seria melhor que nós ___ (estar) lá às oito.", "estivéssemos",
+   "Principal en condicional → imperfeito do subjuntivo: estivéssemos, con tilde.")
+
+trv(0, "Si tuviera plata, viajaría a Bahía.",
+    "«Si tuviera» = se eu tivesse; la otra mitad en futuro do pretérito (o imperfeito en el habla).",
+    ["Se eu tivesse", "Se tivesse"], " ", ["dinheiro", "grana"], ", ",
+    ["viajaria", "eu viajaria", "viajava", "eu viajava", "iria", "ia"], " ", ["para a Bahia", "pra Bahia", "à Bahia"])
+trv(0, "Si fuéramos ricos, viviríamos en Leblon.",
+    "fôssemos lleva circunflejo; «vivir en un lugar» = morar: moraríamos no Leblon.",
+    ["Se nós fôssemos", "Se fôssemos", "Se a gente fosse"], " ricos, ",
+    ["moraríamos", "viveríamos", "a gente moraria", "morávamos", "a gente morava", "nós moraríamos"], " no Leblon")
+trv(1, "Si pudiera, iría al Maracaná hoy.",
+    "se + pudesse; la otra mitad, iria (o ia, en el habla).",
+    ["Se eu pudesse", "Se pudesse"], ", ", ["iria", "ia", "eu iria", "eu ia"], " ao Maracanã hoje")
+trv(1, "¿Qué harías si ganaras la lotería?",
+    "Pregunta hipotética: faria… se ganhasse. Nunca «se ganharia».",
+    ["O que você faria", "O que faria", "Que você faria", "O que tu farias"], " se ", ["ganhasse", "você ganhasse"],
+    " na ", ["loteria", "Mega-Sena"])
+trv(1, "Si supiera sambar, bailaría en el bloco.",
+    "se eu soubesse (de souberam) + dançaria / dançava.",
+    ["Se eu soubesse", "Se soubesse"], " sambar, ", ["dançaria", "eu dançaria", "dançava", "eu dançava"], " no bloco")
+trv(2, "Quería que vinieras conmigo.",
+    "Principal en pasado → imperfeito do subjuntivo: viesse (de vir).",
+    ["Eu queria", "Queria"], " que ", ["você viesse", "viesse", "tu viesses"], " comigo")
+trv(2, "Habla como si fuera carioca.",
+    "«Como se» + imperfeito do subjuntivo: como se fosse.",
+    ["Ele fala", "Fala", "Ela fala", "Você fala"], " como se fosse carioca")
+trv(2, "Yo que vos, no iría.",
+    "«Yo que vos» = se eu fosse você; la otra mitad, não iria / não ia.",
+    ["Se eu fosse você", "Se fosse você", "Eu, se fosse você", "Se eu fosse tu"], ", ",
+    ["não iria", "eu não iria", "não ia", "eu não ia"])
+
+fx(1, "Se eu poderia, moraria em Ipanema.", "poderia", "pudesse",
+   "Se eu pudesse, moraria em Ipanema.", "subjuntivo",
+   "Tras «se» nunca va condicional: se eu pudesse. El condicional va en la otra mitad (moraria).")
+fx(2, "Ontem ela me pediu que eu traga o biscoito Globo.", "traga", "trouxesse",
+   "Ontem ela me pediu que eu trouxesse o biscoito Globo.", "tempo",
+   "Con la principal en pasado (pediu), imperfeito do subjuntivo: que eu trouxesse. «Me pidió que traiga» no pasa al portugués.")
+fx(2, "Se eu tivera mais tempo, estudaria mais.", "tivera", "tivesse",
+   "Se eu tivesse mais tempo, estudaria mais.", "espanol",
+   "El «si tuviera» español se dice se eu tivesse. «Tivera» es el pluscuamperfecto literario (= tinha tido).")
+fx(0, "Se nós fossemos mais organizados, não perderíamos tanto tempo.", "fossemos", "fôssemos",
+   "Se nós fôssemos mais organizados, não perderíamos tanto tempo.", "ortografia",
+   "La 1.ª plural del imperfeito do subjuntivo es esdrújula y lleva tilde: fôssemos, tivéssemos, falássemos.")
+
+_L28 = [["falar", "falássemos"], ["comer", "comêssemos"], ["partir", "partíssemos"]]
+_GP28 = "Mirá los tres ejemplos (se nós…, imperfeito do subjuntivo) y completá el cuarto."
+gd(0, _L28, "ir → ___", "fôssemos", "íssemos",
+   "ir no arma el tronco sobre el infinitivo: foram → fôssemos (igual que ser). Con circunflejo en la ô.", prompt=_GP28)
+gd(0, _L28, "vir → ___", "viéssemos", "víssemos",
+   "vir → vieram → viéssemos. «Víssemos» es de ver (viram → víssemos).", prompt=_GP28)
+gd(0, _L28, "dar → ___", "déssemos", "dássemos",
+   "dar → deram → déssemos. El tronco es el del perfeito (deram), no el del infinitivo.", prompt=_GP28)
+
+sc(0, ["fizeram → se eu fizesse", "tiveram → se eu tivesse", "puderam → se eu pudesse",
+       "foram → se eu fosse", "disseram → se eu dissesse", "quiseram → se eu quisesse"],
+   "¿Cómo se forma el imperfeito do subjuntivo?",
+   ["3.ª plural del perfeito sin -ram + -sse.", "Infinitivo + -sse.", "Presente de subjuntivo + -sse."],
+   "3.ª plural del perfeito sin -ram + -sse.",
+   "Regla: mismo tronco que el futuro do subjuntivo: fizeram → fize- → fizesse. Vale para todos los verbos, regulares e irregulares.")
+sc(1, ["Se eu tivesse tempo, viajaria.", "Se ele pudesse, ajudaria.", "Se chovesse, ficaríamos em casa.",
+       "Se você viesse, seria ótimo.", "Se nós soubéssemos, contaríamos.", "Se fosse barato, eu compraria."],
+   "¿Qué tiempo va en cada mitad de la hipótesis?",
+   ["Imperfeito do subjuntivo tras «se»; futuro do pretérito en la otra mitad.",
+    "Futuro do pretérito tras «se»; imperfeito do subjuntivo en la otra.",
+    "Imperfeito do subjuntivo en las dos mitades."],
+   "Imperfeito do subjuntivo tras «se»; futuro do pretérito en la otra mitad.",
+   "Regla: se + imperfeito do subjuntivo, y consecuencia en futuro do pretérito (en el habla, imperfeito de indicativo).")
+
+ty(0, "Escribí el imperfeito do subjuntivo (eu) de «trazer».", "trazer → se eu ___", "trouxesse",
+   "trazer → trouxeram → trouxesse.")
+ty(2, "Escribí el imperfeito do subjuntivo (nós) de «ser».", "ser → se nós ___", "fôssemos",
+   "ser → foram → fôssemos, con circunflejo.")
+
+cb(1, "Não tenho dinheiro. Não viajo para Fernando de Noronha. (se)",
+   "Se eu tivesse dinheiro, viajaria para Fernando de Noronha.",
+   "Se invierte la realidad: no tengo → se eu tivesse; no viajo → viajaria.",
+   alt=V(["Se eu tivesse", "Se tivesse"], " dinheiro, ", ["viajaria", "eu viajaria", "viajava", "eu viajava"],
+         " para Fernando de Noronha.")[1:] + ["Viajaria para Fernando de Noronha se eu tivesse dinheiro."])
+cb(2, "Ela fala. Parece que é portuguesa. (como se)", "Ela fala como se fosse portuguesa.",
+   "«Como se» + imperfeito do subjuntivo: como se fosse.",
+   alt=["Ela fala como se ela fosse portuguesa."])
+cb(2, "Eu queria uma coisa. Você vem à festa. (queria que)", "Eu queria que você viesse à festa.",
+   "Principal en pasado (queria) → imperfeito do subjuntivo: viesse.",
+   alt=["Queria que você viesse à festa.", "Eu queria que você viesse na festa.", "Queria que você viesse na festa."])
+
+
+# ============================================================================
+# Semana 29 — Infinitivo pessoal
+# partes: 0 la forma y su trampa · 1 sujeto propio y preposiciones ·
+#         2 cuándo no flexionar; el habla
+# ============================================================================
+wk(29, "B2", "infinitivo pessoal")
+
+ch(0, "Trouxe o mapa para vocês ___ o caminho.", ["acharem", "acharam", "acham"], "acharem",
+   "Tras «para» con sujeto propio (vocês): infinitivo pessoal, infinitivo + -em.")
+ch(0, "Está na hora de eles ___ o dever de casa.", ["fazerem", "fizerem", "façam"], "fazerem",
+   "El infinitivo pessoal sale del infinitivo: fazer → fazerem. «Fizerem» es futuro do subjuntivo.")
+ch(0, "Antes de vocês ___, passem protetor solar.", ["saírem", "sairem", "saiam"], "saírem",
+   "sair → saírem, con tilde en la í para romper el diptongo (como saíram, saísse).")
+ch(0, "Para nós ___ tempo, precisamos sair cedo.", ["termos", "tivermos", "tenhamos"], "termos",
+   "ter → termos: tronco del infinitivo. «Tivermos» es futuro do subjuntivo.")
+ch(1, "É bom vocês ___ cedo ao Maracanã.", ["chegarem", "chegaram", "cheguem"], "chegarem",
+   "«É bom» + sujeto propio + infinitivo pessoal. Con «que» sería é bom que vocês cheguem.")
+ch(1, "É importante os trabalhadores ___ os seus direitos.", ["conhecerem", "conheceram", "conheçam"], "conhecerem",
+   "El infinitivo tiene su propio sujeto (os trabalhadores): se flexiona. Sin «que», nunca subjuntivo.")
+ch(1, "Eles saíram sem nós ___.", ["sabermos", "soubermos", "saibamos"], "sabermos",
+   "«Sin que supiéramos» = sem nós sabermos: preposición + sujeto + infinitivo pessoal.")
+ch(1, "Paulo Freire alfabetizava adultos para eles ___ o mundo, não só a palavra.", ["lerem", "leram", "leiam"], "lerem",
+   "para + sujeto + infinitivo pessoal: para eles lerem. Freire decía que la lectura del mundo precede a la de la palabra.")
+ch(2, "Nós queremos ___ em Florianópolis.", ["morar", "morarmos", "moremos"], "morar",
+   "Mismo sujeto y verbo como querer: infinitivo simple. «Queremos morarmos» es error.")
+ch(2, "Eles podem ___ agora.", ["sair", "saírem", "saem"], "sair",
+   "Tras poder, dever, querer, ir con el mismo sujeto: infinitivo sin flexión.")
+ch(2, "Fala mais alto pra gente ___.", ["ouvir", "ouvirmos", "ouve"], "ouvir",
+   "«A gente» concuerda en singular: pra gente ouvir. «Pra gente ouvirmos» es error.")
+ch(2, "Liguei para vocês ___ da notícia.", ["saberem", "souberem", "saibam"], "saberem",
+   "El infinitivo pessoal reemplaza a «para que» + subjuntivo: para vocês saberem = para que vocês soubessem.")
+
+cl(0, "Comprei os ingressos para nós ___ (ir) ao show.", "irmos",
+   "ir → irmos. El infinitivo pessoal es regular en todos los verbos.")
+cl(0, "É melhor vocês ___ (ser) pontuais.", "serem",
+   "ser → serem: infinitivo + -em, sin irregularidades.")
+cl(0, "O professor pediu para os alunos ___ (ler) «Vidas Secas».", "lerem",
+   "pedir para + sujeto + infinitivo pessoal: para os alunos lerem. «Vidas Secas» es la novela de Graciliano Ramos (1938).")
+cl(0, "Esperei até eles ___ (vir).", "virem",
+   "vir → virem (infinitivo pessoal). No lo confundas con vierem (futuro do subjuntivo de vir).")
+cl(1, "Ao ___ (chegar) à rodoviária, nós ligamos.", "chegarmos",
+   "«ao» + infinitivo = al + infinitivo. Con sujeto nós, chegarmos (también se acepta ao chegar).",
+   alt=["chegar"])
+cl(1, "Está na hora de ___ (ir), galera!", "irmos",
+   "El que habla se incluye: de irmos. Con a gente: de a gente ir.",
+   alt=["ir"])
+cl(1, "Depois de vocês ___ (terminar) a prova, podem sair.", "terminarem",
+   "depois de + sujeto + infinitivo pessoal: depois de vocês terminarem.")
+cl(1, "Os pais trabalham muito para os filhos ___ (ter) oportunidades.", "terem",
+   "Sujeto distinto (os filhos): para os filhos terem.")
+cl(2, "Nós precisamos ___ (estudar) para o concurso.", "estudar",
+   "Mismo sujeto, precisar + infinitivo: sin flexión.")
+cl(2, "Vocês devem ___ (trazer) o documento.", "trazer",
+   "dever + infinitivo con el mismo sujeto: infinitivo simple.")
+cl(2, "Explica de novo para a gente ___ (entender).", "entender",
+   "«A gente» va con el verbo en singular: para a gente entender.")
+cl(2, "Saímos cedo para ___ (pegar) a praia vazia.", "pegar",
+   "Mismo sujeto tras preposición: la flexión es opcional (pegar o pegarmos).",
+   alt=["pegarmos"])
+
+trv(0, "Traje el mapa para que encuentren el Cristo.",
+    "«Para que encuentren» = para vocês acharem / encontrarem (o para que vocês achem).",
+    ["Trouxe", "Eu trouxe"], " o mapa ",
+    ["para vocês acharem", "para vocês encontrarem", "pra vocês acharem", "pra vocês encontrarem",
+     "para que vocês achem", "para que vocês encontrem", "para eles acharem", "para eles encontrarem"],
+    " o Cristo")
+trv(0, "Antes de que salgan, cierren la ventana.",
+    "antes de + sujeto + infinitivo pessoal: antes de vocês saírem (con tilde).",
+    ["Antes de vocês saírem", "Antes de saírem", "Antes que vocês saiam"], ", fechem a janela")
+trv(1, "Es bueno que lleguen temprano.",
+    "É bom + sujeto + infinitivo pessoal, o é bom que + subjuntivo.",
+    ["É bom vocês chegarem cedo", "É bom que vocês cheguem cedo", "É bom eles chegarem cedo",
+     "É bom que eles cheguem cedo"])
+trv(1, "Es importante que sepamos nuestros derechos.",
+    "É importante sabermos / nós sabermos, o é importante que saibamos.",
+    ["É importante sabermos", "É importante nós sabermos", "É importante que saibamos",
+     "É importante que nós saibamos", "É importante a gente saber", "É importante conhecermos",
+     "É importante nós conhecermos"], " ", ["os nossos", "nossos"], " direitos")
+trv(1, "Se fueron sin que supiéramos.",
+    "sem + sujeto + infinitivo pessoal: sem nós sabermos.",
+    ["Eles saíram", "Saíram", "Eles foram embora", "Foram embora"], " sem ",
+    ["nós sabermos", "sabermos", "a gente saber", "que nós soubéssemos", "que soubéssemos"])
+trv(1, "Al llegar a Río, llamamos a mamá.",
+    "«al + infinitivo» = ao + infinitivo (ao chegarmos). Sin «a» personal: ligar para alguém.",
+    ["Ao chegarmos", "Ao chegar", "Quando chegamos"], " ", ["ao Rio", "no Rio"], ", ligamos ",
+    ["para a mamãe", "pra mamãe", "para a nossa mãe", "para nossa mãe", "para mamãe"])
+trv(2, "Queremos vivir en Floripa.",
+    "Mismo sujeto con querer: infinitivo simple (queremos morar).",
+    ["Nós queremos", "Queremos", "A gente quer"], " ", ["morar", "viver"], " em ", ["Floripa", "Florianópolis"])
+trv(2, "Hablá más fuerte para que escuchemos.",
+    "Con a gente, verbo sin -mos: pra gente ouvir. También para ouvirmos.",
+    ["Fala", "Fale"], " mais alto ",
+    ["pra gente ouvir", "para a gente ouvir", "pra a gente ouvir", "para nós ouvirmos", "para ouvirmos",
+     "para que a gente ouça", "para que nós ouçamos", "pra gente escutar", "para a gente escutar",
+     "para escutarmos"])
+
+fx(0, "O guia explicou tudo para eles fizerem a trilha sozinhos.", "fizerem", "fazerem",
+   "O guia explicou tudo para eles fazerem a trilha sozinhos.", "inf_pessoal",
+   "El infinitivo pessoal sale del infinitivo: fazerem. «Fizerem» es futuro do subjuntivo.")
+fx(2, "Nós queremos viajarmos para o Nordeste.", "viajarmos", "viajar",
+   "Nós queremos viajar para o Nordeste.", "inf_pessoal",
+   "Mismo sujeto con querer: el infinitivo no se flexiona.")
+fx(2, "Trouxe biscoito Globo pra a gente comermos na praia.", "comermos", "comer",
+   "Trouxe biscoito Globo pra a gente comer na praia.", "persona",
+   "«A gente» concuerda en singular: pra a gente comer. Con -mos, «para nós comermos».")
+fx(1, "É importante que vocês chegarem cedo.", "chegarem", "cheguem",
+   "É importante que vocês cheguem cedo.", "subjuntivo",
+   "Con «que» va subjuntivo (que vocês cheguem); sin «que», infinitivo pessoal (é importante vocês chegarem). No se mezclan.")
+
+_L29 = [["falar", "para eles falarem"], ["comer", "para eles comerem"], ["abrir", "para eles abrirem"]]
+gd(0, _L29, "sair → para eles ___", "saírem", "sairem",
+   "La terminación es la misma, pero sair necesita tilde: saírem (la i es tónica y no forma diptongo).")
+gd(0, _L29, "pôr → para eles ___", "porem", "pôrem",
+   "La tilde de pôr solo distingue el infinitivo de la preposición «por»; en porem ya no hace falta.")
+gd(0, _L29, "ter → para eles ___", "terem", "tiverem",
+   "En los regulares coincide con el futuro do subjuntivo y eso confunde: ter da terem (infinitivo pessoal) y tiverem (futuro do subjuntivo).")
+
+sc(0, ["falar → falarem", "ser → serem", "fazer → fazerem", "ter → terem", "ir → irem", "sair → saírem"],
+   "¿Sobre qué se forma el infinitivo pessoal?",
+   ["Sobre el infinitivo, en todos los verbos.",
+    "Sobre la 3.ª plural del perfeito, como el futuro do subjuntivo.",
+    "Sobre el presente de subjuntivo."],
+   "Sobre el infinitivo, en todos los verbos.",
+   "Regla: infinitivo + -es, -mos, -em. No tiene irregulares; solo la tilde de saírem, caírem.")
+sc(2, ["É bom vocês chegarem cedo.", "É hora de irmos.", "Trouxe isso para eles verem.",
+       "Queremos viajar.", "Eles podem sair.", "Vocês precisam estudar."],
+   "¿Cuándo lleva terminación el infinitivo?",
+   ["Cuando tiene un sujeto propio o va tras preposición; no tras querer, poder o precisar con el mismo sujeto.",
+    "Siempre que el sujeto es plural.",
+    "Solo después de la preposición «para»."],
+   "Cuando tiene un sujeto propio o va tras preposición; no tras querer, poder o precisar con el mismo sujeto.",
+   "Regla: si el infinitivo depende de un verbo con el mismo sujeto (queremos viajar), queda simple; si tiene sujeto propio o va tras preposición, se flexiona.")
+
+ty(0, "Escribí el infinitivo pessoal (nós) de «ser».", "É hora de ___ sinceros.", "sermos",
+   "ser → sermos: infinitivo + -mos.")
+ty(0, "Escribí el infinitivo pessoal (eles) de «pôr».", "Deixei espaço para eles ___ as malas.", "porem",
+   "pôr → porem, sin tilde. No lo confundas con puserem (futuro do subjuntivo).")
+
+cb(1, "Falei devagar. Eles entenderam. (para)", "Falei devagar para eles entenderem.",
+   "Finalidad con sujeto distinto: para + sujeto + infinitivo pessoal.",
+   alt=["Falei devagar pra eles entenderem.", "Eu falei devagar para eles entenderem.",
+        "Falei devagar para que eles entendessem."])
+cb(1, "Vocês vão sair. Fechem a janela antes. (antes de)", "Antes de vocês saírem, fechem a janela.",
+   "antes de + sujeto + infinitivo pessoal: antes de vocês saírem.",
+   alt=["Fechem a janela antes de vocês saírem.", "Antes de saírem, fechem a janela.",
+        "Fechem a janela antes de saírem.", "Antes de vocês saírem fechem a janela."])
+cb(2, "Eles saíram. Nós não sabíamos. (sem)", "Eles saíram sem nós sabermos.",
+   "sem + sujeto + infinitivo pessoal = sin que + subjuntivo.",
+   alt=["Saíram sem nós sabermos.", "Eles saíram sem a gente saber.", "Eles saíram sem que nós soubéssemos.",
+        "Saíram sem a gente saber.", "Eles saíram sem sabermos."])
+
+
+# ============================================================================
+# Semana 30 — Tempos compostos e hipótese no passado
+# partes: 0 los compuestos y el pasado que no fue · 1 tenha / tiver feito, habla
+# ============================================================================
+wk(30, "B2", "tempos compostos")
+
+ch(0, "Se eu tivesse sabido, ___ ido ao show.", ["teria", "tivesse", "terei"], "teria",
+   "Hipótesis sobre el pasado: se tivesse + participio, y en la otra mitad teria + participio. El español «hubiera ido» no se calca.")
+ch(0, "Se vocês ___ chegado cedo, teriam visto o Cristo sem nuvens.", ["tivessem", "teriam", "tiverem"], "tivessem",
+   "Tras «se», imperfeito do subjuntivo de ter + participio: tivessem chegado.")
+ch(0, "Se a corte portuguesa não ___ vindo em 1808, o Rio seria outra cidade.", ["tivesse", "teria", "tenha"], "tivesse",
+   "se + tivesse + participio. La corte de D. João llegó a Río en 1808 huyendo de Napoleón.")
+ch(0, "Se ela não tivesse perdido o voo, ___ vindo à festa.", ["teria", "tivesse", "terá"], "teria",
+   "La consecuencia en el pasado va en futuro do pretérito composto: teria vindo.")
+ch(0, "Se eu tivesse aceitado aquele emprego, hoje ___ em Recife.", ["moraria", "teria morado", "morasse"], "moraria",
+   "Hipótesis mixta: condición pasada, consecuencia presente (hoje) → futuro do pretérito simple: moraria.")
+ch(1, "Espero que vocês ___ gostado do passeio.", ["tenham", "tivessem", "têm"], "tenham",
+   "Principal en presente (espero) y hecho ya pasado: subjuntivo perfeito, tenham gostado.")
+ch(1, "Ela não atende o telefone: talvez já ___ saído.", ["tenha", "teria", "tem"], "tenha",
+   "«Talvez» + subjuntivo; acción ya pasada vista desde hoy: tenha saído. «Tem saído» significaría «viene saliendo».")
+ch(1, "Quando você ___ terminado, me avisa.", ["tiver", "tivesse", "tenha"], "tiver",
+   "quando + futuro do subjuntivo composto: quando você tiver terminado. Nunca «quando tenha».")
+ch(1, "Até dezembro eu ___ terminado o curso.", ["terei", "tiver", "teria"], "terei",
+   "Futuro composto: lo que habrá pasado para cierto momento. terei terminado = habré terminado.")
+ch(1, "Não acredito que ele ___ dito isso!", ["tenha", "tem", "tivesse"], "tenha",
+   "«Não acredito que» pide subjuntivo; principal en presente y hecho pasado: tenha dito.")
+ch(1, "Esperava que vocês ___ gostado.", ["tivessem", "tenham", "teriam"], "tivessem",
+   "Principal en pasado (esperava) → subjuntivo mais-que-perfeito: tivessem gostado.")
+ch(1, "Se eu soubesse, ___ ido com vocês.", ["tinha", "tivesse", "tenho"], "tinha",
+   "En el habla, el imperfeito reemplaza al condicional: se eu soubesse, tinha ido. En la norma: teria ido.",
+   prompt="Elegí la forma que se usa en el habla.")
+
+cl(0, "Se tivesse chovido, nós ___ (ficar) em casa.", "teríamos ficado",
+   "Consecuencia en el pasado: teria + participio (teríamos ficado). En el habla: tínhamos ficado.",
+   alt=["tínhamos ficado"])
+cl(0, "Se eu ___ (saber) antes, teria comprado o ingresso.", "tivesse sabido",
+   "Condición sobre el pasado: se + tivesse + participio.")
+cl(0, "Se Tiradentes não ___ (ser) delatado, a Inconfidência Mineira teria dado certo?", "tivesse sido",
+   "se + tivesse + participio (sido). Tiradentes fue delatado por Joaquim Silvério dos Reis y ejecutado en 1792.")
+cl(0, "Se vocês tivessem visto o jogo, ___ (entender) a minha raiva.", "teriam entendido",
+   "Otra mitad: futuro do pretérito composto, teriam entendido.",
+   alt=["tinham entendido"])
+cl(0, "Se eu tivesse estudado música, hoje ___ (tocar) no Beco das Garrafas.", "tocaria",
+   "Hipótesis mixta: pasado que afecta al presente (hoje) → tocaria. El Beco das Garrafas, en Copacabana, fue cuna de la bossa nova.",
+   alt=["tocava"])
+cl(0, "Se o Brasil não ___ (ter) escravidão por mais de três séculos, seria o mesmo país?", "tivesse tido",
+   "se + tivesse + participio (tido). Brasil fue el último país de América en abolir la esclavitud (1888).")
+cl(1, "Espero que ela ___ (chegar) bem a Salvador.", "tenha chegado",
+   "Deseo de hoy sobre algo que ya pasó: subjuntivo perfeito (tenha chegado).")
+cl(1, "Quando vocês ___ (ler) o livro, a gente discute.", "tiverem lido",
+   "Acción futura ya terminada antes de otra: quando + tiver + participio.")
+cl(1, "Às oito o bloco já ___ (passar).", "terá passado",
+   "Futuro composto: habrá pasado. En el habla, já vai ter passado.",
+   alt=["vai ter passado"])
+cl(1, "É bom que você ___ (vir).", "tenha vindo",
+   "Principal en presente, hecho pasado: tenha + participio. vir → vindo.")
+cl(1, "Se até sexta você não ___ (receber) o boleto, me liga.", "tiver recebido",
+   "Condición futura ya cumplida para un momento: se + tiver + participio.")
+cl(1, "Se ela tivesse ligado, eu ___ (buscar) ela no aeroporto.", "tinha buscado",
+   "En el habla, tinha + participio reemplaza a teria + participio. Las dos se aceptan.",
+   alt=["teria buscado"], prompt="Completá como se dice en el habla (imperfeito en lugar del condicional).")
+
+trv(0, "Si hubiera sabido, habría ido.",
+    "se + tivesse sabido, y en la otra mitad teria ido (en el habla, tinha ido). Nunca «tivesse ido» en la consecuencia.",
+    ["Se eu tivesse sabido", "Se tivesse sabido"], ", ", ["teria ido", "eu teria ido", "tinha ido", "eu tinha ido"])
+trv(0, "Si hubieran llegado temprano, habrían visto el Cristo.",
+    "Condición: tivessem chegado; consecuencia: teriam visto.",
+    ["Se vocês tivessem chegado", "Se tivessem chegado", "Se eles tivessem chegado"], " cedo, ",
+    ["teriam visto", "tinham visto", "vocês teriam visto"], " o Cristo")
+trv(0, "Si hubiera aceptado ese trabajo, hoy viviría en Recife.",
+    "Hipótesis mixta: tivesse aceitado (pasado) + moraria (presente).",
+    ["Se eu tivesse aceitado", "Se tivesse aceitado"], " ", ["esse", "aquele"], " ", ["emprego", "trabalho"],
+    ", hoje ", ["moraria", "eu moraria", "morava", "eu morava", "viveria", "eu viveria"], " em Recife")
+trv(1, "Espero que les haya gustado el paseo.",
+    "Espero que + subjuntivo perfeito: tenham gostado. gostar de + o = do.",
+    "Espero que ", ["vocês tenham", "tenham", "eles tenham"], " gostado do passeio")
+trv(1, "Quizás ya haya salido.",
+    "talvez + tenha + participio.",
+    "Talvez ", ["ela ", "ele ", ""], "já tenha saído")
+trv(1, "Cuando haya terminado, aviso.",
+    "quando + tiver + participio: acción futura ya terminada.",
+    "Quando ", ["eu tiver", "tiver"], " terminado, ", ["aviso", "eu aviso", "te aviso", "eu te aviso", "vou avisar"])
+trv(1, "Para diciembre habré terminado el curso.",
+    "Futuro composto: terei terminado (en el habla, vou ter terminado).",
+    ["Até dezembro", "Em dezembro"], " ",
+    ["terei terminado", "eu terei terminado", "vou ter terminado", "eu vou ter terminado", "já terei terminado",
+     "eu já terei terminado"], " o curso")
+trv(1, "No puedo creer que haya dicho eso.",
+    "Não acredito que + tenha dito (subjuntivo perfeito).",
+    ["Não acredito", "Não posso acreditar", "Eu não acredito"], " que ", ["ele ", "ela ", ""], "tenha dito isso")
+
+fx(0, "Se eu tivesse sabido, tivesse ido com vocês.", "tivesse ido", "teria ido",
+   "Se eu tivesse sabido, teria ido com vocês.", "espanol",
+   "El español dice «hubiera ido» en las dos mitades; en portugués la consecuencia va con teria (o tinha, en el habla).",
+   goodAlt=["tinha ido"])
+fx(0, "Se eu teria sabido, não teria vindo.", "teria sabido", "tivesse sabido",
+   "Se eu tivesse sabido, não teria vindo.", "subjuntivo",
+   "Tras «se», nunca condicional: se eu tivesse sabido.")
+fx(1, "Espero que vocês tinham gostado da feijoada.", "tinham", "tenham",
+   "Espero que vocês tenham gostado da feijoada.", "subjuntivo",
+   "«Espero que» pide subjuntivo: tenham gostado (subjuntivo perfeito).")
+fx(0, "Se ele tivesse fazido o dever, teria passado.", "fazido", "feito",
+   "Se ele tivesse feito o dever, teria passado.", "participio",
+   "fazer tiene participio irregular: feito. En los compuestos no se regulariza.")
+
+_L30 = [["chegar", "chegado"], ["comer", "comido"], ["partir", "partido"]]
+_GP30 = "Mirá los tres participios y completá el cuarto (para «teria…», «tivesse…»)."
+gd(0, _L30, "vir → ___", "vindo", "vido",
+   "vir tiene participio igual al gerundio: vindo (teria vindo). «Vido» no existe.", prompt=_GP30)
+gd(0, _L30, "pôr → ___", "posto", "ponido",
+   "pôr → posto (y compuestos: proposto, composto). Como el español «puesto», pero con o.", prompt=_GP30)
+gd(0, _L30, "escrever → ___", "escrito", "escrevido",
+   "escrever → escrito, como en español. El patrón -ido de los regulares te empuja a «escrevido».", prompt=_GP30)
+
+sc(0, ["Se tivesse chovido, teríamos ficado.", "Se eu tivesse sabido, teria ido.", "Se ela tivesse estudado, teria passado.",
+       "Se vocês tivessem vindo, teriam gostado.", "Se ele tivesse ligado, eu teria atendido.",
+       "Se nós tivéssemos saído cedo, teríamos chegado."],
+   "¿Cómo se arma la hipótesis sobre el pasado?",
+   ["se + tivesse + participio; en la otra mitad, teria + participio.",
+    "se + teria + participio; en la otra mitad, tivesse + participio.",
+    "se + tivesse + participio en las dos mitades."],
+   "se + tivesse + participio; en la otra mitad, teria + participio.",
+   "Regla: la condición en subjuntivo mais-que-perfeito (tivesse feito) y la consecuencia en futuro do pretérito composto (teria feito).")
+sc(1, ["Espero que tenham gostado.", "Talvez ele tenha saído.", "Esperava que tivessem gostado.",
+       "Quando tiver terminado, aviso.", "Se até sexta não tiver chegado, reclamo.", "Duvido que ela tenha dito isso."],
+   "¿Cuándo va tenha, tivesse o tiver + participio?",
+   ["tenha con principal en presente; tivesse con principal en pasado; tiver tras quando / se con futuro.",
+    "tenha siempre tras talvez; tiver siempre tras espero.",
+    "Los tres son intercambiables."],
+   "tenha con principal en presente; tivesse con principal en pasado; tiver tras quando / se con futuro.",
+   "Regla: es la misma correlación de los tiempos simples (seja / fosse / for), con ter como auxiliar.")
+
+ty(0, "Escribí el participio de «abrir».", "Se eu tivesse ___ a janela, o gato não teria fugido.", "aberto",
+   "abrir → aberto, irregular como en español.")
+ty(0, "Escribí el participio de «dizer».", "Ele nunca teria ___ isso.", "dito",
+   "dizer → dito.")
+
+cb(0, "Não choveu. Não ficamos em casa. (se)", "Se tivesse chovido, teríamos ficado em casa.",
+   "Hipótesis contraria al pasado: se + tivesse + participio, teria + participio.",
+   alt=["Se tivesse chovido, a gente teria ficado em casa.", "Se tivesse chovido, tínhamos ficado em casa.",
+        "Se tivesse chovido, nós teríamos ficado em casa.", "Teríamos ficado em casa se tivesse chovido."])
+cb(0, "Não estudei. Não passei no vestibular. (se)", "Se eu tivesse estudado, teria passado no vestibular.",
+   "Se invierte: não estudei → se tivesse estudado; não passei → teria passado.",
+   alt=["Se tivesse estudado, teria passado no vestibular.", "Se eu tivesse estudado, tinha passado no vestibular.",
+        "Teria passado no vestibular se tivesse estudado.", "Eu teria passado no vestibular se tivesse estudado."])
+cb(1, "Vou terminar o relatório. Depois te aviso. (quando)", "Quando tiver terminado o relatório, te aviso.",
+   "Acción futura ya terminada: quando + tiver + participio (también vale quando terminar).",
+   alt=["Quando eu tiver terminado o relatório, te aviso.", "Quando terminar o relatório, te aviso.",
+        "Quando eu terminar o relatório, te aviso.", "Te aviso quando tiver terminado o relatório.",
+        "Te aviso quando terminar o relatório."])
+
+
+# ============================================================================
+# Semana 31 — Discurso indireto e correlação de tempos
+# partes: 0 los tiempos retroceden · 1 pedidos, pronombres y adverbios ·
+#         2 preguntas y verbos de decir
+# ============================================================================
+wk(31, "B2", "discurso indireto")
+
+_PR = "Pasá al discurso indirecto: elegí la forma correcta."
+ch(0, "«Hoje estou cansada.» → Ela disse que naquele dia ___ cansada.", ["estava", "está", "estaria"], "estava",
+   "Con «disse» en pasado, el presente pasa a imperfeito: estou → estava.", prompt=_PR)
+ch(0, "«Vou à praia amanhã.» → Ele disse que ___ à praia no dia seguinte.", ["ia", "vai", "foi"], "ia",
+   "«vou» (futuro próximo) pasa a «ia»: disse que ia. «Foi» sería un hecho ya pasado.", prompt=_PR)
+ch(0, "«Comprei o ingresso.» → Ele contou que ___ o ingresso.", ["tinha comprado", "comprava", "compraria"], "tinha comprado",
+   "El perfeito pasa a mais-que-perfeito composto: comprei → tinha comprado.", prompt=_PR)
+ch(0, "«Farei isso.» → Ele prometeu que ___ isso.", ["faria", "fizesse", "faça"], "faria",
+   "El futuro do presente pasa a futuro do pretérito: farei → faria.", prompt=_PR)
+ch(0, "«Espero que chova.» → O agricultor disse que esperava que ___.", ["chovesse", "chova", "choveria"], "chovesse",
+   "El subjuntivo presente pasa a imperfeito do subjuntivo: que chova → que chovesse.", prompt=_PR)
+ch(1, "«Vá embora!» → Ela pediu que eu ___ embora.", ["fosse", "vá", "for"], "fosse",
+   "El imperativo pasa a imperfeito do subjuntivo con «pediu que». «Que eu vá» es el calco de «me pidió que vaya».", prompt=_PR)
+ch(1, "«Tragam bebida!» → Ela pediu que ___ bebida.", ["trouxéssemos", "tragamos", "trazíamos"], "trouxéssemos",
+   "Pedido en pasado → imperfeito do subjuntivo: trouxéssemos (de trouxeram).", prompt=_PR)
+ch(1, "«Este é o meu bairro.» → Ele disse que ___ era o bairro dele.", ["aquele", "este", "esse"], "aquele",
+   "Al reportar, este → aquele y meu → dele.", prompt=_PR)
+ch(1, "«Chego amanhã.» → Na semana passada, ele disse que chegava ___.", ["no dia seguinte", "amanhã", "ontem"], "no dia seguinte",
+   "amanhã → no dia seguinte cuando el día ya no es el mismo.", prompt=_PR)
+ch(2, "«Você vem?» → Ela perguntou ___ eu ia.", ["se", "que", "que se"], "se",
+   "Pregunta de sí o no → perguntou se. «Que se» es un calco del español oral.", prompt=_PR)
+ch(2, "«Onde fica o Museu do Amanhã?» → O turista perguntou onde ___ o museu.", ["ficava", "ficasse", "ficou"], "ficava",
+   "La pregunta con interrogativo conserva «onde» y el presente pasa a imperfeito.", prompt=_PR)
+ch(2, "O ministro ___ que não haveria aumento de impostos.", ["afirmou", "perguntou", "pediu"], "afirmou",
+   "Para una declaración: afirmar, dizer, garantir. «Perguntar» es para preguntas y «pedir», para pedidos.")
+
+cl(0, "«Saio da vida para entrar na história.» → Na carta-testamento, Vargas escreveu que ___ (sair) da vida para entrar na história.", "saía",
+   "Presente → imperfeito: saio → saía. La frase es real: cierra la carta-testamento de Getúlio Vargas (1954).")
+cl(0, "«Não vou ao ensaio.» → A Bia avisou que não ___ (ir) ao ensaio.", "ia",
+   "vou → ia.")
+cl(0, "«Já vi esse filme.» → O Lucas disse que já ___ (ver) aquele filme.", "tinha visto",
+   "vi → tinha visto (y esse → aquele).",
+   alt=["havia visto"])
+cl(0, "«Aqui tudo dá.» → Caminha escreveu ao rei que naquela terra tudo ___ (dar).", "dava",
+   "dá → dava. Ojo: «em se plantando, tudo dá» es una paráfrase popular; la carta de Pero Vaz de Caminha (1500) no lo dice así.")
+cl(0, "«Se puder, venho.» → Ela disse que, se ___ (poder), viria.", "pudesse",
+   "El futuro do subjuntivo pasa a imperfeito do subjuntivo: puder → pudesse; venho → viria.")
+cl(1, "«Feche a porta!» → A professora mandou que eu ___ (fechar) a porta.", "fechasse",
+   "Orden en pasado → imperfeito do subjuntivo: fechasse.")
+cl(1, "«Não saia!» → Minha mãe pediu que eu não ___ (sair).", "saísse",
+   "Imperativo negativo → imperfeito do subjuntivo: não saísse, con tilde.")
+cl(1, "«Liguem amanhã.» → Ela pediu que nós ___ (ligar) no dia seguinte.", "ligássemos",
+   "Pedido → que + imperfeito do subjuntivo: ligássemos. amanhã → no dia seguinte.")
+cl(2, "«Quanto custa?» → Ela quis saber quanto ___ (custar).", "custava",
+   "Pregunta indirecta con interrogativo: quanto custava.")
+cl(2, "«Vocês já almoçaram?» → Ele perguntou se nós já ___ (almoçar).", "tínhamos almoçado",
+   "Perfeito → mais-que-perfeito composto: tínhamos almoçado.",
+   alt=["havíamos almoçado"])
+cl(2, "«Quando começa o show?» → Perguntei quando ___ (começar) o show.", "começava",
+   "Presente → imperfeito: começa → começava.")
+cl(2, "«Chegarei a tempo.» → Ele garantiu que ___ (chegar) a tempo.", "chegaria",
+   "Futuro → futuro do pretérito: chegarei → chegaria.")
+
+trv(0, "Dijo que vivía en Niterói.",
+    "Presente reportado → imperfeito: morava. «Vivir en» = morar em.",
+    ["Ele disse", "Ela disse", "Disse"], " que ", ["morava", "vivia"], " em Niterói")
+trv(0, "Dijo que había visto el partido.",
+    "Mais-que-perfeito composto: tinha visto (formal: havia visto).",
+    ["Ele disse", "Ela disse", "Disse"], " que ", ["tinha visto", "havia visto"], " o jogo")
+trv(0, "Prometió que volvería.",
+    "Futuro reportado → futuro do pretérito: voltaria (habla: ia voltar).",
+    ["Ele prometeu", "Ela prometeu", "Prometeu"], " que ", ["voltaria", "ia voltar"])
+trv(1, "Me pidió que fuera con ella.",
+    "Con «pediu», imperfeito do subjuntivo (que eu fosse) o, en el habla, para eu ir.",
+    ["Ela me pediu", "Ela pediu", "Me pediu", "Pediu"], " ", ["que eu fosse", "para eu ir", "pra eu ir", "que fosse"],
+    " com ela")
+trv(1, "Dijo que llegaba al día siguiente.",
+    "amanhã → no dia seguinte; chego → chegava.",
+    ["Ele disse", "Ela disse", "Disse"], " que ", ["chegava", "chegaria", "ia chegar"], " no dia seguinte")
+trv(2, "Me preguntó si iba al bloco.",
+    "Pregunta de sí o no → perguntou se.",
+    ["Ela me perguntou", "Ele me perguntou", "Me perguntou", "Perguntou"], " se eu ia ", ["ao bloco", "para o bloco", "pro bloco"])
+trv(2, "Quiso saber cuánto costaba.",
+    "El interrogativo se conserva: quanto custava.",
+    ["Ele quis", "Ela quis", "Quis"], " saber quanto custava")
+trv(2, "La vecina comentó que el administrador se había ido.",
+    "comentar + que; perfeito → tinha + participio. Administrador del edificio = síndico.",
+    "A vizinha comentou que o síndico ",
+    ["tinha ido embora", "tinha saído", "havia ido embora", "tinha se mudado", "tinha partido", "havia saído"])
+
+fx(1, "Ontem ela me pediu que eu vá ao mercado.", "vá", "fosse",
+   "Ontem ela me pediu que eu fosse ao mercado.", "tempo",
+   "Con la principal en pasado (pediu), imperfeito do subjuntivo: que eu fosse. El rioplatense «que vaya» no pasa.")
+fx(2, "Ele me perguntou que se eu queria sair.", "que se", "se",
+   "Ele me perguntou se eu queria sair.", "espanol",
+   "La pregunta indirecta de sí o no va solo con «se». «Preguntó que si» es un calco del español oral.")
+fx(1, "A Ana me contou que adorava o meu bairro, a Tijuca, onde ela mora desde criança.", "o meu bairro", "o bairro dela",
+   "A Ana me contou que adorava o bairro dela, a Tijuca, onde ela mora desde criança.", "pronome",
+   "Al reportar, cambian los posesivos: «o meu bairro» dicho por Ana → o bairro dela.",
+   goodAlt=["o seu bairro"])
+fx(0, "O ministro afirmou que não haverá aumento no ano seguinte.", "haverá", "haveria",
+   "O ministro afirmou que não haveria aumento no ano seguinte.", "tempo",
+   "Futuro reportado desde el pasado → futuro do pretérito: haveria.")
+
+_L31 = [["«Eu falo»", "disse que falava"], ["«Eu como»", "disse que comia"], ["«Eu parto»", "disse que partia"]]
+_GP31 = "Mirá cómo se reportan los tres ejemplos y completá el cuarto."
+gd(0, _L31, "«Eu vou» → disse que ___", "ia", "iba",
+   "ir tiene imperfeito irregular: ia, nunca «iba» (es el español que se cuela).", prompt=_GP31)
+gd(0, _L31, "«Eu tenho» → disse que ___", "tinha", "tenia",
+   "ter → tinha: imperfeito irregular. «Tenia» es el español sin tilde.", prompt=_GP31)
+gd(0, _L31, "«Eu ponho» → disse que ___", "punha", "ponha",
+   "pôr → punha. «Ponha» es subjuntivo presente, no imperfeito.", prompt=_GP31)
+
+sc(0, ["«Moro aqui.» → Disse que morava lá.", "«Vou sair.» → Disse que ia sair.", "«Comprei.» → Disse que tinha comprado.",
+       "«Farei.» → Disse que faria.", "«Estou bem.» → Disse que estava bem.", "«Tenho fome.» → Disse que tinha fome."],
+   "¿Qué pasa con los tiempos cuando «disse» está en pasado?",
+   ["Retroceden un paso: presente → imperfeito, perfeito → tinha + participio, futuro → futuro do pretérito.",
+    "Se mantienen igual que en el discurso directo.",
+    "Todos pasan al perfeito."],
+   "Retroceden un paso: presente → imperfeito, perfeito → tinha + participio, futuro → futuro do pretérito.",
+   "Regla: correlación de tiempos. Si el verbo de decir está en presente (diz que), no cambia nada.")
+sc(2, ["«Você vem?» → Perguntou se eu ia.", "«Onde você mora?» → Perguntou onde eu morava.",
+       "«Quer café?» → Perguntou se eu queria café.", "«Quando você chega?» → Perguntou quando eu chegava.",
+       "«Tá com fome?» → Perguntou se eu estava com fome.", "«Quem é?» → Perguntou quem era."],
+   "¿Cuándo se usa «se» en la pregunta indirecta?",
+   ["En las preguntas de sí o no; con interrogativo (onde, quando, quem) se conserva el interrogativo.",
+    "Siempre, delante de cualquier pregunta.",
+    "Solo cuando la pregunta tiene «você»."],
+   "En las preguntas de sí o no; con interrogativo (onde, quando, quem) se conserva el interrogativo.",
+   "Regla: sí/no → perguntou se; pregunta con interrogativo → perguntou onde / quando / quem, sin «que».")
+
+ty(1, "Escribí cómo cambia «amanhã» en el discurso indirecto (en otro día).", "amanhã → ___", "no dia seguinte",
+   "amanhã → no dia seguinte; ontem → no dia anterior o na véspera.",
+   alt=["o dia seguinte", "no outro dia"])
+ty(1, "Escribí cómo cambia «hoje» en el discurso indirecto (en otro día).", "hoje → ___", "naquele dia",
+   "hoje → naquele dia; agora → naquele momento.",
+   alt=["nesse dia", "aquele dia"])
+
+cb(0, "A Bia disse: «Estou no Arpoador». (disse que)", "A Bia disse que estava no Arpoador.",
+   "Presente → imperfeito: estou → estava.",
+   alt=["Bia disse que estava no Arpoador.", "A Bia disse que ela estava no Arpoador."])
+cb(1, "O guia pediu aos turistas: «Não toquem nas obras». (pediu que)", "O guia pediu aos turistas que não tocassem nas obras.",
+   "Imperativo → que + imperfeito do subjuntivo: não tocassem.",
+   alt=["O guia pediu que os turistas não tocassem nas obras.", "O guia pediu aos turistas para não tocarem nas obras."])
+cb(2, "O turista perguntou: «O museu abre hoje?» (perguntou se)", "O turista perguntou se o museu abria naquele dia.",
+   "Pregunta de sí o no → se; abre → abria; hoje → naquele dia.",
+   alt=["O turista perguntou se o museu abria hoje.", "O turista perguntou se o museu ia abrir naquele dia."])
+
+
+# ============================================================================
+# Semana 32 — Voz passiva sintética e sujeito indeterminado
+# partes: 0 la pasiva con se · 1 sujeto indeterminado y el habla
+# ============================================================================
+wk(32, "B2", "passiva sintética")
+
+_CART = "Elegí la forma correcta para el cartel."
+ch(0, "___ apartamentos em Botafogo.", ["Alugam-se", "Aluga-se", "Se aluga"], "Alugam-se",
+   "Pasiva con se: el verbo concuerda con la cosa (apartamentos): alugam-se. En el cartel, se detrás y con guion.", prompt=_CART)
+ch(0, "___ bicicleta usada.", ["Vende-se", "Vendem-se", "Venda-se"], "Vende-se",
+   "Una bicicleta: singular, vende-se.", prompt=_CART)
+ch(0, "___ de garçons com experiência.", ["Precisa-se", "Precisam-se", "Precisam"], "Precisa-se",
+   "Con preposición (precisar de) no hay sujeto: el verbo queda en singular aunque garçons sea plural.", prompt=_CART)
+ch(0, "___ sapatos e bolsas.", ["Consertam-se", "Conserta-se", "Se consertam"], "Consertam-se",
+   "Sapatos e bolsas es plural: consertam-se. En la norma, la oración no empieza con el pronombre.", prompt=_CART)
+ch(0, "Aqui não se ___ cartões.", ["aceitam", "aceita", "aceitem"], "aceitam",
+   "Pasiva con se: concuerda con cartões. Tras «não», el se va delante.")
+ch(0, "No século XVIII, ___ toneladas de ouro em Minas Gerais.", ["extraíram-se", "extraiu-se", "extraíram-nas"], "extraíram-se",
+   "Toneladas es plural: extraíram-se. El ciclo del oro de Minas marcó el siglo XVIII brasileño.")
+ch(0, "Nesse livro, ___ de temas polêmicos.", ["trata-se", "tratam-se", "tratam"], "trata-se",
+   "tratar de lleva preposición: trata-se de, siempre en singular.")
+ch(0, "Em 25 de abril de 1974, ___ cravos nos canos das armas.", ["colocaram-se", "colocou-se", "colocaram-nos"], "colocaram-se",
+   "Cravos es plural: colocaram-se. Por eso se llama Revolução dos Cravos.")
+ch(1, "___ meu celular no ônibus!", ["Roubaram", "Roubou-se", "Roubaram-se"], "Roubaram",
+   "Sujeto indeterminado: 3.ª plural sin pronombre. «Roubaram-se» significaría que se robaron entre ellos.")
+ch(1, "___ que vai chover no fim de semana.", ["Dizem", "Diz", "Dizemos"], "Dizem",
+   "Sujeto indeterminado: dizem que (formal: diz-se que). «Diz» sin se necesita un sujeto.")
+ch(1, "No bandejão da faculdade, ___ pega a bandeja e se serve.", ["você", "eles", "se"], "você",
+   "En el habla, «você» genérico = uno, como el «vos» genérico rioplatense: acá agarrás la bandeja.")
+ch(1, "Ontem ___ pra você: era do banco.", ["ligaram", "ligaram-se", "se ligaram"], "ligaram",
+   "Sujeto indeterminado: ligaram (me llamaron). «Se ligaram» es otra cosa: «se dieron cuenta».")
+
+cl(0, "___ (alugar) quarto em Santa Teresa.", "Aluga-se",
+   "Un cuarto: aluga-se. En carteles, ênclise con guion.", prompt="Completá el cartel con la pasiva con se.")
+cl(0, "___ (vender) pranchas de surfe.", "Vendem-se",
+   "Pranchas es plural: vendem-se.", prompt="Completá el cartel con la pasiva con se.")
+cl(0, "___ (precisar) de professores de português.", "Precisa-se",
+   "Con preposición, singular: precisa-se de.", prompt="Completá el cartel con la pasiva con se.")
+cl(0, "Não se ___ (aceitar) cheques.", "aceitam",
+   "Concuerda con cheques: aceitam.")
+cl(0, "___ (consertar) celulares.", "Consertam-se",
+   "Celulares es plural: consertam-se.", prompt="Completá el cartel con la pasiva con se.")
+cl(0, "Em 1888 ___ (assinar) a Lei Áurea.", "assinou-se",
+   "Una ley: singular. Tras un complemento al inicio se admite también se assinou. La Lei Áurea abolió la esclavitud en Brasil.",
+   alt=["se assinou"])
+cl(0, "Nesta loja ___ (falar) três línguas.", "falam-se",
+   "Três línguas: plural, falam-se. Tras «nesta loja» se acepta también se falam.",
+   alt=["se falam"])
+cl(1, "___ (dizer) que o açaí de Belém é o melhor do Brasil.", "Dizem",
+   "Sujeto indeterminado: dizem que. Formal: diz-se que.",
+   alt=["Diz-se", "Falam"])
+cl(1, "___ (roubar) a minha bicicleta ontem.", "Roubaram",
+   "Sujeto indeterminado: 3.ª plural sin eles.")
+cl(1, "Aqui ___ (pagar) na entrada, tá?", "você paga",
+   "En el habla, você genérico con el verbo en 3.ª singular.",
+   alt=["a gente paga"], prompt="Completá como en el habla (você genérico).")
+cl(1, "No Rio, ___ (ir) à praia até no inverno.", "a gente vai",
+   "Impersonal del habla con «a gente» (verbo en singular).",
+   alt=["você vai"], prompt="Completá como en el habla (a gente).")
+cl(1, "___ (contar) que D. Pedro gritou «Independência ou morte!» às margens do Ipiranga.", "Contam",
+   "Sujeto indeterminado para una tradición: contam que (formal: conta-se que). Es la versión consagrada del 7 de septiembre de 1822.",
+   alt=["Conta-se", "Dizem", "Diz-se"])
+
+tr(0, "Se alquilan departamentos.", "Alugam-se apartamentos",
+   "Pasiva con se en plural: alugam-se.")
+tr(0, "Se necesitan mozos.", "Precisa-se de garçons",
+   "precisar de: singular aunque sean varios.")
+trv(0, "Acá se habla español.",
+    "Con «aqui» delante, el se va antes del verbo: aqui se fala.",
+    ["Aqui se fala espanhol", "Fala-se espanhol aqui", "Aqui se fala castelhano"])
+trv(0, "No se aceptan tarjetas.",
+    "Pasiva con se concordada; tras «não», próclise: não se aceitam.",
+    ["Não se aceitam cartões", "Não aceitamos cartões", "Não aceitamos cartão", "Não se aceita cartão"])
+trv(1, "Dicen que va a llover.",
+    "Sujeto indeterminado: dizem que (formal: diz-se que).",
+    ["Dizem", "Falam", "Diz-se"], " que ", ["vai chover", "choverá"])
+trv(1, "Me robaron el celular.",
+    "Sujeto indeterminado: roubaram, sin pronombre.",
+    ["Roubaram", "Me roubaram"], " ", ["o meu celular", "meu celular", "o celular"])
+trv(1, "Te llamaron del banco.",
+    "ligar para alguém: ligaram pra você (o te ligaram).",
+    ["Ligaram pra você", "Ligaram para você", "Te ligaram", "Ligaram-te"], " do banco")
+trv(1, "Se vive bien en Río.",
+    "Impersonal: vive-se bem; en el habla, a gente vive / você vive.",
+    ["Vive-se bem", "Se vive bem", "A gente vive bem", "Você vive bem"], " no Rio")
+
+fx(0, "Precisam-se de vendedores para a loja de Ipanema.", "Precisam-se", "Precisa-se",
+   "Precisa-se de vendedores para a loja de Ipanema.", "concordancia",
+   "Con preposición (precisar de) no hay sujeto con el que concordar: precisa-se de, en singular.")
+fx(0, "Vende-se casas no condomínio.", "Vende-se", "Vendem-se",
+   "Vendem-se casas no condomínio.", "concordancia",
+   "Sin preposición, casas es el sujeto: vendem-se casas. El cartel en singular es muy común, pero es error en la norma.")
+fx(1, "Eles roubaram minha carteira no metrô, mas não vi quem foi.", "Eles roubaram", "Roubaram",
+   "Roubaram minha carteira no metrô, mas não vi quem foi.", "persona",
+   "Si no sabés quién fue, sujeto indeterminado sin pronombre: roubaram. «Eles» señala a alguien concreto.")
+fx(0, "Se aluga quarto para estudantes.", "Se aluga", "Aluga-se",
+   "Aluga-se quarto para estudantes.", "colocacao",
+   "En la norma escrita, la oración no empieza con pronombre átono: aluga-se.")
+
+_L32 = [["aluga-se casa", "alugam-se casas"], ["vende-se carro", "vendem-se carros"],
+        ["conserta-se relógio", "consertam-se relógios"]]
+_GP32 = "Mirá cómo pasan al plural los tres carteles y completá el cuarto."
+gd(0, _L32, "precisa-se de vendedor → ___", "precisa-se de vendedores", "precisam-se de vendedores",
+   "Con preposición el verbo no concuerda: precisa-se de vendedores. El español «se necesitan» empuja al plural.", prompt=_GP32)
+gd(0, _L32, "trata-se de um caso raro → ___", "trata-se de casos raros", "tratam-se de casos raros",
+   "tratar de lleva preposición: trata-se de, siempre singular.", prompt=_GP32)
+gd(0, _L32, "assiste-se a um filme → ___", "assiste-se a filmes", "assistem-se a filmes",
+   "assistir a (ver) lleva preposición: assiste-se a filmes, en singular.", prompt=_GP32)
+
+sc(0, ["Vende-se casa.", "Vendem-se casas.", "Aluga-se quarto.", "Alugam-se quartos.",
+       "Precisa-se de garçons.", "Trata-se de problemas sérios."],
+   "¿Cuándo el verbo con «se» va en plural?",
+   ["Cuando la cosa es plural y el verbo no lleva preposición.",
+    "Siempre que la cosa es plural.",
+    "Nunca: con «se» el verbo va siempre en singular."],
+   "Cuando la cosa es plural y el verbo no lleva preposición.",
+   "Regla: sin preposición, la cosa es sujeto y concuerda (vendem-se casas); con preposición, singular (precisa-se de garçons).")
+sc(1, ["Dizem que vai chover.", "Roubaram meu celular.", "Ligaram pra você.",
+       "Falam que o bairro mudou.", "Abriram um bar novo.", "Bateram na porta."],
+   "¿Cómo se expresa un sujeto que no se conoce o no importa?",
+   ["Con el verbo en 3.ª plural, sin pronombre sujeto.",
+    "Con «eles» delante del verbo.",
+    "Con «se» delante de cualquier verbo."],
+   "Con el verbo en 3.ª plural, sin pronombre sujeto.",
+   "Regla: sujeto indeterminado = 3.ª plural sin eles (roubaram, dizem). Con «eles», hablás de personas concretas.")
+
+ty(0, "Escribí el cartel: «Se venden terrenos».", "___ lotes.", "Vendem-se",
+   "Lotes es plural: vendem-se.")
+ty(0, "Escribí el cartel: «Se necesita ayudante».", "___ de ajudante.", "Precisa-se",
+   "precisar de: precisa-se de.")
+
+cb(0, "O apartamento é pequeno. Aluga-se barato. (mas)", "O apartamento é pequeno, mas aluga-se barato.",
+   "«mas» opone; tras mas se aceptan las dos posiciones del se.",
+   alt=["O apartamento é pequeno, mas se aluga barato.", "O apartamento é pequeno mas aluga-se barato."])
+cb(1, "Todos dizem isso. O bairro está mudando. (dizem que)", "Dizem que o bairro está mudando.",
+   "Sujeto indeterminado + que: dizem que.",
+   alt=["Falam que o bairro está mudando.", "Diz-se que o bairro está mudando."])
+cb(1, "Roubaram meu celular. Eu estava no metrô. (quando)", "Roubaram meu celular quando eu estava no metrô.",
+   "«quando» + imperfeito para el fondo; la acción, en perfeito indeterminado (roubaram).",
+   alt=["Quando eu estava no metrô, roubaram meu celular.", "Roubaram o meu celular quando eu estava no metrô.",
+        "Quando eu estava no metrô roubaram meu celular."])
+
+
+# ============================================================================
+# Semana 33 — Colocação pronominal na escrita
+# partes: 0 próclise y ênclise · 1 formas enclíticas y mesóclise ·
+#         2 tiempos compuestos y habla
+# ============================================================================
+wk(33, "B2", "colocação pronominal")
+
+_FO = "Elegí la forma de la escritura formal."
+ch(0, "___ a verdade.", ["Disse-me", "Me disse", "Disse-mi"], "Disse-me",
+   "En la escritura formal, la oración no empieza con pronombre átono: disse-me.", prompt=_FO)
+ch(0, "Ele ___ nada.", ["não me disse", "não disse-me", "me não disse"], "não me disse",
+   "La negación atrae el pronombre: não me disse (próclise obligatoria).", prompt=_FO)
+ch(0, "O livro que ___ é de Clarice Lispector.", ["me deram", "deram-me", "deram-mi"], "me deram",
+   "El relativo «que» atrae el pronombre: que me deram.", prompt=_FO)
+ch(0, "Quem ___ isso?", ["te contou", "contou-te", "contou te"], "te contou",
+   "Los interrogativos atraen el pronombre: quem te contou?", prompt=_FO)
+ch(0, "___ o prêmio no Theatro Municipal.", ["Entregaram-lhe", "Lhe entregaram", "Entregaram-le"], "Entregaram-lhe",
+   "Verbo al inicio y sin atractor: ênclise. «Le» es español; en portugués, lhe.", prompt=_FO)
+ch(0, "Já ___ a história de Canudos?", ["lhe contei", "contei-lhe", "contei-le"], "lhe contei",
+   "Adverbios como já, sempre, aqui atraen el pronombre: já lhe contei. Canudos es la guerra que narró Euclides da Cunha en «Os Sertões».", prompt=_FO)
+ch(1, "Preciso ___ antes de viajar.", ["vendê-lo", "vender-lo", "vendê-o"], "vendê-lo",
+   "Tras -r, el pronombre o se vuelve lo y la r cae; en -er, circunflejo: vendê-lo.")
+ch(1, "Os pescadores de Copacabana ___ do mar ainda de madrugada.", ["trazem-nos", "trazem-los", "trazem-os"], "trazem-nos",
+   "Tras terminación nasal (-m), os se vuelve nos: trazem-nos.")
+ch(1, "___ toda a verdade amanhã.", ["Dir-lhe-ei", "Direi-lhe", "Lhe direi"], "Dir-lhe-ei",
+   "Futuro sin atractor en la norma culta: mesóclise, dir-lhe-ei. «Direi-lhe» no se admite.", prompt=_FO)
+ch(1, "Não ___ nada.", ["lhe direi", "dir-lhe-ei", "direi-lhe"], "lhe direi",
+   "Con atractor (não), próclise también en futuro: não lhe direi.", prompt=_FO)
+ch(2, "«¿Me das un café?»", ["Me dá um café?", "Dá-me um café?", "Me dás um café?"], "Me dá um café?",
+   "En el habla de Brasil, el pronombre va antes del verbo: me dá. «Dá-me» es escrito o europeo.",
+   prompt="Elegí cómo se dice en el habla de Brasil.")
+ch(2, "«Lo vi ayer en la playa.»", ["Vi ele ontem na praia.", "Vi-lo ontem na praia.", "Lhe vi ontem na praia."], "Vi ele ontem na praia.",
+   "En el habla, «ele» como objeto directo: vi ele. En la escritura, vi-o. «Lhe» es objeto indirecto.",
+   prompt="Elegí cómo se dice en el habla de Brasil.")
+
+_CF = "Uní verbo y pronombre en registro formal."
+cl(0, "___ (chamo + me) Martín e sou de Rosario.", "Chamo-me",
+   "Verbo al inicio de la oración: ênclise, chamo-me.", prompt=_CF)
+cl(0, "Nunca ___ (disse + me) isso.", "me disse",
+   "«Nunca» atrae el pronombre: nunca me disse.", prompt=_CF)
+cl(0, "Quando ___ (vi + o), entendi tudo.", "o vi",
+   "Las conjunciones subordinantes (quando, se, embora) atraen el pronombre: quando o vi.", prompt=_CF)
+cl(0, "___ (enviaram + nos) muitas cartas.", "Enviaram-nos",
+   "Sin atractor y al inicio: ênclise.", prompt=_CF)
+cl(1, "É preciso ___ (fazer + o) hoje.", "fazê-lo",
+   "fazer + o → fazê-lo: cae la r, aparece l y el circunflejo.", prompt=_CF)
+cl(1, "Vou ___ (comprar + a) amanhã.", "comprá-la",
+   "comprar + a → comprá-la, con tilde aguda.", prompt=_CF)
+cl(1, "___ (fiz + o) sem ajuda.", "Fi-lo",
+   "Tras -z cae la consonante: fiz + o → fi-lo.", prompt=_CF)
+cl(1, "Os alunos ___ (fazem + a) em casa.", "fazem-na",
+   "Tras nasal, a → na: fazem-na. Con sujeto delante, en Brasil se acepta también a fazem.",
+   alt=["a fazem"], prompt=_CF)
+cl(1, "___ (encontraremos + nos) no cais do Valongo.", "Encontrar-nos-emos",
+   "Futuro sin atractor: mesóclise, encontrar-nos-emos. El cais do Valongo, en Río, fue el mayor puerto de llegada de esclavizados de América.",
+   prompt=_CF)
+cl(1, "___ (faria + se) a obra em 2030.", "Far-se-ia",
+   "Condicional al inicio: mesóclise, far-se-ia.", prompt=_CF)
+cl(2, "Eu ___ (estou + te) esperando no calçadão.", "estou te",
+   "En Brasil, en las perífrasis el pronombre va delante del verbo principal, sin guion: estou te esperando.",
+   alt=["tô te", "te estou"], prompt="Completá como en el habla de Brasil.")
+cl(2, "Não ___ (tinha + lhe) dito nada.", "lhe tinha",
+   "Con atractor (não), el pronombre va antes del auxiliar: não lhe tinha dito. En Brasil también não tinha lhe dito.",
+   alt=["tinha lhe"], prompt=_CF)
+
+trv(0, "(Texto formal) Me dijo la verdad.",
+    "Sin atractor y al inicio: disse-me. Con sujeto delante, en Brasil también ele me disse.",
+    ["Disse-me a verdade", "Ele disse-me a verdade", "Ela disse-me a verdade", "Ele me disse a verdade",
+     "Ela me disse a verdade"])
+trv(0, "(Texto formal) No me dijo nada.",
+    "La negación atrae: não me disse.",
+    ["Não me disse nada", "Ele não me disse nada", "Ela não me disse nada"])
+trv(0, "(Texto formal) ¿Quién te contó eso?",
+    "El interrogativo atrae: quem te contou.",
+    ["Quem te contou isso", "Quem te contou isto"])
+trv(1, "(Texto formal) Tengo que venderlo.",
+    "vender + o → vendê-lo.",
+    ["Tenho de", "Tenho que", "Preciso"], " vendê-lo")
+trv(1, "(Texto formal) Le diré la verdad.",
+    "Futuro sin atractor: dir-lhe-ei. Con el pronombre sujeto delante se admite eu lhe direi.",
+    ["Dir-lhe-ei", "Eu lhe direi", "Direi a ele", "Direi a ela"], " a verdade")
+trv(2, "(Habla) Te voy a llamar mañana.",
+    "En Brasil: vou te ligar (el pronombre antes del verbo principal).",
+    ["Vou te ligar", "Eu vou te ligar", "Vou ligar pra você", "Vou ligar para você", "Eu vou ligar pra você"], " amanhã")
+trv(2, "(Habla) Lo vi en la playa.",
+    "En el habla: vi ele; en la escritura: vi-o.",
+    ["Vi ele", "Eu vi ele", "Eu o vi", "Vi-o"], " na praia")
+trv(2, "(Habla) Dame un minuto.",
+    "En el habla de Brasil: me dá. Escrito: dê-me.",
+    ["Me dá", "Me dê", "Dá-me", "Dê-me"], " um minuto")
+
+fx(0, "Me disseram que o museu fecha às cinco.", "Me disseram", "Disseram-me",
+   "Disseram-me que o museu fecha às cinco.", "colocacao",
+   "En la escritura formal no se empieza la oración con pronombre átono: disseram-me.")["prompt"] = \
+    "Texto formal. Encontrá el error: tocá la palabra que está mal y corregila."
+fx(0, "Ele nunca disse-me a verdade.", "nunca disse-me", "nunca me disse",
+   "Ele nunca me disse a verdade.", "colocacao",
+   "«Nunca» atrae el pronombre: próclise obligatoria, nunca me disse.")
+fx(1, "Preciso vender-lo antes de viajar.", "vender-lo", "vendê-lo",
+   "Preciso vendê-lo antes de viajar.", "colocacao",
+   "Tras -r, la r cae: vendê-lo, con circunflejo. «Vender-lo» mezcla el español.")
+fx(1, "Direi-lhe amanhã o que decidi.", "Direi-lhe", "Dir-lhe-ei",
+   "Dir-lhe-ei amanhã o que decidi.", "colocacao",
+   "Con futuro sin atractor, la norma pide mesóclise: dir-lhe-ei. La ênclise al futuro no se admite.")
+
+_L33 = [["comprar + o", "comprá-lo"], ["vender + o", "vendê-lo"], ["abrir + o", "abri-lo"]]
+_GP33 = "Mirá las tres uniones y completá la cuarta."
+gd(1, _L33, "fiz + o → ___", "fi-lo", "fiz-lo",
+   "La z también cae: fiz + o → fi-lo. Es forma de la escritura; en el habla, eu fiz isso.", prompt=_GP33)
+gd(1, _L33, "dão + o → ___", "dão-no", "dão-lo",
+   "Tras nasal (-ão, -m) el pronombre toma n: dão-no, fazem-no.", prompt=_GP33)
+gd(1, _L33, "pôr + a → ___", "pô-la", "pôr-la",
+   "La r de pôr cae y queda el circunflejo: pô-la.", prompt=_GP33)
+
+sc(0, ["Disse-me a verdade.", "Não me disse a verdade.", "Entregou-lhe a carta.",
+       "Quem lhe entregou a carta?", "Chamo-me Ana.", "Já me chamaram."],
+   "¿Cuándo el pronombre va antes del verbo en la escritura formal?",
+   ["Cuando hay delante una palabra que lo atrae: negación, interrogativo o relativo, ciertos adverbios.",
+    "Cuando el verbo está en pasado.",
+    "Cuando el pronombre es «me»."],
+   "Cuando hay delante una palabra que lo atrae: negación, interrogativo o relativo, ciertos adverbios.",
+   "Regla: ênclise por defecto (disse-me); próclise con atractores (não, quem, que, já, nunca, quando…).")
+sc(1, ["comprar + o → comprá-lo", "vender + a → vendê-la", "partir + os → parti-los",
+       "fiz + o → fi-lo", "dão + o → dão-no", "fazem + as → fazem-nas"],
+   "¿Qué pasa con o / a detrás del verbo?",
+   ["Tras -r, -s, -z se vuelven lo / la y la consonante cae; tras nasal, no / na.",
+    "Siempre se escriben o / a sin cambios.",
+    "Se vuelven lhe delante de vocal."],
+   "Tras -r, -s, -z se vuelven lo / la y la consonante cae; tras nasal, no / na.",
+   "Regla: comprá-lo, vendê-la, fi-lo; dão-no, fazem-nas. Con otras terminaciones, sin cambios: comprou-o.")
+
+ty(1, "Uní verbo y pronombre (formal).", "fazer + o → ___", "fazê-lo",
+   "fazer + o → fazê-lo.")
+ty(1, "Uní con mesóclise (formal).", "direi + lhe → ___", "dir-lhe-ei",
+   "Futuro: el pronombre entra entre el infinitivo y la terminación: dir-lhe-ei.")
+
+cb(0, "Deram-me um livro. O livro é de Clarice Lispector. (que)", "O livro que me deram é de Clarice Lispector.",
+   "El relativo «que» atrae el pronombre: que me deram.",
+   alt=["O livro que me deram é da Clarice Lispector."])
+cb(0, "Encontrei-o no Largo do Machado. Contei-lhe a novidade. (quando)",
+   "Quando o encontrei no Largo do Machado, contei-lhe a novidade.",
+   "«Quando» atrae el pronombre (o encontrei); la principal sigue con ênclise (contei-lhe).",
+   alt=["Contei-lhe a novidade quando o encontrei no Largo do Machado.",
+        "Quando o encontrei no Largo do Machado, lhe contei a novidade."])
+cb(1, "Machado de Assis escreveu «Dom Casmurro». Publicou-o em 1899. (e)",
+   "Machado de Assis escreveu «Dom Casmurro» e publicou-o em 1899.",
+   "Coordinación con «e»: la segunda oración conserva la ênclise (en Brasil también e o publicou).",
+   alt=["Machado de Assis escreveu «Dom Casmurro» e o publicou em 1899.",
+        "Machado de Assis escreveu Dom Casmurro e publicou-o em 1899.",
+        "Machado de Assis escreveu Dom Casmurro e o publicou em 1899."])

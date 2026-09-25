@@ -1,13 +1,20 @@
 /*
- * Suoni: el oído.  Pares mínimos con alta variabilidad (HVPT: Uchihara,
- * Karas & Thomson 2025, g = 0,92 en percepción), habla conectada (Siegel
- * & Siegel 2015), entonación y acento tónico, dictado por fragmentos
- * (Yu, Boers & Tremblay 2025) y dictogloss (Wajnryb 1990).  Los datos
- * están en ascolto_data.js y dictogloss_data.js; el audio lo pone el TTS
- * del teléfono, con voces, velocidades y tonos distintos para simular la
- * variabilidad de hablantes.  El dictado y «¿Qué forma escuchaste?» usan
- * además oraciones grabadas por personas reales (Common Voice,
- * voci_cv_data.js).
+ * Sons: el oído del portugués de Brasil.  Pares mínimos con alta
+ * variabilidad (HVPT: Uchihara, Karas & Thomson 2025, g = 0,92 en
+ * percepción) sobre lo que el oído hispanohablante no separa: vocales
+ * abiertas y cerradas, nasales, lh / nh, s sonora, ch / j, ti / di, r / rr,
+ * v / b, átonas finales y acento.  Además habla conectada y formas
+ * reducidas (tá, cê, pra, tô: Siegel & Siegel 2015), entonación, acento
+ * tónico, dictado por fragmentos (Yu, Boers & Tremblay 2025) y dictogloss
+ * (Wajnryb 1990).  Los datos están en ascolto_data.js y dictogloss_data.js;
+ * el audio lo pone el TTS pt-BR del teléfono, con voces, velocidades y
+ * tonos distintos para simular la variabilidad de hablantes, y las palabras
+ * de los pares suenan con grabaciones reales de Lingua Libre cuando las hay
+ * (voci.js).  El dictado y «¿Qué forma escuchaste?» pueden usar además
+ * oraciones grabadas (Common Voice, voci_cv_data.js: por ahora vacío).
+ *
+ * Los textos de la banca y de las frases se leen de `pt` (o de `it`, el
+ * nombre heredado del campo, si la banca todavía lo usa).
  */
 (function (root) {
   "use strict";
@@ -30,15 +37,18 @@
   }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
-  // Variability: rate × pitch (and the voice, chosen by the app among the
-  // Italian voices of the phone).  Never the same combination twice in a row.
+  // Variabilidad: velocidad × tono (y la voz, que la app elige entre las
+  // voces pt-BR del teléfono).  Nunca la misma combinación dos veces seguidas.
   var RATES = [0.85, 1, 1.15], PITCHES = [0.9, 1, 1.1];
   function voiceOf(k) {
     return { rate: RATES[k % 3], pitch: PITCHES[Math.floor(k / 3) % 3], vi: k % 2 };
   }
 
-  var CAT_ES = { geminate: "dobles consonantes", vocali: "vocales abiertas y cerradas", affricate: "z: [ts] y [dz]",
-                 palatali: "gli, gn, sc", sonore: "s sonora, v", vibranti: "r simple y rr", altro: "c, g, qu" };
+  var CAT_ES = { vogais: "vocales abiertas y cerradas", nasais: "vocales nasales", palatais: "lh y nh",
+                 sibilantes: "s sonora y s sorda", chiadas: "ch, x y j", tidi: "ti, di: «chi», «yi»",
+                 erres: "r suave, rr y r inicial", labiais: "v y b", atonas: "e, o finales y acento del verbo",
+                 lfinal: "l final = u", tonica: "sílaba tónica" };
+  function textOf(x) { return x.pt || x.it || ""; }
 
   function pairItem(p, k) {
     var sayB = Math.random() < 0.5, said = sayB ? p.b : p.a;
@@ -49,76 +59,81 @@
              options: shown.slice(), answer: answer, accept: [answer],
              note: p.note || "", es: p.es };
   }
+  // «scegli» con say ≠ answer: se oye la forma reducida del habla (cê tá,
+  // pra, tô) y se elige la forma completa.
   function connItem(c, k) {
+    var prompt = c.kind === "conta" ? "¿Cuántas palabras escuchaste? (no, na, do, pelo, à cuentan como una)"
+      : c.say !== c.answer ? "¿Qué quiere decir? Elegí la forma completa" : "¿Qué escuchaste? Elegí la transcripción";
     return { id: "suoni:" + c.id, src: "ascolto", type: c.kind, voice: voiceOf(k),
-             prompt: c.kind === "conta" ? "¿Cuántas palabras escuchaste?" : "¿Qué escuchaste? Elegí la transcripción",
+             prompt: prompt,
              say: c.say, stem: "", options: c.options.slice(), answer: c.answer, accept: [c.answer], note: c.note, es: c.es };
   }
   function intoItem(x, k) {
     return { id: "suoni:" + x.id, src: "ascolto", type: "intonazione", voice: voiceOf(k),
              prompt: "¿Pregunta o afirmación? Escuchá la melodía", say: x.say, stem: "",
              options: ["pregunta", "afirmación"], answer: x.answer, accept: [x.answer], es: x.es,
-             note: "En italiano la pregunta sí/no se marca solo con la entonación, que sube al final: no hay «¿» ni cambio de orden." };
+             note: "En portugués, como en español, la pregunta sí/no no cambia el orden: la marca solo la melodía. En Brasil sube en la última sílaba tónica (y suele caer después); la afirmación baja." };
   }
   function accItem(x, k) {
     return { id: "suoni:" + x.id, src: "ascolto", type: "accento", voice: voiceOf(k),
-             prompt: "¿Qué palabra escuchaste? Fijate dónde cae el acento", say: x.say, stem: "",
+             prompt: "¿Dónde cae el acento? Elegí la sílaba fuerte", say: x.say, stem: "",
              options: x.options.slice(), answer: x.answer, accept: [x.answer], note: x.note, es: x.es };
   }
 
-  /* Dictation by fragments: five to eight words of a sentence of the bank
-     (its grammar already taught) or of a phrase the learner knows. */
+  /* Dictado por fragmentos: cuatro a nueve palabras de una oración de la
+     banca (con su gramática ya vista) o de una frase que el alumno conoce. */
   function fragments(week, state) {
     var out = [];
-    // Real voices first: a sentence of Common Voice for this week, when
-    // there is one, two times out of three.
+    // Primero las voces reales: una oración de Common Voice de la semana,
+    // cuando la hay, dos de cada tres veces.
     var real = realFragments(week);
     if (real.length && Math.random() < 2 / 3) return real;
     var B = Banca && Banca.loaded() ? Banca.bank() : null;
     if (B) B.sentences.forEach(function (s, i) {
       if ((s.w || 1) > week) return;
-      (s.it || []).slice(0, 1).forEach(function (it) {
+      (s.pt || s.it || []).slice(0, 1).forEach(function (it) {
         var n = it.split(/\s+/).length;
         if (n >= 4 && n <= 9) out.push({ text: it, id: "suoni:d:b" + i });
       });
     });
-    if (Frasi) Frasi.ALL.forEach(function (f) {
-      var n = f.it.split(/\s+/).length;
-      if (state && state.cards[f.id] && n >= 4 && n <= 9) out.push({ text: f.it, id: "suoni:d:" + f.id });
+    if (Frasi && Frasi.ALL) Frasi.ALL.forEach(function (f) {
+      var t = textOf(f), n = t.split(/\s+/).length;
+      if (t && state && state.cards[f.id] && n >= 4 && n <= 9) out.push({ text: t, id: "suoni:d:" + f.id });
     });
     return out;
   }
   function realFragments(week) {
-    return CV ? CV.ALL.filter(function (x) { return x.w <= week; }).map(function (x) {
-      return { text: x.it, id: "suoni:cv:" + x.f, audio: CV.url(x) };
+    return CV && CV.ALL ? CV.ALL.filter(function (x) { return x.w <= week; }).map(function (x) {
+      return { text: textOf(x), id: "suoni:cv:" + x.f, audio: CV.url(x) };
     }) : [];
   }
   function dictItem(fr, k) {
     var it = { id: fr.id, src: "ascolto", type: "dictation", voice: voiceOf(k),
-             prompt: "Dictado: escuchá y escribí exactamente lo que oís (dobles y tildes incluidas)",
+             prompt: "Dictado: escuchá y escribí exactamente lo que oís (tildes y ç incluidas)",
              say: fr.text, stem: fr.text, answer: fr.text, accept: [fr.text], dettato: true,
-             note: "Las dobles se oyen más largas; una sola letra cambia la palabra (nono / nonno)." };
+             note: "Una sola letra cambia la palabra: avó / avô, casa / caça, sonho / sono. Y las contracciones van pegadas: no, na, do, pelo." };
     if (fr.audio) it.audio = fr.audio;
     return it;
   }
 
-  /* «¿Qué forma escuchaste?»: a real sentence, the form it uses blanked
-     out, and the form that competes with it (andassi / andavo, esca /
-     esce).  Like the duels, but by ear: only the audio decides. */
+  /* «¿Qué forma escuchaste?»: una oración grabada, la forma que usa en
+     blanco y la que compite con ella (fosse / fora, falou / falava).  Como
+     los duelos, pero de oído: decide solo el audio.  Sin grabaciones
+     (voci_cv_data.js vacío) no hay ítems. */
   function formPool(week) {
-    return CV ? CV.ALL.filter(function (x) { return x.a && x.fw <= week; }) : [];
+    return CV && CV.ALL ? CV.ALL.filter(function (x) { return x.a && x.fw <= week; }) : [];
   }
   function formItem(x, k) {
-    var shown = x.it.replace(x.a, "___");
+    var text = textOf(x), shown = text.replace(x.a, "___");
     return { id: "suoni:cvf:" + x.f, src: "ascolto", type: "forma", voice: voiceOf(k), audio: CV.url(x),
-             prompt: "¿Qué forma escuchaste?", say: x.it, stem: shown,
+             prompt: "¿Qué forma escuchaste?", say: text, stem: shown,
              options: shuffle([x.a, x.b]), answer: x.a, accept: [x.a],
-             es: "«" + x.it + "» · " + x.why };
+             es: "«" + text + "» · " + x.why };
   }
 
   function dueFirst(list, cards) {
     var now = Date.now();
-    // due first (a review is worth more than a new item), then unseen
+    // primero lo vencido (un repaso vale más que un ítem nuevo), después lo no visto
     var rank = function (x) {
       var c = cards["suoni:" + x.id];
       if (!c) return 1 + Math.random();
@@ -128,15 +143,15 @@
     return list.map(function (x) { return { x: x, r: rank(x) }; }).sort(function (a, b) { return a.r - b.r; }).map(function (o) { return o.x; });
   }
 
-  /* A session: six pairs (the categories that hurt most first: geminate
-     and affricate), two of connected speech, two of intonation, one of
-     stress, one dictation.  Unseen and due first. */
+  /* Una sesión: seis pares (como mucho tres de la misma categoría), dos de
+     habla conectada, dos de entonación, uno de acento tónico, un dictado y,
+     si hay grabaciones, una «¿Qué forma?».  Primero lo vencido y lo nuevo. */
   function session(state, week, opts) {
     opts = opts || {};
     var cards = (state && state.cards) || {}, wk = week || 1, k = Math.floor(Math.random() * 9), out = [];
     if (!Data) return out;
     var pairs = dueFirst(Data.PAIRS.filter(function (p) { return p.week <= wk; }), cards);
-    // spread the categories: at most three of the same in a session
+    // repartir las categorías: como mucho tres de la misma por sesión
     var byCat = {}, chosen = [];
     pairs.forEach(function (p) {
       if (chosen.length >= (opts.pairs || 6)) return;
@@ -156,7 +171,7 @@
     return shuffle(out);
   }
 
-  // One item for the coffee break: a pair or a bit of connected speech.
+  // Un ítem para la pausa: un par o un poco de habla conectada.
   function randomItem(state, week) {
     if (!Data) return null;
     var wk = week || 1, cards = (state && state.cards) || {};
@@ -184,10 +199,11 @@
     for (var i = 0; i < Dg.TESTI.length; i++) if (Dg.TESTI[i].week === week) return Dg.TESTI[i];
     return null;
   }
-  /* A chunk counts as recovered when it appears (accents and apostrophes
-     aside, one typo per long word forgiven) or when all its words appear
-     in order within a short window: what is retrieved, not copied, is
-     what stays (Yu, Boers & Tremblay 2025). */
+  /* Un bloque cuenta como recuperado cuando aparece (sin mirar tildes, ç,
+     guiones ni apóstrofos, con un error de tipeo perdonado por palabra
+     larga) o cuando todas sus palabras aparecen en orden dentro de una
+     ventana corta: lo que se recupera, no lo que se copia, es lo que queda
+     (Yu, Boers & Tremblay 2025). */
   function chunkFound(chunk, given) {
     var g = norm(given), c = norm(chunk);
     if (!c) return false;
