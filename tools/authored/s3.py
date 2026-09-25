@@ -1133,3 +1133,153 @@ cb(1, "Machado de Assis escreveu «Dom Casmurro». Publicou-o em 1899. (e)",
    alt=["Machado de Assis escreveu «Dom Casmurro» e o publicou em 1899.",
         "Machado de Assis escreveu Dom Casmurro e publicou-o em 1899.",
         "Machado de Assis escreveu Dom Casmurro e o publicou em 1899."])
+
+
+# ============================================================================
+# Semana 34 — Conectores e coesão
+# partes: 0 adversativos y su posición · 1 conclusivos y explicativos ·
+#         2 aliás, inclusive, ou seja; concesión
+# ============================================================================
+wk(34, "B2", "conectores")
+
+_CC = "Elegí el conector correcto."
+ch(0, "O Rio é lindo, ___ a violência preocupa.", ["mas", "mais", "más"], "mas",
+   "«mas» (sin i) = pero. «mais» = más. «más» no existe en portugués (má = mala).", prompt=_CC)
+ch(0, "En portugués, «todavia» significa…", ["sin embargo", "todavía", "mientras tanto"], "sin embargo",
+   "Falso amigo: todavia = sin embargo, como porém y contudo. «Todavía» se dice ainda.",
+   prompt="Elegí el significado.")
+ch(0, "A Constituição de 1988 garante o direito à moradia; ___, milhões ainda vivem em áreas precárias.",
+   ["no entanto", "portanto", "inclusive"], "no entanto",
+   "Contraste entre la ley y la realidad: adversativo, no entanto (= sin embargo).", prompt=_CC)
+ch(0, "O projeto era bom. O plano, ___, falhou.", ["porém", "mas", "nem"], "porém",
+   "«porém» puede ir entre comas en medio de la oración; «mas» va siempre al principio.", prompt=_CC)
+ch(0, "«Todavía no llegó.» → ___ não chegou.", ["Ainda", "Todavia", "Entretanto"], "Ainda",
+   "«Todavía» (aún) = ainda. «Todavia» y «entretanto» significan «sin embargo».")
+ch(1, "Choveu muito; ___, houve enchentes na Zona Norte.", ["por isso", "porque", "embora"], "por isso",
+   "Consecuencia: por isso (= por eso). «Porque» daría la causa.", prompt=_CC)
+ch(1, "Penso, ___ existo.", ["logo", "luego", "depois"], "logo",
+   "«logo» conclusivo = luego, por lo tanto. «Luego» no existe en portugués.", prompt=_CC)
+ch(1, "___ você está aqui, me ajuda com a mudança.", ["Já que", "Embora", "Portanto"], "Já que",
+   "Causa conocida al inicio: já que (= ya que).", prompt=_CC)
+ch(1, "Leve guarda-chuva, ___ vai chover.", ["pois", "portanto", "contudo"], "pois",
+   "«pois» al principio de la explicación = porque, que: leve guarda-chuva, pois vai chover.", prompt=_CC)
+ch(2, "Todos reciclam, ___ o prédio vizinho.", ["inclusive", "incluso", "aliás"], "inclusive",
+   "«incluso» en portugués = incluido. Para el «incluso» español: inclusive o até.", prompt=_CC)
+ch(2, "O show foi ótimo. ___, você viu o Gilberto Gil no final?", ["Aliás", "Portanto", "Contudo"], "Aliás",
+   "«aliás» = por cierto, a propósito; también «es más».", prompt=_CC)
+ch(2, "___ esteja cansado, vou ao debate.", ["Embora", "Apesar de", "Mesmo"], "Embora",
+   "«embora» + subjuntivo = aunque. «Apesar de» pide sustantivo o infinitivo.", prompt=_CC)
+
+_CO34 = "Completá con el conector adecuado (en paréntesis, el sentido)."
+cl(0, "O bairro é caro; ___ (sin embargo), vale a pena.", "no entanto",
+   "Adversativo formal: no entanto, porém, contudo, todavia o entretanto.",
+   alt=["porém", "contudo", "todavia", "entretanto"], prompt=_CO34)
+cl(0, "Freyre valorizou a mistura cultural; ___ (sin embargo), seus críticos dizem que suavizou a violência da escravidão.", "contudo",
+   "Adversativo formal. «Casa-Grande & Senzala» (1933), de Gilberto Freyre, sigue siendo tan leído como discutido.",
+   alt=["no entanto", "porém", "todavia", "entretanto"], prompt=_CO34)
+cl(0, "Queria ir ao show, ___ (pero) não consegui ingresso.", "mas",
+   "«mas» sin i = pero.", alt=["porém"], prompt=_CO34)
+cl(0, "Ela ___ (todavía) mora em Niterói.", "ainda",
+   "«Todavía» = ainda. «Todavia» es «sin embargo».", prompt=_CO34)
+cl(1, "Desmataram a encosta; ___ (por lo tanto), houve deslizamento.", "portanto",
+   "Conclusivo formal, en una sola palabra: portanto.", alt=["por isso", "logo", "então"], prompt=_CO34)
+cl(1, "Não trouxe dinheiro; ___ (por eso), não comprei nada.", "por isso",
+   "Consecuencia: por isso.", alt=["portanto", "então", "logo"], prompt=_CO34)
+cl(1, "___ (dado que) o esgoto não é tratado, a baía sofre.", "Uma vez que",
+   "Causa al inicio: uma vez que, visto que, já que, como.", alt=["Visto que", "Já que", "Como"], prompt=_CO34)
+cl(1, "Fica mais um pouco, ___ (que, pues) ainda é cedo.", "pois",
+   "Explicativo: pois (al inicio de la explicación) = porque.", alt=["porque", "já que"], prompt=_CO34)
+cl(2, "Ela é carioca, ___ (o sea), ama praia.", "ou seja",
+   "Reformulación: ou seja, isto é, quer dizer.", alt=["isto é", "quer dizer"], prompt=_CO34)
+cl(2, "É barato e, ___ (además), fica perto do metrô.", "além disso",
+   "Adición: além disso.", alt=["ainda por cima", "também"], prompt=_CO34)
+cl(2, "___ (a pesar de la) crise, o bairro cresceu.", "Apesar da",
+   "apesar de + a = apesar da: la contracción es obligatoria ante sustantivo.", prompt=_CO34)
+cl(2, "___ (aunque) chova muito no litoral, falta água no sertão.", "Embora",
+   "Concesión con subjuntivo: embora, mesmo que, ainda que.", alt=["Mesmo que", "Ainda que"], prompt=_CO34)
+
+trv(0, "Río es hermoso, pero es caro.",
+    "«pero» = mas (o porém, más formal).",
+    ["O Rio é lindo", "O Rio é bonito"], ", ", ["mas", "porém"], " é caro")
+trv(0, "Todavía no llegó.",
+    "«todavía» = ainda. Nunca todavia.",
+    ["Ainda não chegou", "Ele ainda não chegou", "Ela ainda não chegou"])
+trv(0, "La ley existe; sin embargo, nadie la cumple.",
+    "«sin embargo» = no entanto / porém / contudo / todavia / entretanto.",
+    "A lei existe; ", ["no entanto", "porém", "contudo", "todavia", "entretanto"], ", ninguém ",
+    ["a cumpre", "cumpre", "cumpre ela"])
+trv(1, "Estaba lloviendo, por eso nos quedamos.",
+    "Consecuencia: por isso / então / portanto.",
+    ["Estava chovendo", "Chovia"], ", ", ["por isso", "então", "portanto"], " ",
+    ["ficamos", "a gente ficou", "nós ficamos"])
+trv(1, "Ya que estás acá, ayudame.",
+    "«ya que» = já que.",
+    "Já que ", ["você está", "está", "você tá", "tá"], " aqui, ", ["me ajuda", "me ajude", "ajude-me"])
+trv(2, "Vinieron todos, incluso el administrador.",
+    "«incluso» = inclusive / até. Administrador del edificio = síndico.",
+    ["Vieram todos", "Todos vieram"], ", ", ["inclusive", "até", "até mesmo"], " o síndico")
+trv(2, "Es carioca, o sea, ama la playa.",
+    "«o sea» = ou seja / isto é.",
+    ["Ela é carioca", "Ele é carioca", "É carioca"], ", ", ["ou seja", "isto é", "quer dizer"], ", ",
+    ["ama", "adora"], " ", ["praia", "a praia"])
+trv(2, "Aunque llueve mucho, falta agua.",
+    "embora / mesmo que / ainda que + subjuntivo; apesar de + infinitivo.",
+    ["Embora chova", "Mesmo que chova", "Ainda que chova", "Apesar de chover"], " muito, falta água")
+
+fx(0, "O filme era longo, mais valeu a pena.", "mais", "mas",
+   "O filme era longo, mas valeu a pena.", "ortografia",
+   "«mas» (pero) sin i; «mais» es «más». Suenan casi igual en Río, por eso se confunden al escribir.")
+fx(0, "Todavia não terminei o livro de Saramago.", "Todavia", "Ainda",
+   "Ainda não terminei o livro de Saramago.", "falso_amigo",
+   "«todavia» = sin embargo. «Todavía no» se dice ainda não. Saramago, Nobel de Literatura 1998.")
+fx(2, "Todos vieram à reunião, incluso o prefeito.", "incluso", "inclusive",
+   "Todos vieram à reunião, inclusive o prefeito.", "falso_amigo",
+   "«incluso» en portugués es «incluido» (o café está incluso). Para «incluso»: inclusive o até.",
+   goodAlt=["até"])
+fx(1, "Choveu muito, por tanto o jogo foi cancelado.", "por tanto", "portanto",
+   "Choveu muito, portanto o jogo foi cancelado.", "espanol",
+   "«por lo tanto» se dice portanto, en una sola palabra.")
+
+_L34 = [["pero", "mas"], ["sin embargo", "no entanto"], ["por lo tanto", "portanto"]]
+_GP34 = "Mirá los tres pares español → portugués y completá el cuarto."
+gd(0, _L34, "todavía (= aún) → ___", "ainda", "todavia",
+   "«todavia» existe, pero significa «sin embargo». «Todavía» (aún) es ainda.", prompt=_GP34)
+gd(2, _L34, "incluso → ___", "inclusive", "incluso",
+   "«incluso» en portugués es el participio de incluir (incluido). El «incluso» español es inclusive o até.", prompt=_GP34)
+gd(0, _L34, "mientras tanto → ___", "enquanto isso", "entretanto",
+   "En Brasil, «entretanto» se usa como «sin embargo». «Mientras tanto» es enquanto isso o nesse meio-tempo.",
+   prompt=_GP34)
+
+sc(0, ["Queria ir, mas choveu.", "Queria ir; choveu, porém.", "Queria ir; a chuva, contudo, não deixou.",
+       "Queria ir; no entanto, choveu.", "O plano, porém, falhou.", "O prazo, contudo, é curto."],
+   "¿Qué diferencia a «mas» de «porém / contudo / no entanto»?",
+   ["«mas» va siempre al principio de su oración; los otros pueden ir en el medio o al final.",
+    "«mas» es formal y los otros coloquiales.",
+    "No hay diferencia: se usan igual."],
+   "«mas» va siempre al principio de su oración; los otros pueden ir en el medio o al final.",
+   "Regla: mas encabeza; porém, contudo, no entanto, todavia y entretanto pueden desplazarse entre comas.")
+sc(1, ["Choveu; portanto, ficamos.", "Está tarde, logo vamos embora.", "Não estudou, por isso reprovou.",
+       "Fica, pois está chovendo.", "Já que você veio, fica.", "Visto que ninguém veio, cancelamos."],
+   "¿Qué conectores introducen una causa y cuáles una consecuencia?",
+   ["Consecuencia: portanto, logo, por isso. Causa: pois (al inicio), já que, visto que.",
+    "Todos introducen una causa.",
+    "Consecuencia: pois, já que. Causa: portanto, logo."],
+   "Consecuencia: portanto, logo, por isso. Causa: pois (al inicio), já que, visto que.",
+   "Regla: conclusivos (portanto, logo, por isso, então) presentan el resultado; explicativos (pois, já que, uma vez que, visto que), la razón.")
+
+ty(0, "Escribí en portugués «sin embargo» en dos palabras.", "sin embargo → ___", "no entanto",
+   "no entanto = sin embargo. Sinónimos de una palabra: porém, contudo, todavia, entretanto.")
+ty(2, "Escribí en portugués «por cierto / es más» en una palabra.", "por cierto → ___", "aliás",
+   "aliás, con tilde en la a: por cierto, a propósito, es más.")
+
+cb(0, "O projeto é bom. Custa muito. (no entanto)", "O projeto é bom; no entanto, custa muito.",
+   "Adversativo formal entre dos oraciones: punto y coma o coma antes, coma después.",
+   alt=["O projeto é bom, no entanto custa muito.", "O projeto é bom, no entanto, custa muito.",
+        "O projeto é bom; custa, no entanto, muito."])
+cb(1, "Choveu três dias. Houve enchente. (por isso)", "Choveu três dias, por isso houve enchente.",
+   "Consecuencia con por isso.",
+   alt=["Choveu três dias; por isso, houve enchente.", "Choveu três dias e por isso houve enchente.",
+        "Choveu três dias, por isso, houve enchente."])
+cb(2, "Chove muito. Falta água. (embora)", "Embora chova muito, falta água.",
+   "embora + subjuntivo: chove → chova.",
+   alt=["Falta água, embora chova muito.", "Embora chova muito falta água."])

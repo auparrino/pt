@@ -243,7 +243,20 @@ def main():
             compiled[k]["items"].append(iid)
         wk["parts"] = compiled
 
-    # Las palabras de la semana: [palabra, significado, ejemplo].
+    # Las palabras de la semana: [palabra, significado, ejemplo].  Una
+    # palabra se enseña una sola vez: en la primera semana que la trae.
+    seen_vocab = {}
+    for w in sorted(vocab):
+        keep = []
+        for v in vocab[w]:
+            key = v[0].lower()
+            if key in seen_vocab:
+                problems.append("palabra repetida «%s» (semanas %d y %d): queda en la %d"
+                                % (v[0], seen_vocab[key], w, seen_vocab[key]))
+                continue
+            seen_vocab[key] = w
+            keep.append(v)
+        vocab[w] = keep
     for wk in weeks:
         wk["vocab"] = [] if wk["boss"] else [list(v[:3]) + [""] * (3 - len(v[:3])) for v in vocab.get(wk["week"], [])]
         if not wk["boss"] and not wk["vocab"]:
