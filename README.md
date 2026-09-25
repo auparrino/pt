@@ -1,5 +1,9 @@
 # Rumo C1 — portugués de Brasil hasta C1 en un año
 
+> **Este repo quedó como archivo.** Rumo C1 ahora vive junto a La Via C1 en
+> una sola app con dos idiomas, en el repo `auparrino/It` (paquete
+> `docs/lang/pt/`, herramientas `tools/pt/`). Los cambios se hacen allá.
+
 Curso-juego para **hispanohablantes rioplatenses**: de cero a C1 (Celpe-Bras
 Avançado Superior) en 52 semanas, desde el celular y sin internet. Es la
 versión portuguesa de *La Via C1* (italiano, repo hermano `auparrino/It`):
