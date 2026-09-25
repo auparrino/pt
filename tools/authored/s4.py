@@ -413,3 +413,337 @@ cb(W, 2, "Cabral chegou à Bahia em 1500. Os tupiniquins já viviam lá havia s�
    ["Os tupiniquins já viviam lá havia séculos quando Cabral chegou à Bahia em 1500",
     "Quando Cabral chegou à Bahia, em 1500, os tupiniquins já viviam lá havia séculos"],
    "havia séculos = hacía siglos: en un relato en pasado, haver va en imperfeito. La flota de Cabral llegó a la actual Porto Seguro.")
+
+
+# ===========================================================================
+# Semana 42 — Orações reduzidas
+# parts: 0 gerundio, ao + infinitivo, infinitivo pessoal · 1 participio y
+# concordancia · 2 desarmar y armar, crónica
+# ===========================================================================
+W = 42
+ch(W, 0, "___ ao Arpoador, vimos o pôr do sol.",
+   ["Chegando", "Chegado", "Chegar"], "Chegando",
+   "Gerundio con valor temporal: chegando = cuando llegamos.")
+ch(W, 0, "___ Os Lusíadas, a gente entende a obsessão portuguesa pelo mar.",
+   ["Lendo", "Leyendo", "Lido"], "Lendo",
+   "ler → lendo, sin la y del español. Os Lusíadas (1572), de Camões, cantan el viaje de Vasco da Gama.")
+ch(W, 0, "___ o livro na mesa, ele saiu sem dizer nada.",
+   ["Pondo", "Poniendo", "Pôndo"], "Pondo",
+   "pôr → pondo, sin tilde y sin la -ni- del español.")
+ch(W, 0, "Ao ___ ao Rio, em 1808, D. João criou o Jardim Botânico.",
+   ["chegar", "chegando", "chegado"], "chegar",
+   "ao + infinitivo = al + infinitivo. El Jardim Botânico se fundó en 1808, el año de la llegada de la corte.")
+ch(W, 0, "Depois de ___ do show, eles foram ao Bar Luiz.",
+   ["saírem", "saíram", "saiam"], "saírem",
+   "Tras preposición va infinitivo; con sujeto plural, el infinitivo pessoal: depois de saírem.")
+ch(W, 0, "Por ___ ricos em ouro, os rios de Minas atraíram milhares de pessoas no século XVIII.",
+   ["serem", "eram", "sejam"], "serem",
+   "por + infinitivo pessoal = causa: por serem ricos. El ciclo del oro de Minas Gerais fue en el siglo XVIII.")
+ch(W, 1, "___ a Lei Áurea, milhares de libertos ficaram sem terra nem trabalho.",
+   ["Assinada", "Assinado", "Assinando"], "Assinada",
+   "El participio concuerda con a Lei Áurea (femenino): assinada. La abolición de 1888 no previó ninguna reparación.")
+ch(W, 1, "___ as contas, vimos que a viagem era cara.",
+   ["Feitas", "Feito", "Fazidas"], "Feitas",
+   "fazer → feito, y concuerda con as contas: feitas.")
+ch(W, 1, "___ o boleto, a matrícula é confirmada.",
+   ["Pago", "Pagado", "Pagada"], "Pago",
+   "Con ser/estar y en la reducida se usa el participio corto: pago.")
+ch(W, 1, "___ as inscrições, a fila chegou à esquina.",
+   ["Abertas", "Aberto", "Abrindo"], "Abertas",
+   "abrir → aberto, concordado con as inscrições: abertas.")
+ch(W, 2, "Apesar de ___ caro, o bondinho do Pão de Açúcar vale a pena.",
+   ["ser", "seja", "é"], "ser",
+   "apesar de + infinitivo; embora + subjuntivo. Nunca «apesar de é».")
+ch(W, 2, "Encerrado o carnaval, a cidade volta à rotina. = ___, a cidade volta à rotina.",
+   ["Quando o carnaval termina", "Enquanto o carnaval termina", "Para que o carnaval termine"],
+   "Quando o carnaval termina",
+   "La reducida de participio expresa algo ya cumplido: quando / depois que termina.",
+   prompt="Elegí la versión desarrollada.")
+
+cl(W, 0, "___ (sair) cedo, você pega a praia vazia.", "Saindo",
+   "Gerundio con valor condicional: saindo cedo = si salís temprano.")
+cl(W, 0, "___ (estar) cansada, ela dormiu no ônibus.", "Estando",
+   "Gerundio causal: estando cansada = como estaba cansada.", alt=["Por estar"])
+cl(W, 0, "Ao ___ (ver) o Maracanã lotado, o jogador se emocionou.", "ver",
+   "ao + infinitivo: ao ver = al ver.")
+cl(W, 0, "Ao ___ (chegar, nós) a Salvador, fomos ao Pelourinho.", "chegarmos",
+   "Infinitivo pessoal: ao chegarmos marca el sujeto nós.")
+cl(W, 0, "Depois de ___ (ler, eles) Vidas Secas, discutiram a seca no Nordeste.", "lerem",
+   "ler → lerem (infinitivo pessoal). Vidas Secas (1938), de Graciliano Ramos.")
+cl(W, 0, "Por ___ (ser, eles) estrangeiros, pagaram mais caro.", "serem",
+   "por + infinitivo pessoal = porque eram.")
+cl(W, 1, "___ (fazer) as malas, partimos para Paraty.", "Feitas",
+   "Participio concordado con as malas: feitas.")
+cl(W, 1, "___ (resolver) o problema, a obra recomeçou.", "Resolvido",
+   "Participio concordado con o problema: resolvido.")
+cl(W, 1, "___ (proclamar) a Independência, em 1822, D. Pedro virou imperador.", "Proclamada",
+   "Participio concordado con a Independência: proclamada.")
+cl(W, 1, "___ (entregar) as chaves, o inquilino foi embora.", "Entregues",
+   "entregar tiene participio corto entregue; en plural, entregues.")
+cl(W, 2, "Embora ___ (ser) longo, Grande Sertão: Veredas é fascinante.", "seja",
+   "embora + subjuntivo. Su versión reducida sería apesar de ser longo.")
+cl(W, 2, "Apesar de ___ (viver) na favela do Canindé, Carolina Maria de Jesus escrevia todos os dias.", "viver",
+   "apesar de + infinitivo. Su diario se publicó en 1960 como Quarto de Despejo.")
+
+tr(W, 0, "Al llegar a casa, llamé a mi madre.",
+   "Ao chegar em casa, liguei para minha mãe.",
+   ["Ao chegar a casa, liguei para minha mãe", "Ao chegar em casa, liguei para a minha mãe",
+    "Ao chegar a casa, liguei para a minha mãe", "Chegando em casa, liguei para minha mãe",
+    "Chegando em casa, liguei para a minha mãe", "Ao chegar em casa, liguei pra minha mãe"],
+   "«Al» = ao. Y «llamar a alguien» por teléfono = ligar para alguém.")
+tr(W, 0, "Antes de salir, cerrá la ventana.", "Antes de sair, feche a janela.",
+   ["Antes de sair, fecha a janela"],
+   "antes de + infinitivo, como en español.")
+tr(W, 0, "Al llegar nosotros, la fiesta ya había terminado.",
+   "Ao chegarmos, a festa já tinha terminado.",
+   ["Ao chegarmos, a festa já havia terminado", "Ao chegarmos, a festa já terminara",
+    "Ao chegarmos, a festa já tinha acabado", "Ao chegarmos, a festa já havia acabado",
+    "Quando chegamos, a festa já tinha terminado", "Quando chegamos, a festa já tinha acabado"],
+   "«Al llegar nosotros» = ao chegarmos: el infinitivo pessoal marca el sujeto.")
+tr(W, 0, "Después de leer a Paulo Freire, cambié mi manera de enseñar.",
+   "Depois de ler Paulo Freire, mudei minha maneira de ensinar.",
+   ["Depois de ler Paulo Freire, mudei a minha maneira de ensinar",
+    "Depois de ler Paulo Freire, mudei meu jeito de ensinar",
+    "Depois de ler Paulo Freire, mudei o meu jeito de ensinar",
+    "Depois de ler Paulo Freire, mudei minha forma de ensinar",
+    "Depois de ler Paulo Freire, mudei a minha forma de ensinar",
+    "Após ler Paulo Freire, mudei minha maneira de ensinar"],
+   "Sin «a» ante el autor: ler Paulo Freire, el de Pedagogia do Oprimido.")
+tr(W, 1, "Terminada la reunión, fuimos a la playa.",
+   "Terminada a reunião, fomos à praia.",
+   ["Terminada a reunião, fomos para a praia", "Acabada a reunião, fomos à praia",
+    "Encerrada a reunião, fomos à praia", "Acabada a reunião, fomos para a praia"],
+   "Participio concordado con a reunião; ir a + a praia = à praia.")
+tr(W, 1, "Hechas las cuentas, sobró poco dinero.",
+   "Feitas as contas, sobrou pouco dinheiro.", [],
+   "fazer → feito → feitas (concuerda con as contas).")
+tr(W, 2, "Aunque es caro, el teleférico vale la pena.",
+   "Embora seja caro, o bondinho vale a pena.",
+   ["Apesar de ser caro, o bondinho vale a pena", "Embora seja caro, o teleférico vale a pena",
+    "Apesar de ser caro, o teleférico vale a pena"],
+   "«Aunque es» = embora seja (subjuntivo) o apesar de ser (reducida).")
+tr(W, 2, "Derrotado en 1578, el rey Sebastián nunca volvió.",
+   "Derrotado em 1578, o rei D. Sebastião nunca voltou.",
+   ["Derrotado em 1578, o rei Sebastião nunca voltou", "Derrotado em 1578, D. Sebastião nunca voltou",
+    "Derrotado em 1578, dom Sebastião nunca voltou", "Derrotado em 1578, o rei dom Sebastião nunca voltou"],
+   "Reducida de participio. De su desaparición en Alcácer-Quibir nació el sebastianismo.")
+
+fx(W, 0, "Poniendo o celular no bolso, ele saiu.", "Poniendo", "Pondo", "espanol",
+   "pôr → pondo. «Poniendo» es el gerundio español.")
+fx(W, 0, "Al sair do metrô, vi o Theatro Municipal.", "Al", "Ao", "contraccion",
+   "«Al» = ao (a + o): ao sair.")
+fx(W, 1, "Feito as contas, decidimos ficar em casa.", "Feito", "Feitas", "concordancia",
+   "El participio de la reducida concuerda con su sujeto: feitas as contas.")
+fx(W, 1, "Pagado o boleto, a matrícula foi confirmada.", "Pagado", "Pago", "participio",
+   "En la reducida y con ser/estar va el participio corto: pago o boleto.")
+
+gd(W, 0, [["falar", "falando"], ["comer", "comendo"], ["partir", "partindo"]],
+   "pôr → ___", "pondo", "poniendo",
+   "pôr (antiguo «poer») hace pondo. El español empuja a «poniendo».")
+gd(W, 0, [["olhar", "olhando"], ["correr", "correndo"], ["abrir", "abrindo"]],
+   "ir → ___", "indo", "yendo",
+   "ir → indo, perfectamente regular en portugués. «Yendo» es español.")
+gd(W, 1, [["terminar a reunião", "terminada a reunião"], ["fechar o bar", "fechado o bar"],
+          ["resolver as questões", "resolvidas as questões"]],
+   "fazer as contas → ___", "feitas as contas", "fazidas as contas",
+   "fazer tiene participio irregular: feito, y concuerda: feitas as contas.")
+
+sc(W, 1, ["Terminada a reunião, saímos.", "Terminado o jogo, saímos.", "Terminadas as aulas, saímos.",
+          "Terminados os exames, saímos.", "Feita a reserva, viajamos.", "Feitos os planos, viajamos."],
+   "¿Con qué concuerda el participio?",
+   ["Con el sustantivo que lo sigue.",
+    "Con el sujeto de la oración principal (nós).",
+    "Con nada: queda siempre en -o."],
+   "Con el sustantivo que lo sigue.",
+   "En la reducida, el sustantivo que sigue es el sujeto del participio: terminadas as aulas.")
+sc(W, 0, ["Ao chegar, liguei.", "Ao chegarmos, ligamos.", "Ao chegarem, ligaram.",
+          "Antes de sair, fechei a porta.", "Antes de saírem, fecharam a porta.",
+          "Para chegarmos cedo, saímos às seis."],
+   "¿Cuándo se agrega -mos o -em al infinitivo?",
+   ["Cuando hay que marcar el sujeto (nós, eles), sobre todo si es plural o distinto.",
+    "Solo después de «ao».",
+    "Nunca en la escritura formal."],
+   "Cuando hay que marcar el sujeto (nós, eles), sobre todo si es plural o distinto.",
+   "El infinitivo pessoal marca quién hace la acción; es muy frecuente en la escritura formal.")
+
+ty(W, 0, "Escribí el gerundio.", "ler → ___", "lendo",
+   "ler → lendo, sin y.")
+ty(W, 1, "Escribí el participio corto, concordado.", "___ (aceitar) as condições, assinamos o contrato.", "Aceitas",
+   "aceitar tiene participio corto aceito; con as condições, aceitas.")
+
+cb(W, 0, "Cheguei em casa. Liguei para você. (ao + infinitivo)",
+   "Ao chegar em casa, liguei para você.",
+   ["Ao chegar a casa, liguei para você", "Liguei para você ao chegar em casa"],
+   "ao + infinitivo reemplaza a quando + verbo conjugado.")
+cb(W, 1, "A reunião terminou. Fomos ao boteco. (participio)",
+   "Terminada a reunião, fomos ao boteco.",
+   ["Acabada a reunião, fomos ao boteco", "Encerrada a reunião, fomos ao boteco"],
+   "Participio concordado + sujeto al principio: terminada a reunião.")
+cb(W, 2, "O bondinho é caro. Vale a pena. (apesar de + infinitivo)",
+   "Apesar de ser caro, o bondinho vale a pena.",
+   ["O bondinho vale a pena, apesar de ser caro"],
+   "apesar de + infinitivo es la versión reducida de embora + subjuntivo.")
+
+
+# ===========================================================================
+# Semana 43 — Correspondência formal
+# parts: 0 abrir y cerrar · 1 tratamiento y fórmulas · 2 pedir, crase
+# ===========================================================================
+W = 43
+ch(W, 0, "___ Senhora Diretora,",
+   ["Prezada", "Prezado", "Querida"], "Prezada",
+   "Apertura formal: Prezado(a), concordado con el destinatario. Querida es solo para gente cercana.")
+ch(W, 0, "Cierre de un mail al consulado: «___, Lucas Fernández».",
+   ["Atenciosamente", "Atentamente", "Saudos cordiais"], "Atenciosamente",
+   "El cierre formal estándar en Brasil es Atenciosamente. «Atentamente» no se usa así y «saudos» no existe.")
+ch(W, 0, "Mail a un grupo de profesores: «___ professores,»",
+   ["Prezados", "Prezado", "Prezada"], "Prezados",
+   "A un grupo, en plural: Prezados professores, Prezados(as).")
+ch(W, 0, "A Carta de Pero Vaz de Caminha, de 1500, é dirigida ___ rei D. Manuel.",
+   ["ao", "o", "à"], "ao",
+   "dirigir-se a + o rei = ao rei. La carta de Caminha es el primer texto escrito sobre Brasil.")
+ch(W, 1, "O senhor ___ confirmar a reserva?",
+   ["poderia", "poderias", "poderíeis"], "poderia",
+   "o senhor / a senhora van con verbo en 3.ª persona: poderia.")
+ch(W, 1, "Vossa Senhoria ___ os documentos até sexta.",
+   ["deve enviar", "deveis enviar", "deves enviar"], "deve enviar",
+   "Aunque diga Vossa, el verbo va en 3.ª: Vossa Senhoria deve.")
+ch(W, 1, "Informamos que Vossa Senhoria receberá ___ certificado pelo correio.",
+   ["seu", "vosso", "teu"], "seu",
+   "Con los tratamientos, el posesivo es de 3.ª persona: seu, sua.")
+ch(W, 1, "___ em anexo os comprovantes de pagamento.",
+   ["Seguem", "Segue", "Sigue"], "Seguem",
+   "seguir concuerda con lo adjuntado (os comprovantes): seguem.")
+ch(W, 1, "Fico no ___ de sua resposta.",
+   ["aguardo", "espero", "aguardamento"], "aguardo",
+   "Fórmula fija: fico no aguardo = quedo a la espera.")
+ch(W, 2, "Agradeceria se o senhor ___ o prazo.",
+   ["prorrogasse", "prorrogue", "prorrogar"], "prorrogasse",
+   "agradeceria se + imperfeito do subjuntivo: prorrogasse.")
+ch(W, 2, "Fico ___ disposição para qualquer esclarecimento.",
+   ["à", "a", "na"], "à",
+   "à disposição lleva crase siempre.")
+ch(W, 2, "Solicito ___ Vossa Excelência a revisão do processo.",
+   ["a", "à", "ao"], "a",
+   "Los pronombres de tratamiento no llevan artículo, así que no hay crase: a Vossa Excelência.")
+
+cl(W, 0, "___ Senhor Coordenador, (apertura formal)", "Prezado",
+   "Prezado + tratamiento, concordado en masculino.")
+cl(W, 0, "Desde já, ___ (agradecer, eu) a atenção.", "agradeço",
+   "agradecer → agradeço (c → ç ante o). Fórmula de cierre muy usada.")
+cl(W, 1, "Venho, por meio ___, solicitar uma declaração de matrícula.", "desta",
+   "venho por meio desta (carta) = por la presente.")
+cl(W, 1, "Conforme ___ (combinar), envio o contrato assinado.", "combinado",
+   "conforme combinado = según lo acordado.")
+cl(W, 1, "Segue ___ anexo o currículo.", "em",
+   "segue em anexo: anexo queda invariable tras em.")
+cl(W, 1, "Seguem ___ (anexo) as fotos do evento.", "anexas",
+   "Sin em, anexo es adjetivo y concuerda: seguem anexas as fotos.")
+cl(W, 1, "A senhora poderia me ___ (enviar) o formulário?", "enviar",
+   "poderia + infinitivo: el pedido cortés más frecuente.")
+cl(W, 2, "Agradeceria se a senhora ___ (poder) me atender na quarta.", "pudesse",
+   "poder → pudesse (imperfeito do subjuntivo), tras agradeceria se.")
+cl(W, 2, "Gostaria ___ solicitar a segunda via do diploma.", "de",
+   "gostaria de + infinitivo, siempre con de.")
+cl(W, 2, "Em relação ___ sua solicitação, informo que foi deferida.", "à",
+   "em relação a + a sua solicitação = à sua solicitação.")
+cl(W, 2, "Encaminho o pedido ___ setor de matrículas.", "ao",
+   "encaminhar algo a alguém: a + o setor = ao setor.")
+cl(W, 2, "Informo ___ V. Sa. que o prazo foi prorrogado.", "a",
+   "Ante V. Sa. no hay artículo, así que no hay crase: informo a V. Sa.")
+
+tr(W, 0, "Estimada señora Souza:", "Prezada Senhora Souza,",
+   ["Prezada Sra. Souza", "Prezada senhora Souza"],
+   "«Estimado/a» = Prezado/a; en portugués se suele cerrar el saludo con coma.")
+tr(W, 0, "Quedo a la espera de su respuesta. Atentamente,",
+   "Fico no aguardo de sua resposta. Atenciosamente,",
+   ["Fico no aguardo da sua resposta. Atenciosamente", "Aguardo sua resposta. Atenciosamente",
+    "Fico aguardando sua resposta. Atenciosamente", "Fico à espera de sua resposta. Atenciosamente",
+    "Aguardo a sua resposta. Atenciosamente"],
+   "Dos fórmulas fijas del mail formal: fico no aguardo y Atenciosamente.")
+tr(W, 1, "Adjunto el certificado médico.", "Segue em anexo o atestado médico.",
+   ["Segue anexo o atestado médico", "Envio em anexo o atestado médico",
+    "Segue o atestado médico em anexo", "Encaminho em anexo o atestado médico"],
+   "«Adjunto» se dice con segue em anexo; el certificado médico es o atestado.")
+tr(W, 1, "Adjunto los documentos solicitados.", "Seguem em anexo os documentos solicitados.",
+   ["Seguem anexos os documentos solicitados", "Envio em anexo os documentos solicitados",
+    "Seguem os documentos solicitados em anexo", "Encaminho em anexo os documentos solicitados"],
+   "Con plural, seguem: el verbo concuerda con os documentos.")
+tr(W, 1, "¿Usted podría confirmar el horario? (a un señor)", "O senhor poderia confirmar o horário?",
+   ["O Sr. poderia confirmar o horário"],
+   "«Usted» = o senhor, con verbo en 3.ª persona.")
+tr(W, 2, "Quisiera solicitar una prórroga del plazo.",
+   "Gostaria de solicitar uma prorrogação do prazo.",
+   ["Gostaria de solicitar a prorrogação do prazo", "Eu gostaria de solicitar uma prorrogação do prazo",
+    "Eu gostaria de solicitar a prorrogação do prazo"],
+   "«Quisiera» = gostaria de; «prórroga» = prorrogação.")
+tr(W, 2, "Le agradecería si pudiera responder hasta el viernes.",
+   "Agradeceria se pudesse responder até sexta.",
+   ["Agradeceria se o senhor pudesse responder até sexta", "Agradeceria se a senhora pudesse responder até sexta",
+    "Agradeceria se pudesse responder até sexta-feira", "Eu agradeceria se pudesse responder até sexta",
+    "Agradeceria se o senhor pudesse responder até sexta-feira",
+    "Agradeceria se a senhora pudesse responder até sexta-feira"],
+   "agradeceria se + imperfeito do subjuntivo: pudesse.")
+tr(W, 2, "Quedo a disposición para cualquier aclaración.",
+   "Fico à disposição para qualquer esclarecimento.",
+   ["Estou à disposição para qualquer esclarecimento", "Fico à disposição para quaisquer esclarecimentos",
+    "Permaneço à disposição para qualquer esclarecimento", "Fico à disposição para qualquer dúvida"],
+   "à disposição, con crase; «aclaración» = esclarecimento.")
+
+fx(W, 1, "Segue em anexo os documentos pedidos.", "Segue", "Seguem", "concordancia",
+   "El verbo concuerda con os documentos: seguem em anexo.")
+fx(W, 1, "Vossa Senhoria deveis assinar o requerimento.", "deveis", "deve", "persona",
+   "Vossa Senhoria lleva verbo en 3.ª persona: deve.")
+fx(W, 2, "Fico a disposição para qualquer dúvida.", "a disposição", "à disposição", "crase",
+   "à disposição: preposición a + artículo a.")
+fx(W, 0, "Saudos cordiais, Martín", "Saudos cordiais", "Atenciosamente", "espanol",
+   "«Saludos cordiales» no se calca: en un mail formal, Atenciosamente o Cordialmente.",
+   goodAlt=["Cordialmente"])
+
+gd(W, 2, [["poder", "poderia"], ["gostar", "gostaria"], ["agradecer", "agradeceria"]],
+   "fazer → ___", "faria", "fazeria",
+   "fazer tiene condicional irregular: faria (como farei). El patrón regular engaña.")
+gd(W, 2, [["solicitar", "solicitaria"], ["enviar", "enviaria"], ["precisar", "precisaria"]],
+   "dizer → ___", "diria", "dizeria",
+   "dizer → diria (como direi): pierde la -ze-.")
+gd(W, 2, [["poder", "se pudesse"], ["enviar", "se enviasse"], ["responder", "se respondesse"]],
+   "vir → ___", "se viesse", "se vinesse",
+   "El imperfeito do subjuntivo sale del perfeito vieram: viesse.")
+
+sc(W, 1, ["O senhor pode entrar.", "A senhora quer um café?", "Vossa Senhoria deve assinar aqui.",
+          "Vossa Excelência está convidado.", "O senhor esqueceu seu guarda-chuva.",
+          "V. Sa. receberá sua resposta."],
+   "¿En qué persona va el verbo con los tratamientos?",
+   ["En tercera persona, y el posesivo es «seu».",
+    "En segunda del plural, como con «vós».",
+    "En tercera con «o senhor» y en segunda con «Vossa»."],
+   "En tercera persona, y el posesivo es «seu».",
+   "Todos los tratamientos (o senhor, V. Sa., V. Exa.) van con verbo y posesivo de 3.ª persona.")
+sc(W, 2, ["Informo à senhora que...", "Envio à diretora o relatório.", "Informo a V. Sa. que...",
+          "Solicito a Vossa Excelência...", "Peço a você que...", "Encaminho ao senhor o contrato."],
+   "¿Por qué «à senhora» lleva crase y «a V. Sa.» no?",
+   ["«A senhora» lleva artículo; los tratamientos como V. Sa. no.",
+    "Porque V. Sa. es masculino.",
+    "La crase es opcional ante tratamientos."],
+   "«A senhora» lleva artículo; los tratamientos como V. Sa. no.",
+   "Crase = preposición a + artículo a. Vossa Senhoria, Vossa Excelência y você no admiten artículo.")
+
+ty(W, 0, "Escribí el cierre formal estándar de un mail en Brasil.", "___, (firma)", "Atenciosamente",
+   "Atenciosamente es el cierre formal por defecto.", alt=["Cordialmente"])
+ty(W, 1, "Escribí la abreviatura de «Vossa Senhoria».", "___", "V. Sa.",
+   "V. Sa. (también V. S.ª). Va con verbo en 3.ª persona.", alt=["V.Sa.", "V. S.ª", "V. Sª"])
+
+cb(W, 1, "Envio o currículo. O currículo está em anexo. (segue em anexo)",
+   "Segue em anexo o currículo.",
+   ["Segue o currículo em anexo", "Segue anexo o currículo"],
+   "segue em anexo resume las dos frases en una fórmula.")
+cb(W, 2, "O senhor pode responder até sexta. Eu agradeceria. (agradeceria se)",
+   "Agradeceria se o senhor pudesse responder até sexta.",
+   ["Eu agradeceria se o senhor pudesse responder até sexta",
+    "Agradeceria se o senhor pudesse responder até sexta-feira"],
+   "agradeceria se + imperfeito do subjuntivo: pode → pudesse.")
+cb(W, 2, "Recebi sua solicitação. Informo que ela foi deferida. (em relação à)",
+   "Em relação à sua solicitação, informo que foi deferida.",
+   ["Em relação à sua solicitação, informo que ela foi deferida",
+    "Informo, em relação à sua solicitação, que foi deferida"],
+   "em relação à + sustantivo femenino, con crase. deferir = aprobar un pedido.")
