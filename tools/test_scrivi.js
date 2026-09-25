@@ -216,7 +216,7 @@ ERR.forEach(function (e) {
   ok(hit / tot >= 0.8, "corpus: el corrector propio marca " + hit + "/" + tot + " errores (piso 80%)");
   var FLOOR = { espanol: 0.9, contraccion: 0.95, gostar: 0.9, muito: 0.9, crase: 0.8, subjuntivo: 0.85, futuro_subj: 0.75, regencia: 0.75,
                 perfeito_composto: 0.9, tilde: 0.85, preposicion: 0.8, persona: 0.8, regularizacion: 0.8, inf_pessoal: 0.7, colocacao: 0.7,
-                falso_amigo: 0.7, participio: 0.7, plural: 0.7, pronome: 0.5 };
+                falso_amigo: 0.7, participio: 0.7, plural: 0.7, pronome: 0.5, genero: 0.8, a_personal: 0.75, nasal: 0.6 };
   Object.keys(FLOOR).forEach(function (k) {
     var c = byCat[k] || [0, 1];
     ok(c[0] / c[1] >= FLOOR[k], "corpus, " + k + ": " + c[0] + "/" + c[1] + " (piso " + Math.round(FLOOR[k] * 100) + "%)");

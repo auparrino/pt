@@ -28,7 +28,7 @@
          model: "Oi! Eu me chamo Martín. Sou argentino, de Rosario, e sou professor de história. Tenho trinta anos. Hoje estou em Copacabana e estou feliz. E você, como está?" },
     2: { t: "Contá qué tenés y qué hay en tu casa: hermanos, animales, cosas. Usá sustantivos en plural.", min: 15,
          use: [["plurais", 4, "4 sustantivos en plural"], ["haTem", 2, "2 veces tem o há"]],
-         model: "Tenho dois irmãos e três primos. Em casa tenho dois gatos, cinco plantas e muitos livros. Há duas janelas grandes e três cadeiras. Também tem dois violões: são do meu pai." },
+         model: "Tenho dois irmãos e três primos. Em casa tenho dois gatos, cinco plantas e dez livros. Há duas janelas grandes e três cadeiras. Também tem dois violões: são do meu pai." },
     3: { t: "Describí tu barrio en Río: dónde están las cosas (la playa, el metro, la panadería) y dónde está la gente.", min: 20,
          use: [["contracoes", 4, "4 contracciones (no, na, do, da, ao, pelo…)"], ["estar", 2, "2 formas de estar"]],
          model: "O meu apartamento é em Botafogo, perto da praia. A estação do metrô está no fim da rua e a padaria está na esquina. O mercado é ao lado do banco. Os meus amigos estão na Lapa hoje." },
@@ -95,7 +95,7 @@
     25: { t: "Describí tu barrio: la calle donde vivís, la gente con la que vivís, lo que más te gusta.", min: 40,
           use: [["relativos", 4, "4 relativos (que, quem, onde, cujo, o que…)"]],
           model: "Moro num bairro de que eu gosto muito: Santa Teresa. A rua onde moro tem um bonde amarelo que passa o dia inteiro. A vizinha com quem divido o apartamento é uma artista cujos quadros estão num ateliê da Lapa. O que eu mais adoro é a vista da baía." },
-    27: { t: "Vas a mudarte a Río: contá qué vas a hacer cuando llegues, si consigues trabajo, apenas puedas. Incluí un lugar histórico de la ciudad.", min: 45,
+    27: { t: "Vas a mudarte a Río: contá qué vas a hacer cuando llegues, si conseguís trabajo, apenas puedas. Incluí un lugar histórico de la ciudad.", min: 45,
           use: [["futSubj", 4, "4 verbos en futuro do subjuntivo (quando eu for, se você quiser…)"]],
           model: "Quando eu me mudar para o Rio, vou morar no Centro. Se eu conseguir o emprego, vou visitar o Paço Imperial, onde o príncipe regente dom João despachava depois que a corte portuguesa chegou, em 1808. Assim que eu puder, vou à Biblioteca Nacional. Se você quiser, vamos juntos." },
     28: { t: "¿A qué momento de la historia de Brasil viajarías si pudieras? Imaginá qué harías y a quién conocerías.", min: 45,
@@ -109,7 +109,7 @@
           model: "Se o príncipe Pedro não tivesse proclamado a Independência em 7 de setembro de 1822, talvez o Brasil tivesse continuado ligado a Portugal por mais tempo. Na minha vida também foi assim: se eu não tivesse estudado português, não teria lido Machado de Assis no original e não teria conhecido os meus melhores amigos." },
     31: { t: "Contá lo que te dijo alguien en una charla o entrevista: qué te contó, qué te preguntó, qué le respondiste.", min: 50,
           use: [["indireto", 4, "4 verbos de decir con que, se o para (disse que…, perguntou se…)"]],
-          model: "Na palestra, o historiador português disse que o 25 de Abril de 1974 tinha começado com uma canção no rádio: Grândola, Vila Morena, de Zeca Afonso. Explicou que os militares derrubaram o Estado Novo quase sem violência. Perguntei se os cravos eram só um símbolo, e ele respondeu que uma mulher tinha distribuído cravos aos soldados. No fim, pediu que nós lêssemos Sophia de Mello Breyner." },
+          model: "Na palestra, o historiador português disse que o 25 de Abril de 1974 tinha começado com canções no rádio: a senha final tinha sido Grândola, Vila Morena, de Zeca Afonso. Explicou que os militares derrubaram o Estado Novo quase sem violência. Perguntei se os cravos eram só um símbolo, e ele respondeu que uma mulher tinha distribuído cravos aos soldados. No fim, pediu que nós lêssemos Sophia de Mello Breyner." },
     32: { t: "Escribí los carteles y avisos de una calle de Río: qué se alquila, qué se vende, qué se busca, qué no se permite.", min: 30,
           use: [["se", 4, "4 construcciones con se (aluga-se, vendem-se, precisa-se de…)"]],
           model: "Aluga-se apartamento de dois quartos em Botafogo. Vendem-se bicicletas usadas na loja da esquina. Precisa-se de garçons para o quiosque do calçadão. Aceitam-se cartões e Pix. Aqui não se permite fumar." },
@@ -882,6 +882,12 @@
           var hes = U.HETERO_ES && (U.HETERO_ES[n] || U.HETERO_ES[n.replace(/s$/, "")]);
           push(i, 2, "genero", it(n) + " es " + (gn.g === "m" ? "masculino" : "femenino") + ": " + it(shown + " " + n) + (hes ? " (en español, " + hes + ")." : "."));
         }
+      }
+
+      // dois / duas, um / uma con el género del sustantivo (duas poltronas, dois cafés)
+      if (/^(dois|duas)$/.test(w) && ni === i + 1 && !tk[ni].cap) {
+        var gnD = nounGN(n);
+        if (gnD && gnD.n === "p" && !COMMON_G.test(n) && (gnD.g === "f") !== (w === "duas")) push(i, 1, "genero", it(n) + " es " + (gnD.g === "f" ? "femenino" : "masculino") + ": " + it((gnD.g === "f" ? "duas " : "dois ") + n) + ".");
       }
 
       /* 5. muito */

@@ -939,6 +939,15 @@
         explain: it(g) + " es el infinitivo; conjugado para esta persona queda " + it(e) + (fe0 ? " (" + TENSE_ES[fe0.tense] + ")" : "") + "." };
     }
 
+    // 14b. El mismo adjetivo en otro género o número (alemão / alemã); dois / duas
+    if (DATA.adj[g] && DATA.adj[g] === DATA.adj[e]) return agreementRule(g, e, ctx);
+    if (/^(dois|duas|um|uma)$/.test(g) && /^(dois|duas|um|uma)$/.test(e)) {
+      var gnN = nounGender(next);
+      return { cat: "concordancia", slip: false,
+        hint: "El número concuerda en género con lo que cuenta. ¿De qué género es la palabra que sigue?",
+        explain: "*Um / uma* y *dois / duas* concuerdan con el sustantivo: " + it(e + " " + next) + (gnN ? " (" + next + " es " + (gnN === "m" ? "masculino" : "femenino") + ")" : "") + ". Lo mismo con las centenas: duzentas pessoas." };
+    }
+
     // 15. Dos palabras portuguesas que se confunden (vez / tempo, mas / mais)
     var lc = lexConfusion(g, e);
     if (lc) return { cat: "lexico", slip: false,
@@ -946,14 +955,15 @@
       explain: lc + " Acá: " + it(e) + "." };
 
     // 16. Falsos amigos
-    var fa = DATA.falsi[g] || FALSOS[g];
+    var fa = DATA.falsi[g] || FALSOS[g] || (/s$/.test(g) && (DATA.falsi[g.slice(0, -1)] || FALSOS[g.slice(0, -1)]));
     if (fa && g !== e && fa[0]) return { cat: "falso_amigo", slip: false,
       hint: it(g) + " existe en portugués, pero no significa lo que creés.",
       explain: it(g) + " en portugués significa «" + fa[0] + "». Acá va " + it(e) + "." + (fa[2] ? " " + fa[2] : "") };
 
     // 17. Palabra española que el diccionario hace corresponder a la esperada
-    var bigram = ctx.g && ctx.gi > 0 ? (ES_BIGRAM[deaccent(ctx.g[ctx.gi - 1] + " " + g)] || DATA.esPt[deaccent(ctx.g[ctx.gi - 1] + " " + g)]) : null;
-    var fwd = ctx.g && ctx.g[ctx.gi + 1] ? (ES_BIGRAM[deaccent(g + " " + ctx.g[ctx.gi + 1])] || DATA.esPt[deaccent(g + " " + ctx.g[ctx.gi + 1])]) : null;
+    var ptG = isPortuguese(g);
+    var bigram = ctx.g && ctx.gi > 0 && !ptG ? (ES_BIGRAM[deaccent(ctx.g[ctx.gi - 1] + " " + g)] || DATA.esPt[deaccent(ctx.g[ctx.gi - 1] + " " + g)]) : null;
+    var fwd = ctx.g && ctx.g[ctx.gi + 1] && !ptG ? (ES_BIGRAM[deaccent(g + " " + ctx.g[ctx.gi + 1])] || DATA.esPt[deaccent(g + " " + ctx.g[ctx.gi + 1])]) : null;
     var direct = spanishWord(g);
     var tr = [bigram, fwd].filter(function (x) {
       return x && String(x[0]).split(/\s*\/\s*/).some(function (w) { return w === e || w.split(" ").indexOf(e) >= 0; });
@@ -1058,10 +1068,13 @@
       hint: it(g) + " es español. ¿Cómo se dice «muy» y «mucho» en portugués?",
       explain: "En portugués una sola palabra hace de «muy» y de «mucho»: *muito*. " +
         (e === "muito" ? "Delante de un adjetivo o un adverbio no cambia: " + it("muito " + next) + "." : "Delante de un sustantivo concuerda: " + it(e + " " + next) + ".") };
-    if (/^(muito|muita|muitos|muitas)$/.test(g) && /^(muito|muita|muitos|muitas)$/.test(e) && g !== e) return { cat: "muito", slip: false,
-      hint: e === "muito" ? "Delante de un adjetivo, ¿*muito* cambia?" : "Delante de un sustantivo, *muito* concuerda.",
-      explain: e === "muito" ? "Delante de adjetivo o adverbio *muito* es invariable (= muy): " + it("muito " + next) + " (ela é muito bonita, eles falam muito bem)."
-        : "Delante de sustantivo *muito* concuerda (= mucho): " + it(e + " " + next) + " (muita gente, muitos amigos, muitas vezes)." };
+    if (/^(muito|muita|muitos|muitas)$/.test(g) && /^(muito|muita|muitos|muitas)$/.test(e) && g !== e) {
+      var nounNext = !!(DATA.nouns[next] || DATA.nounsByPlural[next] || HETERO[next]) || !(DATA.adj[next] || /mente$/.test(next) || /^(bem|mal|pouco|mais|menos|cedo|tarde|longe|perto)$/.test(next));
+      return { cat: "muito", slip: false,
+        hint: nounNext ? "Mirá la palabra que sigue: ¿de qué género y número es?" : "Delante de un adjetivo o un adverbio, ¿esa palabra cambia?",
+        explain: nounNext ? "Delante de sustantivo *muito* concuerda (= mucho): " + it(e + " " + next) + (HETERO_ES[next] ? " (" + next + " es " + (HETERO[next] === "m" ? "masculino" : "femenino") + " en portugués; en español, " + HETERO_ES[next] + ")" : "") + ". Muita gente, muitos amigos, muitas vezes."
+          : "Delante de adjetivo o adverbio *muito* es invariable (= muy): " + it("muito " + next) + " (ela é muito bonita, eles falam muito bem)." };
+    }
     if (/^(más)$/.test(g) && e === "mais") return { cat: "espanol", slip: false,
       hint: "Revisá la palabra marcada: en portugués «más» se escribe distinto.",
       explain: "«Más» es *mais*; *mas* sin i es «pero»." };
@@ -1094,6 +1107,9 @@
       hint: "Después de una preposición el pronombre tiene otra forma.",
       explain: "Después de preposición va *mim*: " + it((prev || "para") + " mim") + " (para mim, sem mim, de mim). Con *com*: *comigo*." +
         (g === "eu" ? " *Para eu* solo va delante de un infinitivo del que *eu* es sujeto (para eu fazer)." : "") };
+    if (g === "mim" && e === "eu" && prev === "que") return { cat: "pronome", slip: false,
+      hint: "En la comparación, el pronombre es el del sujeto.",
+      explain: "Después de *(do) que* en una comparación va *eu*: mais velha do que " + it("eu") + " (como en español «que yo»)." };
     if (g === "mim" && e === "eu" && isInfinitive(next)) return { cat: "pronome", slip: false,
       hint: "Mirá lo que viene después: ¿quién hace esa acción?",
       explain: "Si el pronombre es el sujeto del infinitivo va *eu*: " + it("para eu " + next) + " (es «para que yo…»). *Para mim* va sin verbo detrás: isso é para mim." };
@@ -1294,6 +1310,7 @@
     });
     var subjP = subjectPerson(ctx);
     if (subjP != null) fe = fe.slice().sort(function (a, b) { return (b.p === subjP ? 1 : 0) - (a.p === subjP ? 1 : 0); });
+    else fe = fe.slice().sort(function (a, b) { return (b.p === 2 ? 1 : 0) - (a.p === 2 ? 1 : 0); });
     var lemE = fe[0].lemma;
     var lemG = fg.length ? fg[0].lemma : null;
 
@@ -1614,6 +1631,13 @@
       if (lemPrev.indexOf("gostar") >= 0 || (ctx.g && /^(gosto|gosta|gostam|gostamos|gostei|gostou|gostava)$/.test(prev))) return { cat: "gostar", slip: false,
         hint: "*gostar* nunca va solo: ¿qué le falta?",
         explain: "*Gostar* lleva siempre *de* (con artículo, *do, da, dos, das*): eu gosto " + it(w + " " + next) + ", ela gosta de dançar." };
+      if (/^(que|quem|qual|quais|onde)$/.test(next)) {
+        var after = ctx.e.slice(ctx.ei + 2, ctx.ei + 6), baseR = prepInfo(w).base;
+        var vr = after.map(verbLemmas).filter(function (l) { return l.length; })[0] || [];
+        if (vr.some(function (l) { return (REGENCIA[l] && REGENCIA[l][0] === baseR) || (l === "falar" && /^(com|de)$/.test(baseR)); })) return { cat: "regencia", slip: false,
+          hint: "El verbo de la relativa lleva preposición: ¿dónde va?",
+          explain: "La preposición que pide el verbo va delante del relativo: " + it(w + " " + next) + " (a pessoa com quem falei, o bairro em que moro, o livro de que gosto)." };
+      }
       for (var i = 0; i < lemPrev.length; i++) {
         var R = REGENCIA[lemPrev[i]], base = prepInfo(w).base;
         if (R && R[0] === base) return { cat: "regencia", slip: false,
@@ -1796,7 +1820,7 @@
   var GENDER_FIXERS = ["ele", "ela", "eles", "elas", "o", "a", "os", "as", "um", "uma", "lo", "la", "seu", "sua"];
   function genderFree(g, e, target) {
     if (g.length !== e.length) return false;
-    var named = names(String(target).replace(/^\s*\S+/, ""));
+    var named = names(String(target));
     var isNoun = function (w) { return !!(w && (DATA.nouns[w] || DATA.nounsByPlural[w] || HETERO[w] || named.indexOf(w) >= 0)); };
     var diff = 0;
     for (var i = 0; i < e.length; i++) {
@@ -1953,7 +1977,7 @@
   // dão-o (dão-no), and enclisis on a participle or a future.
   function badEnclForm(g) {
     for (var i = 0; i < g.length; i++) {
-      var m = /^([a-zà-ÿ]+)-(o|a|os|as)$/.exec(g[i]);
+      var m = /^([a-zà-ÿ]+)-(o|a|os|as)$/.exec(g[i]) || (/^([a-zà-ÿ]+[rsz])-l(o|a|os|as)$/.exec(g[i]));
       if (m && /[rsz]$/.test(m[1])) {
         var v = m[1], fix = v.replace(/ar$/, "á").replace(/er$/, "ê").replace(/ir$/, "i").replace(/or$/, "ô").replace(/(s|z)$/, "");
         if (/^(fiz|fez|diz|faz|traz|quis)$/.test(v)) fix = v.slice(0, -1).replace(/e$/, "ê").replace(/a$/, "á");
@@ -2101,6 +2125,16 @@
     if (g.join(" ") === e.join(" ")) { res.verdict = "giusto"; return res; }
     var nm = names(target).concat(ctx.names || []);
     for (var lx = 0; lx < list.length; lx++) if (g.join(" ") === tokens(list[lx]).join(" ")) { res.verdict = "giusto"; return res; }
+    // An enclitic form that does not exist (comprar-o, fiz-o, direi-lhe).
+    var bf0 = badEnclForm(g);
+    if (bf0 && !list.some(function (v) { return tokens(v).indexOf(g[bf0.i]) >= 0; })) {
+      res.cat = bf0.cat; res.label = LABEL[bf0.cat]; res.verdict = "sbagliato"; res.all = [bf0.cat];
+      res.hint = bf0.cat === "pronome" ? "Revisá la forma del pronombre pegado al verbo." : "Revisá dónde va el pronombre.";
+      res.explain = bf0.why;
+      if (res.given[bf0.i]) res.given[bf0.i].bad = true;
+      res.fixed.forEach(function (w) { if (w.w.indexOf("-") > 0 || w.w === g[bf0.i].split("-")[1]) w.fix = true; });
+      return res;
+    }
     // Free variants of Brazilian Portuguese.
     var formalHit = null;
     for (var li = 0; li < list.length; li++) {
@@ -2192,6 +2226,25 @@
     }
     if (found.length && g.join(" ") === e.join(" ")) return finish(res, found);
     if (found.length && canon(g, nm) === canon(e, nm)) return finish(res, found);
+
+    // porque / por que / por quê
+    for (var pq = 0; pq < g.length; pq++) {
+      if (g[pq] === "porque" && e.indexOf("por") >= 0 && e[e.indexOf("por") + 1] && /^(que|quê)$/.test(e[e.indexOf("por") + 1]) && e.indexOf("porque") < 0) {
+        found.push({ d: { cat: "ortografia", slip: false, hint: "¿Pregunta o respuesta? Se escribe distinto.",
+          explain: "En la pregunta, separado: *por que* (por que você não vem?); al final, *por quê*; en la respuesta, junto: *porque*." }, gi: pq, ei: e.indexOf("por") });
+        g = g.slice(0, pq).concat(["por", e[e.indexOf("por") + 1]], g.slice(pq + 1));
+        res.given.splice(pq + 1, 0, { w: e[e.indexOf("por") + 1] });
+        break;
+      }
+      if (g[pq] === "por" && /^(que|quê)$/.test(g[pq + 1] || "") && e.indexOf("porque") >= 0 && e.indexOf("por") < 0) {
+        found.push({ d: { cat: "ortografia", slip: false, hint: "¿Pregunta o respuesta? Se escribe distinto.",
+          explain: "En la respuesta (la causa) va junto: *porque*; *por que* separado es para preguntar." }, gi: pq, ei: e.indexOf("porque") });
+        g = g.slice(0, pq).concat(["porque"], g.slice(pq + 2));
+        res.given.splice(pq + 1, 1);
+        break;
+      }
+    }
+    if (found.length && g.join(" ") === e.join(" ")) return finish(res, found);
 
     // Enclisis after an attractor, with everything else right.
     var be2 = badEnclisis(g);
@@ -2355,8 +2408,18 @@
     ["pronome", "pronombres: para mim, comigo, eu o vi / vi ele"]
   ];
 
+  /* Groups of categories for the app: what is only vocabulary, what is a
+     slip, what says little about grammar. */
+  var GROUPS = {
+    lexical: dict({ lexico: 1, espanol: 1, falso_amigo: 1, vuoto: 1 }),
+    slips: dict({ tilde: 1, tipeo: 1 }),
+    generic: dict({ lexico: 1, faltante: 1, sobrante: 1, tipeo: 1, vuoto: 1 }),
+    unrecorded: dict({ tipeo: 1, vuoto: 1 })
+  };
+
   var api = {
     PORTUNOL: PORTUNOL,
+    GROUPS: GROUPS,
     tokens: tokens,
     align: align,
     diagnose: diagnose,

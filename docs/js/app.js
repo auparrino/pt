@@ -2078,8 +2078,12 @@
     return { given: built, verdict: ok ? Engine.VERDICT.RIGHT : Engine.VERDICT.WRONG };
   }
 
-  var GENERIC = { lessico: 1, parola_mancante: 1, parola_in_piu: 1, refuso: 1, vuoto: 1 };
-  var LEXICAL = { lessico: 1, parola_spagnola: 1, falso_amico: 1, vuoto: 1 };
+  // Category groups come from the diagnosis of the language (its ids).
+  var GROUPS = (window.Diagnosi && Diagnosi.GROUPS) || {};
+  var GENERIC = GROUPS.generic || { lexico: 1, faltante: 1, sobrante: 1, tipeo: 1, vuoto: 1 };
+  var LEXICAL = GROUPS.lexical || { lexico: 1, espanol: 1, falso_amigo: 1, vuoto: 1 };
+  var SLIPS = GROUPS.slips || { tilde: 1, tipeo: 1 };
+  var UNRECORDED = GROUPS.unrecorded || { tipeo: 1, vuoto: 1 };
 
   // Multiple choice: say why *that* option is wrong (Shute 2008).
   function answer(given) {
@@ -2161,7 +2165,7 @@
                 : d.verdict === "sbagliato" && d.cat ? "sbagliato"
                 : v1 === "quasi" || d.verdict === "quasi" ? "quasi" : "sbagliato";
     // Phrase drills stay lenient on accents only.
-    if (it.frase && verdict === "sbagliato" && d.all && d.all.every(function (c) { return c === "accento" || c === "refuso"; })) {
+    if (it.frase && verdict === "sbagliato" && d.all && d.all.every(function (c) { return SLIPS[c]; })) {
       verdict = "quasi";
     }
     if (verdict === "giusto") {
@@ -2238,7 +2242,7 @@
   }
 
   function recordError(d, given) {
-    if (!d || !d.cat || { refuso: 1, soggetto: 1, vuoto: 1 }[d.cat]) return;
+    if (!d || !d.cat || UNRECORDED[d.cat]) return;
     if (!state.errs) state.errs = {};
     if (!state.errLog) state.errLog = [];
     var e = state.errs[d.cat] || (state.errs[d.cat] = { n: 0, fixed: 0, last: 0 });
@@ -3154,18 +3158,18 @@
      Almeida Filho): las interferencias que se fosilizan, con el estado de
      cada una.  Las claves son categorías del diagnóstico (diagnosi.js); si
      el diagnóstico trae su propia lista (Diagnosi.PORTUNOL), manda esa. */
-  var PORTUNOL = [["preposizione_articolata", "contracciones: no, na, do, pelo (nunca «em o»)"],
-                  ["genere", "género distinto: o leite, a viagem, o nariz"],
-                  ["parola_spagnola", "castellano metido: muy, más, pero, yo"],
-                  ["preposizione", "regencia: gostar de, pensar em, sonhar com"],
-                  ["accento", "tildes: avó / avô, é / e, você"],
+  var PORTUNOL = [["contraccion", "contracciones: no, na, do, pelo (nunca «em o»)"],
+                  ["genero", "género distinto: o leite, a viagem, o nariz"],
+                  ["espanol", "castellano metido: muy, más, pero, yo"],
+                  ["regencia", "regencia: gostar de, pensar em, sonhar com"],
+                  ["tilde", "tildes: avó / avô, é / e, você"],
                   ["crase", "crase: vou à praia, às duas"],
-                  ["articolo_possessivo", "artículo con posesivo y nombre: a minha casa, o João"],
-                  ["posizione_pronome", "pronombres: me dá, para mim, conosco"],
-                  ["plurale", "plurales: limões, animais, homens"],
-                  ["tempo_verbale", "«he comido» es comi (tenho comido = vengo comiendo)"],
-                  ["congiuntivo", "futuro do subjuntivo: quando eu for, se você quiser"],
-                  ["falso_amico", "falsos amigos: esquisito, polvo, borracha, apelido"]];
+                  ["articulo", "artículo con posesivo y nombre: a minha casa, o João"],
+                  ["pronome", "pronombres: me dá, para mim, conosco"],
+                  ["plural", "plurales: limões, animais, homens"],
+                  ["perfeito_composto", "«he comido» es comi (tenho comido = vengo comiendo)"],
+                  ["futuro_subj", "futuro do subjuntivo: quando eu for, se você quiser"],
+                  ["falso_amigo", "falsos amigos: esquisito, polvo, borracha, apelido"]];
   /* The AI corrector: the key, and the corrections it disputed (so the
      learner can pass them on in one go instead of explaining each). */
   function aiCard() {
@@ -4711,7 +4715,7 @@
           // Tiles are all Portuguese words handed over: a wrong pick is order,
           // a tile too many or too few, or the wrong form; never a «false
           // friend» or a «Spanish word».
-          var TILE_SKIP = { falso_amico: 1, parola_spagnola: 1, lessico: 1 };
+          var TILE_SKIP = LEXICAL;
           if (d.cat && !GENERIC[d.cat] && !TILE_SKIP[d.cat]) { recordError(d, r.given); extra = diagHtml(d, true); }
         }
         settle(r.verdict, r.given, extra);

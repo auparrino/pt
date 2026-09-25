@@ -67,8 +67,8 @@
  },
  {
   "week": 2,
-  "text": "Na minha casa tem dois quartos, uma sala e dois banheiros. Tenho três gatos e muitos libros. Também tenho dois computadors e quatro violãos. Na cozinha há cinco cadeira.",
-  "corrected": "Na minha casa tem dois quartos, uma sala e dois banheiros. Tenho três gatos e muitos livros. Também tenho dois computadores e quatro violões. Na cozinha há cinco cadeiras.",
+  "text": "Na minha casa tem dois quartos, uma sala e dois banheiros. Tenho três gatos e muitos libros. Também tenho dois computadors e quatro violãos. Na cozinha há cinco cadeira. Na geladeira tem queijo, frutas e a leite da semana.",
+  "corrected": "Na minha casa tem dois quartos, uma sala e dois banheiros. Tenho três gatos e muitos livros. Também tenho dois computadores e quatro violões. Na cozinha há cinco cadeiras. Na geladeira tem queijo, frutas e o leite da semana.",
   "errors": [
    {
     "wrong": "libros",
@@ -89,6 +89,11 @@
     "wrong": "cinco cadeira",
     "right": "cinco cadeiras",
     "cat": "plural"
+   },
+   {
+    "wrong": "a leite",
+    "right": "o leite",
+    "cat": "genero"
    }
   ]
  },
@@ -703,8 +708,8 @@
  },
  {
   "week": 11,
-  "text": "Ontem eu fazi um bolo para a minha mãe. Depois fui a o mercado e comprei frutas. De noite, teve uma festa na casa da Bia e eu dancé até tarde.",
-  "corrected": "Ontem eu fiz um bolo para a minha mãe. Depois fui ao mercado e comprei frutas. De noite, teve uma festa na casa da Bia e eu dancei até tarde.",
+  "text": "Ontem eu fazi um bolo para a minha mãe. Depois fui a o mercado e comprei frutas. De noite, teve uma festa na casa da Bia e eu dancé até tarde. O viagem de volta foi tranquila.",
+  "corrected": "Ontem eu fiz um bolo para a minha mãe. Depois fui ao mercado e comprei frutas. De noite, teve uma festa na casa da Bia e eu dancei até tarde. A viagem de volta foi tranquila.",
   "errors": [
    {
     "wrong": "fazi",
@@ -720,6 +725,11 @@
     "wrong": "dancé",
     "right": "dancei",
     "cat": "espanol"
+   },
+   {
+    "wrong": "O viagem",
+    "right": "A viagem",
+    "cat": "genero"
    }
   ]
  },
@@ -742,8 +752,8 @@
  },
  {
   "week": 12,
-  "text": "Eu me levanto às sete, me ducho e me visto. Depois tomo café e saio. Os domingos eu me acordo tarde. Conselhos para você: beba muita água e use protetor solar.",
-  "corrected": "Eu me levanto às sete, tomo banho e me visto. Depois tomo café e saio. Aos domingos eu acordo tarde. Conselhos para você: beba muita água e use protetor solar.",
+  "text": "Eu me levanto às sete, me ducho e me visto. Depois tomo café e saio. Os domingos eu me acordo tarde. Conselhos para você: beba muita água e use protetor solar. Para o dor de cabeça, tome um chá.",
+  "corrected": "Eu me levanto às sete, tomo banho e me visto. Depois tomo café e saio. Aos domingos eu acordo tarde. Conselhos para você: beba muita água e use protetor solar. Para a dor de cabeça, tome um chá.",
   "errors": [
    {
     "wrong": "me ducho",
@@ -759,6 +769,11 @@
     "wrong": "me acordo",
     "right": "acordo",
     "cat": "pronome"
+   },
+   {
+    "wrong": "o dor",
+    "right": "a dor",
+    "cat": "genero"
    }
   ]
  },
@@ -1185,13 +1200,18 @@
  },
  {
   "week": 21,
-  "text": "Ultimamente tenho trabalhado muito e tenho dormido pouco. Ontem tenho ido ao médico. Quando cheguei ao consultório, o médico já tinha saído.",
-  "corrected": "Ultimamente tenho trabalhado muito e tenho dormido pouco. Ontem fui ao médico. Quando cheguei ao consultório, o médico já tinha saído.",
+  "text": "Ultimamente tenho trabalhado muito e tenho dormido pouco. Ontem tenho ido ao médico. Quando cheguei ao consultório, o médico já tinha saído. Então chamei a meu irmão para me buscar.",
+  "corrected": "Ultimamente tenho trabalhado muito e tenho dormido pouco. Ontem fui ao médico. Quando cheguei ao consultório, o médico já tinha saído. Então chamei meu irmão para me buscar.",
   "errors": [
    {
     "wrong": "tenho ido",
     "right": "fui",
     "cat": "perfeito_composto"
+   },
+   {
+    "wrong": "chamei a meu irmão",
+    "right": "chamei meu irmão",
+    "cat": "a_personal"
    }
   ]
  },
@@ -1714,8 +1734,8 @@
  },
  {
   "week": 31,
-  "text": "Na palestra, o historiador disse que o 25 de Abril tinha começado com uma canção no rádio. Ele explicou que os militares derrubaram o Estado Novo. Eu perguntei que se os cravos eram só um símbolo. No fim, disse que amanhã ia falar de Salazar.",
-  "corrected": "Na palestra, o historiador disse que o 25 de Abril tinha começado com uma canção no rádio. Ele explicou que os militares derrubaram o Estado Novo. Eu perguntei se os cravos eram só um símbolo. No fim, disse que no dia seguinte ia falar de Salazar.",
+  "text": "Na palestra, o historiador disse que o sinal do 25 de Abril tinha sido uma canção no rádio. Ele explicou que os militares derrubaram o Estado Novo. Eu perguntei que se os cravos eram só um símbolo. No fim, disse que amanhã ia falar de Salazar.",
+  "corrected": "Na palestra, o historiador disse que o sinal do 25 de Abril tinha sido uma canção no rádio. Ele explicou que os militares derrubaram o Estado Novo. Eu perguntei se os cravos eram só um símbolo. No fim, disse que no dia seguinte ia falar de Salazar.",
   "errors": [
    {
     "wrong": "perguntei que se",
@@ -2168,13 +2188,18 @@
  },
  {
   "week": 38,
-  "text": "Oi, Bia! Tá fazendo o que? Vamo pra praia? A gente se vê no posto nove às quatro, tá? Trae o protetor, que eu esqueci o meu.",
-  "corrected": "Oi, Bia! Tá fazendo o quê? Vamo pra praia? A gente se vê no posto nove às quatro, tá? Traz o protetor, que eu esqueci o meu.",
+  "text": "Oi, Bia! Tá fazendo o que? Recebi o mensagem da Carla. Vamo pra praia? A gente se vê no posto nove às quatro, tá? Trae o protetor, que eu esqueci o meu.",
+  "corrected": "Oi, Bia! Tá fazendo o quê? Recebi a mensagem da Carla. Vamo pra praia? A gente se vê no posto nove às quatro, tá? Traz o protetor, que eu esqueci o meu.",
   "errors": [
    {
     "wrong": "o que?",
     "right": "o quê?",
     "cat": "tilde"
+   },
+   {
+    "wrong": "o mensagem",
+    "right": "a mensagem",
+    "cat": "genero"
    },
    {
     "wrong": "Trae",
@@ -2197,13 +2222,18 @@
  },
  {
   "week": 40,
-  "text": "A promulgação da Constituição de 1988 representou o fin da transição democrática. O texto garantiu a ampliação de os direitos sociais e a criação do SUS. Houveram também avanços para os povos indígenas.",
-  "corrected": "A promulgação da Constituição de 1988 representou o fim da transição democrática. O texto garantiu a ampliação dos direitos sociais e a criação do SUS. Houve também avanços para os povos indígenas.",
+  "text": "A promulgação da Constituição de 1988 representou o fin da transição democrática e o origem de uma nova ordem. O texto garantiu a ampliação de os direitos sociais e a criação do SUS. Houveram também avanços para os povos indígenas.",
+  "corrected": "A promulgação da Constituição de 1988 representou o fim da transição democrática e a origem de uma nova ordem. O texto garantiu a ampliação dos direitos sociais e a criação do SUS. Houve também avanços para os povos indígenas.",
   "errors": [
    {
     "wrong": "o fin",
     "right": "o fim",
     "cat": "nasal"
+   },
+   {
+    "wrong": "o origem",
+    "right": "a origem",
+    "cat": "genero"
    },
    {
     "wrong": "de os direitos",
@@ -2477,8 +2507,8 @@
  },
  {
   "week": 45,
-  "text": "Quando cheguei ao Rio, pedi um vaso de água no restaurante. A comida estava esquisita, muito gostosa! Depois, fiquei embaraçada porque não entendi a piada.",
-  "corrected": "Quando cheguei ao Rio, pedi um copo de água no restaurante. A comida estava deliciosa, muito gostosa! Depois, fiquei embaraçada porque não entendi a piada.",
+  "text": "Quando cheguei ao Rio, pedi um vaso de água no restaurante. A comida estava esquisita, muito gostosa! Depois, fiquei embaraçada porque não entendi a piada. Ajudei a uma senhora a subir a ladeira e ela me deu um mel da roça.",
+  "corrected": "Quando cheguei ao Rio, pedi um copo de água no restaurante. A comida estava deliciosa, muito gostosa! Depois, fiquei embaraçada porque não entendi a piada. Ajudei a uma senhora a subir a ladeira e ela me deu um mel da roça.",
   "errors": [
    {
     "wrong": "vaso de água",
@@ -2533,13 +2563,18 @@
  },
  {
   "week": 46,
-  "text": "Em Lisboa peguei o autocarro para Belém e comí um pastel de nata. No pequeno-almoço pedi uma bica. Os portugueses usam muito o tu y dizem estou a comer.",
-  "corrected": "Em Lisboa peguei o autocarro para Belém e comi um pastel de nata. No pequeno-almoço pedi uma bica. Os portugueses usam muito o tu e dizem estou a comer.",
+  "text": "Em Lisboa peguei o autocarro para Belém e comí um pastel de nata. O paisagem de Sintra é linda. No pequeno-almoço pedi uma bica. Os portugueses usam muito o tu y dizem estou a comer.",
+  "corrected": "Em Lisboa peguei o autocarro para Belém e comi um pastel de nata. A paisagem de Sintra é linda. No pequeno-almoço pedi uma bica. Os portugueses usam muito o tu e dizem estou a comer.",
   "errors": [
    {
     "wrong": "comí",
     "right": "comi",
     "cat": "tilde"
+   },
+   {
+    "wrong": "O paisagem",
+    "right": "A paisagem",
+    "cat": "genero"
    },
    {
     "wrong": "y dizem",
