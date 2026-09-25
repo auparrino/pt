@@ -1,11 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#0e7c5a"/>
-  <rect x="170" width="172" height="512" fill="#f4f1ec"/>
-  <path d="M342 0h58a112 112 0 0 1 112 112v288a112 112 0 0 1-112 112h-58z" fill="#c8362f"/>
-  <g transform="translate(256 250)">
-    <path d="M-150 -95a40 40 0 0 1 40-40h220a40 40 0 0 1 40 40v130a40 40 0 0 1-40 40h-120l-70 55v-55h-30a40 40 0 0 1-40-40z"
-          fill="#16181d" opacity=".92"/>
-    <text x="0" y="12" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-          font-weight="700" font-size="120" fill="#ffffff">Ciao</text>
+  <title>Rumo C1: el Pão de Açúcar al atardecer y las ondas del calçadão</title>
+  <defs><linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc861"/><stop offset=".5" stop-color="#ff8a55"/><stop offset="1" stop-color="#ee5a3f"/></linearGradient><linearGradient id="mar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fb5b0"/><stop offset="1" stop-color="#0a7f86"/></linearGradient><clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath></defs>
+  <g clip-path="url(#r)">
+  <rect width="512" height="512" fill="url(#ceu)"/>
+  <circle cx="338" cy="206" r="74" fill="#ffe28f"/>
+  <circle cx="338" cy="206" r="98" fill="#ffe28f" opacity=".22"/>
+  <path d="M-10 372C30 360 62 334 92 312c26-19 44-10 62 10 14 16 28 22 44 12C214 246 246 166 296 150c52-16 80 70 94 150 7 38 40 60 132 64V420H-10z" fill="#0b3b4a"/>
+  <path d="M150 308 296 156" stroke="#0b3b4a" stroke-width="3" fill="none"/>
+  <rect x="214" y="224" width="12" height="9" rx="2" fill="#0b3b4a"/>
+  <rect y="372" width="512" height="70" fill="url(#mar)"/>
+  <path d="M0 392c40-8 80 8 128 0s88-8 128 0 88 8 128 0 88-8 128 0" stroke="#fff" stroke-opacity=".45" stroke-width="5" fill="none"/>
+  <path d="M40 418c30-6 60 6 96 0m120 2c30-6 60 6 96 0" stroke="#fff" stroke-opacity=".3" stroke-width="4" fill="none"/>
+  <rect y="436" width="512" height="80" fill="#f7f2e8"/>
+  <path d="M0 468c32-30 96-30 128 0s96 30 128 0 96-30 128 0 96 30 128 0V520H0z" fill="#151a1c"/>
+  <path d="M0 500c32-22 96-22 128 0s96 22 128 0 96-22 128 0 96 22 128 0V520H0z" fill="#f7f2e8"/>
   </g>
 </svg>

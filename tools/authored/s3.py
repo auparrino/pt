@@ -1283,3 +1283,297 @@ cb(1, "Choveu três dias. Houve enchente. (por isso)", "Choveu três dias, por i
 cb(2, "Chove muito. Falta água. (embora)", "Embora chova muito, falta água.",
    "embora + subjuntivo: chove → chova.",
    alt=["Falta água, embora chova muito.", "Embora chova muito falta água."])
+
+
+# ============================================================================
+# Semana 35 — Regência verbal
+# partes: 0 assistir a, obedecer a, preferir, namorar · 1 sin preposición;
+#         chegar e ir · 2 lembrar, esquecer y el relativo
+# ============================================================================
+wk(35, "B2", "regência verbal")
+
+ch(0, "Assistimos ___ jogo no Maracanã.", ["ao", "o", "no"], "ao",
+   "En la norma culta, assistir (ver) pide «a»: assistir ao jogo. En el habla se oye assistir o jogo.",
+   prompt="Elegí la forma de la norma culta.")
+ch(0, "Os motoristas devem obedecer ___ sinais de trânsito.", ["aos", "os", "nos"], "aos",
+   "obedecer a: obedecer aos sinais.")
+ch(0, "Prefiro samba ___ funk.", ["a", "do que", "que"], "a",
+   "preferir X a Y: prefiro samba a funk. «Do que» es calco de «más que».")
+ch(0, "A Bia namora ___ Rafa há dois anos.", ["o", "com o", "ao"], "o",
+   "namorar alguém, sin preposición: namora o Rafa (o = artículo).")
+ch(0, "Ela casou ___ um mineiro.", ["com", "a", "de"], "com",
+   "casar com (o casar-se com), como en español.")
+ch(0, "Sonho ___ morar em Ipanema.", ["em", "com", "de"], "em",
+   "sonhar em + infinitivo (soñar con hacer algo); sonhar com + sustantivo.")
+ch(1, "Ajudei ___ vizinho com a mudança.", ["o", "ao", "para o"], "o",
+   "ajudar lleva objeto directo: ajudei o vizinho. No hay «a» personal.")
+ch(1, "Vou visitar ___ avós em Recife.", ["os meus", "aos meus", "para os meus"], "os meus",
+   "visitar alguém, sin preposición. «Aos meus» es la «a» personal del español.")
+ch(1, "Chegamos ___ Rio de madrugada.", ["ao", "no", "em o"], "ao",
+   "Norma culta: chegar a (ao Rio). En el habla, chegar no Rio. «Em o» siempre se contrae.",
+   prompt="Elegí la forma de la norma culta.")
+ch(1, "Moro ___ Botafogo, perto do metrô.", ["em", "a", "no"], "em",
+   "morar em. Botafogo, Copacabana e Ipanema van sin artículo: em Botafogo.")
+ch(2, "«Ainda Estou Aqui», o filme ___ assisti ontem, ganhou o Oscar.", ["a que", "que", "ao que"], "a que",
+   "La preposición del verbo (assistir a) va delante del relativo: o filme a que assisti. La película de Walter Salles, sobre la dictadura, ganó el Oscar a mejor película internacional en 2025.")
+ch(2, "Eu ___ o novo síndico.", ["simpatizei com", "me simpatizei com", "simpatizei a"], "simpatizei com",
+   "simpatizar com, sin pronombre reflexivo: simpatizei com ele.")
+
+_CP = "Completá con la preposición (contraída con el artículo si hace falta)."
+cl(0, "Assisti ___ uma palestra sobre Paulo Freire.", "a",
+   "assistir a (presenciar). Ante «uma» no hay contracción obligatoria.", prompt=_CP)
+cl(0, "Assistimos ___ desfile das escolas de samba na Sapucaí.", "ao",
+   "assistir a + o desfile = ao desfile.", prompt=_CP)
+cl(0, "Os filhos devem obedecer ___ pais?", "aos",
+   "obedecer a + os pais = aos pais.", prompt=_CP)
+cl(0, "Prefiro cinema ___ teatro.", "ao",
+   "preferir X a Y: a + o teatro = ao teatro.", prompt=_CP)
+cl(0, "Clarice Lispector casou ___ um diplomata e morou anos fora do Brasil.", "com",
+   "casar com. Clarice vivió en Italia, Suiza, Inglaterra y Estados Unidos por el trabajo de su marido.", prompt=_CP)
+cl(1, "Espero ___ ônibus há meia hora.", "o",
+   "esperar lleva objeto directo: espero o ônibus. Lo que falta es el artículo.",
+   prompt="Completá con la palabra que falta (preposición o artículo).")
+cl(1, "Convidei ___ Lucas para o churrasco.", "o",
+   "convidar alguém: sin «a» personal. Delante del nombre, artículo: o Lucas.",
+   prompt="Completá con la palabra que falta (preposición o artículo).")
+cl(1, "Os turistas chegaram ___ aeroporto do Galeão.", "ao",
+   "Norma: chegar a + o = ao. En el habla, no aeroporto.", alt=["no"], prompt=_CP)
+cl(1, "Moro ___ Rua do Catete desde criança.", "na",
+   "morar em + a rua = na rua.", prompt=_CP)
+cl(2, "Não me lembro ___ nome dele.", "do",
+   "lembrar-se de: me lembro do nome. Sin pronombre: não lembro o nome.", prompt=_CP)
+cl(2, "Esqueci-me ___ senha do banco.", "da",
+   "esquecer-se de + a senha = da senha. Sin pronombre: esqueci a senha.", prompt=_CP)
+cl(2, "A cidade ___ que moro é pequena.", "em",
+   "morar em → a cidade em que moro. La preposición va delante del relativo.", prompt=_CP)
+
+trv(0, "Prefiero la playa a la montaña.",
+    "preferir X a Y, sin «más» ni «que».",
+    "Prefiro ", ["praia a montanha", "a praia à montanha", "a praia a montanha"])
+trv(0, "Bia está de novia con Rafa.",
+    "namorar alguém: sin «com».",
+    ["A Bia namora o Rafa", "Bia namora Rafa", "A Bia namora Rafa", "Bia namora o Rafa"])
+trv(0, "Vimos el partido en el Maracaná.",
+    "Norma: assistir ao jogo; habla: assistir o jogo o ver o jogo.",
+    ["Assistimos ao jogo", "Nós assistimos ao jogo", "A gente assistiu ao jogo", "Assistimos o jogo",
+     "Vimos o jogo", "A gente viu o jogo", "A gente assistiu o jogo"], " no Maracanã")
+trv(0, "Soñé con vos.",
+    "sonhar com alguém.",
+    ["Sonhei com você", "Eu sonhei com você", "Sonhei contigo", "Eu sonhei contigo"])
+trv(1, "Ayudé a mi vecino con la mudanza.",
+    "ajudar alguém: sin «a» personal.",
+    ["Ajudei", "Eu ajudei"], " ", ["o meu vizinho", "meu vizinho"], " com a mudança")
+trv(1, "Te espero en la estación.",
+    "esperar alguém: sin preposición.",
+    ["Te espero", "Eu te espero", "Espero você", "Eu espero você", "Espero-te", "Espero por você"], " na estação")
+trv(2, "Me olvidé de la contraseña.",
+    "esquecer algo o esquecer-se de algo (habla: esquecer de).",
+    ["Esqueci a senha", "Esqueci-me da senha", "Me esqueci da senha", "Esqueci da senha", "Eu esqueci a senha",
+     "Eu me esqueci da senha"])
+trv(2, "La persona de la que te hablé es carioca.",
+    "falar de → a pessoa de quem (o da qual) te falei.",
+    "A pessoa ", ["de quem", "da qual", "de que"], " ", ["te falei", "eu te falei", "falei"], " é carioca")
+
+fx(0, "A Bia namora com o Rafa desde o carnaval.", "namora com", "namora",
+   "A Bia namora o Rafa desde o carnaval.", "regencia",
+   "namorar es transitivo directo: namorar alguém. «Namorar com» es regional y la norma lo rechaza.")
+fx(0, "Prefiro mais praia do que montanha.", "mais praia do que", "praia a",
+   "Prefiro praia a montanha.", "regencia",
+   "preferir ya compara: preferir X a Y, sin «mais» ni «do que».")
+fx(1, "Ajudei ao meu vizinho a carregar as caixas.", "ao meu vizinho", "o meu vizinho",
+   "Ajudei o meu vizinho a carregar as caixas.", "a_personal",
+   "En portugués no hay «a» personal: ajudei o meu vizinho.",
+   goodAlt=["meu vizinho"])
+fx(2, "Esqueci-me a senha do cartão.", "Esqueci-me a", "Esqueci-me da",
+   "Esqueci-me da senha do cartão.", "regencia",
+   "Con pronombre, preposición: esqueci-me da senha. Sin pronombre, directo: esqueci a senha.",
+   goodAlt=["Esqueci a"])
+
+_GP35 = "Mirá los tres pares español → portugués y completá el cuarto."
+gd(0, [["hablar con Rafa", "falar com o Rafa"], ["soñar con el mar", "sonhar com o mar"], ["casarse con Bia", "casar com a Bia"]],
+   "estar de novio con Bia → ___", "namorar a Bia", "namorar com a Bia",
+   "Los tres primeros llevan «com» como en español, pero namorar va sin preposición: namorar a Bia (a = artículo).",
+   prompt=_GP35)
+gd(1, [["ir a Río", "ir ao Rio"], ["llegar a Salvador", "chegar a Salvador"], ["volver a Recife", "voltar a Recife"]],
+   "ayudar a Rafa → ___", "ajudar o Rafa", "ajudar ao Rafa",
+   "Con lugares la «a» se conserva, pero ante persona objeto directo no: ajudar o Rafa.",
+   prompt=_GP35)
+gd(1, [["ir a Río", "ir ao Rio"], ["llegar a Salvador", "chegar a Salvador"], ["volver a Recife", "voltar a Recife"]],
+   "visitar a los abuelos → ___", "visitar os avós", "visitar aos avós",
+   "visitar es transitivo directo: visitar os avós. La «a» personal del español no existe en portugués.",
+   prompt=_GP35)
+
+sc(0, ["Assisti ao jogo.", "Assistimos a um show.", "O médico assiste o paciente.",
+       "A enfermeira assiste os doentes.", "Assisti à peça.", "Vamos assistir ao filme."],
+   "¿Cuándo «assistir» lleva «a»?",
+   ["Cuando significa «ver, presenciar»; sin «a» significa «atender, ayudar».",
+    "Siempre lleva «a».",
+    "Solo cuando el objeto es una persona."],
+   "Cuando significa «ver, presenciar»; sin «a» significa «atender, ayudar».",
+   "Regla: assistir a (espectáculo) = ver; assistir alguém = atender. En el habla se dice assistir o jogo, pero en un texto, assistir ao jogo.")
+sc(1, ["Espero o ônibus.", "Ajudei a Ana.", "Visitei meus avós.", "Convidei o Rafa.", "Conheço a Bia.", "Vi o João."],
+   "¿Hay «a» personal en portugués?",
+   ["No: con estos verbos la persona va sin preposición; la «a» que aparece es artículo.",
+    "Sí, igual que en español.",
+    "Solo con nombres propios."],
+   "No: con estos verbos la persona va sin preposición; la «a» que aparece es artículo.",
+   "Regla: esperar, ajudar, visitar, convidar, conhecer, ver + persona sin preposición. En «ajudei a Ana», a es el artículo femenino.")
+
+ty(0, "Escribí la preposición que pide «casar».", "casar ___ alguém", "com",
+   "casar com (o casar-se com).")
+ty(2, "Escribí la preposición que pide «pensar».", "Penso ___ você todo dia.", "em",
+   "pensar em: penso em você.")
+
+cb(2, "Assisti a um filme ontem. O filme era de Glauber Rocha. (a que)", "O filme a que assisti ontem era de Glauber Rocha.",
+   "assistir a → o filme a que assisti. Glauber Rocha fue la figura central del Cinema Novo.",
+   alt=["O filme a que eu assisti ontem era de Glauber Rocha.", "O filme ao qual assisti ontem era de Glauber Rocha."])
+cb(2, "A Bia casou com um rapaz. O rapaz é de Recife. (com quem)", "O rapaz com quem a Bia casou é de Recife.",
+   "casar com → o rapaz com quem casou.",
+   alt=["O rapaz com quem Bia casou é de Recife.", "O rapaz com quem a Bia se casou é de Recife."])
+cb(2, "Moro numa cidade. A cidade é pequena. (em que)", "A cidade em que moro é pequena.",
+   "morar em → a cidade em que moro.",
+   alt=["A cidade em que eu moro é pequena.", "A cidade onde moro é pequena."])
+
+
+# ============================================================================
+# Semana 36 — Crase
+# partes: 0 qué es, truco del masculino, horas · 1 cuándo nunca; lugares ·
+#         2 àquele y locuciones
+# ============================================================================
+wk(36, "B2", "crase")
+
+_CR = "Elegí: ¿con crase o sin crase?"
+ch(0, "Vou ___ praia de Ipanema.", ["à", "a", "á"], "à",
+   "ir a + a praia = à praia. Acento grave (à), nunca agudo.", prompt=_CR)
+ch(0, "Entreguei o livro ___ professora.", ["à", "a", "na"], "à",
+   "entregar algo a alguém + a professora = à professora (truco: ao professor).", prompt=_CR)
+ch(0, "Fomos ___ lojas do Saara.", ["às", "as", "à"], "às",
+   "a + as lojas = às lojas. El Saara es el mercado popular del centro de Río.", prompt=_CR)
+ch(0, "O show começa ___ nove.", ["às", "as", "à"], "às",
+   "Hora determinada: siempre crase, às nove.", prompt=_CR)
+ch(0, "Estou aqui desde ___ sete.", ["as", "às", "das"], "as",
+   "Con «desde» la preposición ya está: desde as sete, sin crase.", prompt=_CR)
+ch(1, "Fui ___ pé até o Arpoador.", ["a", "à", "ao"], "a",
+   "«pé» es masculino: a pé, nunca à pé.", prompt=_CR)
+ch(1, "Começou ___ chover.", ["a", "à", "há"], "a",
+   "Delante de verbo nunca hay crase: começou a chover.", prompt=_CR)
+ch(1, "Vou ___ Copacabana amanhã.", ["a", "à", "na"], "a",
+   "Copacabana va sin artículo (volto de Copacabana): vou a Copacabana.", prompt=_CR)
+ch(1, "Amanhã vou ___ Lapa.", ["à", "a", "á"], "à",
+   "A Lapa lleva artículo (volto da Lapa): vou à Lapa.", prompt=_CR)
+ch(1, "Em 1808, a família real chegou ___ Bahia antes de ir para o Rio.", ["à", "a", "ao"], "à",
+   "A Bahia lleva artículo (volto da Bahia): chegou à Bahia. La corte desembarcó en Salvador en enero de 1808.", prompt=_CR)
+ch(2, "Refiro-me ___ reunião de ontem.", ["àquela", "a aquela", "à aquela"], "àquela",
+   "a + aquela = àquela, en una sola palabra.", prompt=_CR)
+ch(2, "Um filé ___ parmegiana, por favor.", ["à", "a", "ao"], "à",
+   "«à parmegiana» = à moda parmegiana: la crase marca «a la manera de».", prompt=_CR)
+
+_CRC = "Completá con a, à, às o ao."
+cl(0, "Obedeça ___ placas.", "às",
+   "obedecer a + as placas = às placas.", prompt=_CRC)
+cl(0, "A padaria abre ___ seis da manhã.", "às",
+   "Hora determinada: às seis.", prompt=_CRC)
+cl(0, "Chegou ___ uma da manhã.", "à",
+   "Ante «uma» solo hay crase cuando es hora: à uma.", prompt=_CRC)
+cl(0, "Vamos ___ feira de São Cristóvão no sábado.", "à",
+   "ir a + a feira = à feira (ao mercado → à feira).", prompt=_CRC)
+cl(0, "Voltamos ___ meio-dia.", "ao",
+   "meio-dia es masculino: ao meio-dia (pero à meia-noite).", prompt=_CRC)
+cl(1, "Disse isso ___ ela.", "a",
+   "Ante pronombre personal nunca hay crase: a ela.", prompt=_CRC)
+cl(1, "Falou ___ pessoas importantes.", "a",
+   "Plural sin artículo: a pessoas (si hubiera artículo, sería às pessoas).", prompt=_CRC)
+cl(1, "Nunca fui ___ Salvador.", "a",
+   "Salvador va sin artículo (volto de Salvador): a Salvador.", prompt=_CRC)
+cl(1, "Em abril de 1974, os capitães levaram a revolução ___ ruas de Lisboa.", "às",
+   "levar algo a + as ruas = às ruas. Los capitanes del MFA derribaron el Estado Novo el 25 de Abril.", prompt=_CRC)
+cl(2, "Fique ___ vontade!", "à",
+   "Locución femenina: à vontade (ponete cómodo).", prompt=_CRC)
+cl(2, "Saímos ___ pressas.", "às",
+   "Locución: às pressas (a las apuradas).", prompt=_CRC)
+cl(2, "Moramos ___ beira-mar.", "à",
+   "Locución: à beira-mar (frente al mar).", prompt=_CRC)
+
+trv(0, "Voy a la playa.",
+    "ir a + a praia = à praia.",
+    ["Vou à praia", "Eu vou à praia"])
+trv(0, "El museo abre de diez a cinco.",
+    "de ... a con horas: das dez às cinco.",
+    "O museu ", ["abre", "funciona", "fica aberto"], " das dez às cinco")
+trv(1, "Le di el libro a ella.",
+    "Ante pronombre personal, sin crase: a ela.",
+    ["Dei o livro a ela", "Eu dei o livro a ela", "Dei o livro para ela", "Dei-lhe o livro",
+     "Eu dei o livro para ela", "Eu lhe dei o livro"])
+trv(1, "Mañana voy a Lapa y después a Copacabana.",
+    "à Lapa (volto da Lapa), a Copacabana (volto de Copacabana).",
+    "Amanhã ", ["vou", "eu vou"], " à Lapa e depois ", ["", "vou "], "a Copacabana")
+trv(2, "Ponete cómodo.",
+    "Locución: à vontade.",
+    ["Fique", "Fica"], " à vontade")
+trv(2, "Pagué al contado.",
+    "Locución: à vista.",
+    ["Paguei", "Eu paguei"], " à vista")
+trv(2, "Me refiero a aquella ley.",
+    "a + aquela = àquela.",
+    ["Refiro-me", "Me refiro", "Eu me refiro"], " àquela lei")
+trv(0, "Llegamos a las tres.",
+    "Hora determinada: às três.",
+    ["Chegamos", "Nós chegamos", "A gente chegou"], " às três", ["", " horas"])
+
+fx(1, "Fomos à pé até o Leblon.", "à pé", "a pé",
+   "Fomos a pé até o Leblon.", "crase",
+   "«pé» es masculino: no hay artículo «a», no hay crase.")
+fx(1, "Começou à chover no meio do bloco.", "à chover", "a chover",
+   "Começou a chover no meio do bloco.", "crase",
+   "Delante de verbo nunca hay crase: los verbos no llevan artículo.")
+fx(0, "O show começa as nove da noite.", "as nove", "às nove",
+   "O show começa às nove da noite.", "crase",
+   "Con horas determinadas, crase obligatoria: às nove.")
+fx(1, "Vou à Copacabana no domingo.", "à Copacabana", "a Copacabana",
+   "Vou a Copacabana no domingo.", "crase",
+   "Volto de Copacabana (sin artículo) → vou a Copacabana, sin crase.")
+
+_L36 = [["vou ao mercado", "vou à feira"], ["vou ao cinema", "vou à praia"], ["vou ao Leblon", "vou à Lapa"]]
+_GP36 = "Mirá los tres pares masculino → femenino y completá el cuarto."
+gd(1, _L36, "vou ao Maracanã → vou ___ Copacabana", "a", "à",
+   "Copacabana no lleva artículo (volto de Copacabana): vou a Copacabana, sin crase.", prompt=_GP36)
+gd(1, [["falei ao gerente", "falei à gerente"], ["escrevi ao diretor", "escrevi à diretora"], ["dei ao menino", "dei à menina"]],
+   "falei ao gerente → falei ___ ela", "a", "à",
+   "Ante pronombre personal no hay artículo, y sin artículo no hay crase: a ela.", prompt=_GP36)
+gd(2, [["a + aquele", "àquele"], ["a + aquela", "àquela"], ["a + aquilo", "àquilo"]],
+   "a + esta → ___", "a esta", "à esta",
+   "Solo aquele, aquela y aquilo se funden con la a. Ante esta / essa no hay crase.",
+   prompt="Mirá las tres uniones y completá la cuarta.")
+
+sc(0, ["Vou ao mercado. / Vou à feira.", "Fui ao cinema. / Fui à praia.", "Refiro-me ao aluno. / Refiro-me à aluna.",
+       "Conheço o Rafa. / Conheço a Bia.", "Vi o filme. / Vi a novela.", "Cheguei ao bar. / Cheguei à festa."],
+   "¿Cuándo va crase?",
+   ["Cuando con una palabra masculina aparecería «ao»: preposición a + artículo a.",
+    "Siempre delante de palabras femeninas.",
+    "Cuando el verbo está en pasado."],
+   "Cuando con una palabra masculina aparecería «ao»: preposición a + artículo a.",
+   "Regla: si el verbo pide «a» y la palabra lleva artículo «a», se funden en à. Conhecer y ver no piden «a»: conheço a Bia, sin crase.")
+sc(1, ["Vou à Lapa. / Volto da Lapa.", "Vou à Bahia. / Volto da Bahia.", "Vou a Copacabana. / Volto de Copacabana.",
+       "Vou a Ipanema. / Volto de Ipanema.", "Vou à Tijuca. / Volto da Tijuca.", "Vou a Salvador. / Volto de Salvador."],
+   "¿Cómo sabés si un lugar lleva crase?",
+   ["Si al volver decís «da», va crase; si decís «de», no.",
+    "Todos los barrios de Río llevan crase.",
+    "Solo las ciudades llevan crase."],
+   "Si al volver decís «da», va crase; si decís «de», no.",
+   "Regla: vou a, volto da, crase há; vou a, volto de, crase pra quê?")
+
+ty(0, "Escribí la forma correcta: a, à, as o às.", "O ônibus para Petrópolis sai ___ quatro.", "às",
+   "Hora determinada: às quatro.")
+ty(2, "Uní: a + aquilo.", "a + aquilo → ___", "àquilo",
+   "a + aquilo = àquilo, con acento grave.")
+
+cb(0, "Fui à praia. Depois fui à feira. (e)", "Fui à praia e à feira.",
+   "Coordinadas con el mismo verbo: se repite la crase ante cada femenino.",
+   alt=["Fui à praia e depois à feira.", "Fui à praia e depois fui à feira.", "Fui à praia e fui à feira."])
+cb(1, "Primeiro vou a Copacabana. Depois vou à Urca. (e depois)", "Primeiro vou a Copacabana e depois à Urca.",
+   "Copacabana sin artículo (a); a Urca con artículo (à).",
+   alt=["Primeiro vou a Copacabana e depois vou à Urca.", "Vou a Copacabana e depois à Urca.",
+        "Vou a Copacabana e depois vou à Urca."])
+cb(0, "A loja abre às nove. Fecha às seis. (e)", "A loja abre às nove e fecha às seis.",
+   "Las horas determinadas llevan crase.",
+   alt=["A loja abre às nove e fecha às seis horas.", "A loja funciona das nove às seis."])

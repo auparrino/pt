@@ -31,15 +31,15 @@
       grammar: "ser, estar e ter",
       text:
         "Olá! Eu sou a Sofía. Sou argentina, de Buenos Aires, e tenho vinte e nove anos. " +
-        "Agora estou no Rio de Janeiro e estou muito feliz!\n\n" +
+        "Agora estou no Rio e estou muito feliz!\n\n" +
         "O apartamento é pequeno, mas é bonito. É em Botafogo, um bairro tranquilo. " +
-        "A Bia é carioca e é professora. Ela tem trinta anos e é muito simpática. " +
+        "A Bia é carioca e é professora. Ela é muito simpática. " +
         "A Bia tem um gato, o Tom. O Tom é preto e é muito preguiçoso.\n\n" +
         "Hoje é sábado e o dia está lindo. O céu está azul e o mar está calmo. " +
-        "A Bia e eu estamos na praia, em Copacabana. Eu tenho um chapéu e um livro; " +
+        "A Bia e eu estamos na praia, em Copacabana. Eu tenho um livro; " +
         "a Bia tem uma água de coco. Tudo é novo para mim, mas eu estou em casa.",
       gloss: { agora: "ahora", bairro: "barrio", carioca: "de Río de Janeiro", preguiçoso: "perezoso",
-               hoje: "hoy", céu: "cielo", praia: "playa", chapéu: "sombrero", preto: "negro",
+               hoje: "hoy", céu: "cielo", praia: "playa", preto: "negro",
                coco: "coco (água de coco = agua de coco)", mim: "mí (para mim = para mí)" },
       questions: [
         ["¿De dónde es Sofía?", ["de Buenos Aires", "de Río de Janeiro", "de Rosario", "de Córdoba"], "de Buenos Aires"],
@@ -163,15 +163,15 @@
         "Hoje é segunda-feira, quinze de janeiro, e a semana da Sofía está cheia. " +
         "Às nove e meia, ela tem uma reunião on-line com uma empresa de Rosário.\n\n" +
         "Na terça-feira, às duas da tarde, tem aula de português: a aula custa oitenta reais. " +
-        "Na quarta, é o aniversário da Bia: ela faz trinta e um anos. A Sofía liga para a padaria " +
+        "Na quarta, a Bia faz trinta e um anos. A Sofía liga para a padaria " +
         "e pede um bolo: \"Dois, meia, quatro, sete...\"\n\n" +
         "O sábado, vinte de janeiro, é feriado no Rio: é o dia de São Sebastião, o padroeiro da cidade. " +
-        "Na sexta à noite, as duas vão a um show na Lapa, e o ingresso custa cento e vinte reais.\n\n" +
-        "Que horas são? São dez para as dez. A reunião! A Sofía está atrasada!",
+        "Na sexta à noite, as duas vão a um show na Lapa: o ingresso custa cento e vinte reais.\n\n" +
+        "Que horas são? Dez para as dez. A Sofía está atrasada!",
       gloss: { reunião: "reunión", aniversário: "cumpleaños", liga: "llama (por teléfono)",
                meia: "seis (al decir un número)", bolo: "torta", feriado: "feriado", padroeiro: "santo patrono",
-               ingresso: "entrada", atrasada: "atrasada, llegando tarde", segunda: "segunda (segunda-feira = lunes)",
-               terça: "tercera (terça-feira = martes)", quarta: "cuarta (quarta = miércoles)", sexta: "sexta (sexta = viernes)" },
+               ingresso: "entrada", atrasada: "atrasada, llegando tarde", "segunda-feira": "lunes",
+               "terça-feira": "martes", quarta: "miércoles (quarta-feira)", sexta: "viernes (sexta-feira)" },
       questions: [
         ["¿Cuánto cuesta la clase de portugués?", ["ochenta reales", "ciento veinte reales", "treinta reales", "veinte reales"], "ochenta reales"],
         ["¿Cuántos años cumple Bia?", ["treinta y uno", "veintinueve", "treinta", "cuarenta y uno"], "treinta y uno"],
@@ -212,11 +212,11 @@
       text:
         "No domingo, a Sofía e a Bia vão a Niterói, do outro lado da baía de Guanabara. " +
         "Pegam o metrô em Botafogo, descem na estação Carioca e vão a pé até a Praça XV. " +
-        "Lá pegam a barca. A viagem dura uns vinte minutos.\n\n" +
+        "Lá pegam a barca: a viagem dura uns vinte minutos.\n\n" +
         "Em Niterói, passam pela orla e sobem até o Museu de Arte Contemporânea, de Oscar Niemeyer. " +
         "O museu parece um disco voador em cima de uma pedra!\n\n" +
         "Do museu, a vista do Rio é incrível: o Pão de Açúcar, o Cristo e a ponte Rio-Niterói. " +
-        "As duas voltam de ônibus pela ponte, mas o trânsito é terrível. " +
+        "Voltam de ônibus pela ponte, mas o trânsito é terrível. " +
         "\"Da próxima vez, a gente volta de barca\", diz a Bia.",
       gloss: { baía: "bahía", pegam: "toman", descem: "bajan", barca: "lancha (ferry)", orla: "costanera",
                sobem: "suben", voador: "volador (disco voador = plato volador)", cima: "cima (em cima de = arriba de)",
@@ -233,13 +233,13 @@
       grammar: "possessivos e demonstrativos",
       text:
         "A Dona Lúcia é a vizinha do terceiro andar. Tem oitenta anos e muitas histórias. " +
-        "Hoje ela mostra um álbum de fotos à Sofía.\n\n" +
+        "Hoje ela mostra um álbum à Sofía.\n\n" +
         "— Esta aqui sou eu, em Santa Teresa. Este senhor é o meu pai, e aquela senhora " +
         "de chapéu é a mãe dele. Esse cachorro é o Bolinha, o nosso primeiro cachorro.\n" +
         "— E este rapaz?\n" +
-        "— Ah, esse é o Carlos, o meu marido. O violão dele está naquele armário. " +
+        "— Esse é o Carlos, o meu marido. O violão dele está naquele armário. " +
         "E as suas fotos, Sofía?\n" +
-        "— As minhas fotos estão no celular! Nesta foto estão os meus pais, em Buenos Aires. " +
+        "— As minhas estão no celular! Nesta estão os meus pais, em Buenos Aires. " +
         "Este é o meu irmão, e esta é a namorada dele.\n" +
         "— Que bonitos! E aquilo, o que é?\n" +
         "— Aquilo é o Obelisco!",
@@ -430,13 +430,13 @@
     { id: "w-19", week: 19, n: 19, level: "B1", emoji: "🏙️", title: "Rio ou São Paulo?",
       grammar: "comparativos e superlativos",
       text:
-        "O Lucas passou uma semana no Rio e três dias em São Paulo, e agora compara. São Paulo " +
+        "O Lucas passou uma semana no Rio e três dias em São Paulo. São Paulo " +
         "é maior do que o Rio: é a maior cidade do Brasil, com mais de onze milhões de habitantes. " +
-        "Tem mais museus e mais teatros, mas o trânsito é pior e o céu é menos azul.\n\n" +
+        "Tem mais museus e teatros, mas o trânsito é pior e o céu é menos azul.\n\n" +
         "O Rio é menor, mas é lindíssimo: tem praia, montanha e floresta no meio da cidade. " +
         "A Floresta da Tijuca é uma das maiores florestas urbanas do mundo.\n\n" +
-        "\"Os paulistanos trabalham tanto quanto os cariocas\", diz a Bia. O Lucas não concorda: " +
-        "\"Mas em São Paulo a pizza é melhor que aqui!\" \"E o pôr do sol do Arpoador é o mais bonito " +
+        "\"Os paulistanos trabalham tanto quanto os cariocas\", diz a Bia. O Lucas não concorda, " +
+        "mas acha que em São Paulo a pizza é melhor. \"E o pôr do sol do Arpoador é o mais bonito " +
         "do mundo\", responde a Sofía.",
       gloss: { floresta: "selva, bosque", meio: "medio (no meio = en el medio)", paulistanos: "los de la ciudad de São Paulo",
                concorda: "está de acuerdo", lindíssimo: "lindísimo", milhões: "millones" },
@@ -451,17 +451,17 @@
     { id: "w-20", week: 20, n: 20, level: "B1", emoji: "☔", title: "Uma segunda-feira sem sorte",
       grammar: "indefinidos, negação e quantidade",
       text:
-        "Ontem nada deu certo para a Sofía. De manhã, não tinha café em casa, nem pão: ninguém lembrou " +
-        "de fazer compras. Foi trabalhar num café, mas nenhuma mesa estava livre, e o wi-fi também " +
+        "Ontem nada deu certo para a Sofía. De manhã, não tinha café em casa, nem pão. " +
+        "Foi trabalhar num café, mas nenhuma mesa estava livre, e o wi-fi também " +
         "não funcionava. Ligou para a Bia: ninguém atendeu.\n\n" +
         "De tarde, foi ao banco e esperou uma hora. Quando chegou a vez dela, o sistema caiu. " +
         "\"Hoje não é o meu dia, não\", pensou.\n\n" +
         "Voltou para casa a pé, debaixo de chuva, sem nenhum guarda-chuva. Mas, na porta do prédio, " +
         "alguém estava esperando: a Bia, com uma pizza e um vinho. \"Todo mundo tem um dia assim\", disse. " +
         "A Sofía comeu tudo, riu de tudo e esqueceu tudo.",
-      gloss: { ontem: "ayer", certo: "bien (dar certo = salir bien)", compras: "compras", atendeu: "atendió",
+      gloss: { ontem: "ayer", certo: "bien (dar certo = salir bien)", atendeu: "atendió",
                vez: "turno", caiu: "se cayó", debaixo: "debajo", chuva: "lluvia", "guarda-chuva": "paraguas",
-               assim: "así", sorte: "suerte", esqueceu: "olvidó" },
+               assim: "así", esqueceu: "olvidó" },
       questions: [
         ["¿Qué faltaba en casa a la mañana?", ["café y pan", "leche", "agua", "nada"], "café y pan"],
         ["¿Qué pasó en el banco?", ["se cayó el sistema", "estaba cerrado", "le robaron", "atendieron rápido"], "se cayó el sistema"],
@@ -541,13 +541,13 @@
     { id: "w-24", week: 24, n: 24, level: "B1", emoji: "🥾", title: "A trilha dos Dois Irmãos",
       grammar: "subjuntivo com conjunções",
       text:
-        "A Sofía quer fazer a trilha do Morro Dois Irmãos, que começa no Vidigal. O João vai com ela, " +
+        "A Sofía quer fazer a trilha do Morro Dois Irmãos, no Vidigal. O João vai com ela, " +
         "desde que saiam cedo, antes que o sol fique forte demais.\n\n" +
         "\"Leve muita água, para que não passe mal\", ele diz. \"E caso chova, a gente deixa para outro " +
         "dia, porque a pedra fica escorregadia.\"\n\n" +
         "Embora a trilha seja curta, a subida é íngreme. Um guia do Vidigal vai acompanhá-los, " +
         "sem que precisem pagar muito, e o dinheiro fica na comunidade. Lá de cima, a gente vê " +
-        "toda a Zona Sul: a Lagoa, Ipanema, o Leblon e a Pedra da Gávea. \"Daqui eu não saio " +
+        "toda a Zona Sul. \"Daqui eu não saio " +
         "antes que o sol se ponha!\", diz a Sofía.",
       gloss: { desde: "desde (desde que = siempre que)", demais: "demasiado", mal: "mal (passar mal = sentirse mal)",
                caso: "en caso de que", deixa: "deja", escorregadia: "resbaladiza", embora: "aunque",
@@ -587,11 +587,11 @@
         "Faz seis meses que a Sofía chegou ao Rio. Quando desembarcou no Galeão, não entendia quase " +
         "nada e tinha vergonha de falar. Hoje pede café na padaria, discute futebol no boteco e até " +
         "conta piadas.\n\n" +
-        "Muita coisa tem mudado: ela tem acordado cedo e tem ido à praia antes do trabalho. " +
+        "Muita coisa tem mudado: ela tem ido à praia antes do trabalho. " +
         "Não sente falta do inverno portenho, mas sente falta da família.\n\n" +
         "A empresa de Buenos Aires quer que ela volte em dezembro. A Sofía ainda não decidiu. " +
         "\"Eu gostaria de ficar mais um ano\", diz. \"Talvez eu consiga um trabalho aqui.\" " +
-        "A Bia espera que ela fique: \"Você vai perder o Carnaval?\" Hoje à noite, as duas irão " +
+        "A Bia espera que ela fique. Hoje à noite, as duas irão " +
         "ao Arpoador. Quem sabe o pôr do sol ajude a decidir.",
       gloss: { desembarcou: "desembarcó", vergonha: "vergüenza", piadas: "chistes", falta: "falta (sentir falta = extrañar)",
                inverno: "invierno", portenho: "porteño", consiga: "consiga", mudado: "cambiado", ajude: "ayude" },
@@ -737,8 +737,8 @@
         "se matou no Palácio do Catete, hoje Museu da República. Na carta-testamento, escreveu: \"Saio da " +
         "vida para entrar na História.\" A Sofía passa pela porta do museu todos os dias, a caminho do metrô.",
       gloss: { mudanças: "cambios", mínimo: "mínimo", trabalhistas: "laborales", siderúrgica: "siderúrgica",
-               esquecer: "olvidar", fechou: "cerró", censurava: "censuraba", imprensa: "prensa",
-               prendiam: "encarcelaban", opositores: "opositores", matou: "mató (se matou = se suicidó)",
+               esquecer: "olvidar", "fechou-se": "se cerró", "censurava-se": "se censuraba", imprensa: "prensa",
+               "prendiam-se": "se encarcelaba a", opositores: "opositores", matou: "mató (se matou = se suicidó)",
                saio: "salgo", caminho: "camino" },
       questions: [
         ["¿Qué se creó en 1953?", ["Petrobras", "el salario mínimo", "la CLT", "el Ministerio de Trabajo"], "Petrobras"],
@@ -761,7 +761,7 @@
         "Bentinho nunca nos diz com certeza se Capitu o traiu: deixa-nos a dúvida.\n\n" +
         "A Sofía comprou os dois romances num sebo da Rua do Carmo e prometeu à Bia, rindo: " +
         "\"Lê-los-ei em português, sem tradução!\"",
-      gloss: { pintor: "pintor", paredes: "paredes", lavadeira: "lavandera", tornou: "volvió (tornou-se = se volvió)",
+      gloss: { pintor: "pintor", paredes: "paredes", lavadeira: "lavandera", "tornou-se": "se volvió",
                elegeu: "eligió", bruxo: "brujo", defunto: "difunto", verme: "gusano", roeu: "royó",
                frias: "frías", traiu: "traicionó", romances: "novelas", sebo: "librería de usados",
                "lê-los-ei": "los leeré", certeza: "certeza" },
@@ -813,7 +813,7 @@
         "na Gávea. Na volta, namorou a ideia de escrever sobre a Argentina: \"Será que nós também somos " +
         "cordiais?\" A Bia lembrou-se de um detalhe: o próprio autor avisou que cordialidade não quer " +
         "dizer bondade.",
-      gloss: { raízes: "raíces", referiu: "refirió (referiu-se = se refirió)", gentileza: "amabilidad", aludia: "aludía",
+      gloss: { raízes: "raíces", "referiu-se": "se refirió", gentileza: "amabilidad", aludia: "aludía",
                coração: "corazón", age: "actúa", regra: "regla", emprestada: "prestada (tomar emprestado = tomar prestado)",
                obedecer: "obedecer", chefe: "jefe", assistiu: "asistió (assistir a = ver, presenciar)",
                palestra: "charla, conferencia", namorou: "acarició (la idea)", avisou: "advirtió", bondade: "bondad" },
@@ -943,7 +943,7 @@
         "de cem, é outro dado relevante.\n\n" +
         "Na biblioteca da escola, a Bia afixou um trecho do artigo 5º: \"Todos são iguais perante a lei, " +
         "sem distinção de qualquer natureza.\"",
-      gloss: { promulgada: "promulgada", encerramento: "cierre, fin", cidadã: "ciudadana", destacam: "destacan",
+      gloss: { promulgada: "promulgada", encerramento: "cierre, fin", cidadã: "ciudadana", "destacam-se": "se destacan",
                ampliação: "ampliación", direitos: "derechos", inafiançável: "sin derecho a fianza",
                imprescritível: "imprescriptible", reconhecimento: "reconocimiento", povos: "pueblos",
                aponte: "señale", fonte: "fuente", afixou: "colgó, fijó", perante: "ante", qualquer: "cualquier" },
@@ -1130,7 +1130,7 @@
       gloss: { geram: "generan", jeitinho: "viveza para sortear reglas", contornar: "sortear, eludir", convém: "conviene",
                passo: "paso", malandros: "pícaros", acima: "por encima", oscila: "oscila", resolva: "resuelva",
                reforce: "refuerce", ingênuo: "ingenuo", jeito: "manera (dar um jeito = arreglárselas)",
-               suma: "suma (em suma = en resumen)", vício: "vicio" },
+               suma: "suma (em suma = en resumen)" },
       questions: [
         ["¿Qué es el jeitinho según el texto?", ["el arte de encontrar una salida para sortear una regla", "un baile carioca", "una ley", "un tipo de burocracia"], "el arte de encontrar una salida para sortear una regla"],
         ["¿Qué analizó DaMatta?", ["el ritual de «¿Sabe con quién está hablando?»", "el carnaval de Salvador", "la Constitución", "el fútbol"], "el ritual de «¿Sabe con quién está hablando?»"],
@@ -1205,7 +1205,7 @@
         "otimismo filosófico em Cândido.\n\n" +
         "O seu Manuel resume: \"Lisboa deu a volta por cima. Como diz o ditado, depois da tempestade vem " +
         "a bonança.\"",
-      gloss: { rédeas: "riendas", providências: "medidas", atribui: "atribuye", enterrar: "enterrar",
+      gloss: { rédeas: "riendas", providências: "medidas", "atribui-se": "se atribuye", enterrar: "enterrar",
                autoria: "autoría", duvidosa: "dudosa", nobre: "noble", sério: "serio (levar a sério = tomar en serio)",
                retas: "rectas", madeira: "madera", gaiola: "jaula", tremores: "temblores", zombou: "se burló",
                otimismo: "optimismo", ditado: "refrán", bonança: "calma" },

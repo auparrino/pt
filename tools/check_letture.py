@@ -41,7 +41,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import curriculo  # noqa: E402
 
-LEVEL_WEEK = {"A1": 1, "A2": 9, "B1": 19, "B2": 31, "C1": 43}
+LEVEL_WEEK = {"A1": 1, "A2": 9, "B1": 19, "B2": 31, "C1": 43, "T": 1}
 VF = ("verdadeiro", "falso", "não se diz")
 
 # ---------------------------------------------------------------- gramática
@@ -78,9 +78,15 @@ meio medo nada passo casa como pena rede sorte parte janta porta volta
 certo junto vale base corte ante saia venda verão sério nossa graça pé
 gente jogo baixo alto fundo espera mesa custa conta toca olha leve fale
 deve pede cedo fecho acordo chefe prova marco batida suma letra sente
-vindo pois morro combinado passados prezados falta
+vindo pois morro combinado passados prezados falta vista
 """.split())
 FIXED_CONNECTORS = {"seja": 26}   # «ou seja», «seja como for»: fórmulas
+
+# Sustantivos en -ar / -er / -ir que no son verbos.
+NOUNS_R = set("bar mar lugar par lar açúcar colher mulher talher ar elixir".split())
+
+# Palabras extranjeras citadas (el inglés de Oswald, el latín de Sérgio Buarque).
+FOREIGN = set("the not or question that is cor cordis".split())
 
 # Participios que funcionan como adjetivo: «está cansado» no es una pasiva.
 ADJ_PP = set("""
@@ -346,7 +352,8 @@ var C = require(%r);
 var out = {};
 try {
   var f = C.conjugate("falar", "presente");
-  if (!f || f[0].replace(/^eu /, "") !== "falo") { console.log("{}"); process.exit(0); }
+  var g = C.conjugate("fazer", "perfeito");
+  if (!f || f[0].replace(/^eu /, "") !== "falo" || !g || g[0].replace(/^eu /, "") !== "fiz") { console.log("{}"); process.exit(0); }
 } catch (e) { console.log("{}"); process.exit(0); }
 var tenses = ["presente","perfeito","imperfeito","maisQuePerfeito","futuro","condicional",
               "subjPresente","subjImperfeito","subjFuturo","infPessoal"];
@@ -417,6 +424,7 @@ feliz triste cansado contente simpático fácil difícil caro barato quente frio
 branco preto vermelho azul verde amarelo cinza rosa marrom laranja
 brasileiro argentino português espanhol inglês francês alemão italiano carioca
 sim não olá oi tchau obrigado obrigada desculpa favor tudo bem
+real algum alguma alguns algumas papai mamãe
 coisa parte lado frente cima baixo meio fim ponto
 """,
 "A2": """
@@ -426,7 +434,7 @@ roupa camisa calça sapato vestido saia bolsa chapéu
 esquina ponte praça parque jardim árvore flor animal cachorro gato pássaro cavalo
 dinheiro preço conta real troco cartão
 sempre às-vezes nunca geralmente
-lembrar esquecer acreditar sonhar gostar preferir sentir seguir vestir servir repetir
+escolher conseguir rir caipirinha lembrar esquecer acreditar sonhar gostar preferir sentir seguir vestir servir repetir
 subir descer atravessar virar dobrar parar continuar
 buscar procurar achar encontrar perder mandar enviar chegar partir
 lavar limpar arrumar cozinhar misturar cortar colocar esquentar ferver
@@ -452,7 +460,7 @@ escravo escravidão liberdade livre
 arte artista pintor quadro escultura estátua poema poeta escritor romance obra autor leitor
 igreja santo deus
 ideia opinião razão verdade problema solução exemplo motivo
-mudança mudar crescer diminuir aumentar melhorar piorar
+tornar desenvolver mudança mudar crescer diminuir aumentar melhorar piorar
 construir destruir criar fundar inaugurar
 aceitar recusar permitir proibir obrigar
 sucesso fracasso sorte azar
@@ -462,11 +470,30 @@ medo vergonha saudade alegria tristeza raiva
 sociedade social economia econômico cultura cultural crítica crítico
 contudo porém todavia entretanto portanto aliás inclusive
 embora caso conforme segundo enquanto
-povo nação colônia colonial independência república ditadura democracia
+àquele àquela àquilo povo nação colônia colonial independência república ditadura democracia
 movimento revolução regime governo oposição
 """,
 "C1": """
 contudo todavia outrossim
+""",
+# Transparentes para un hispanohablante (iguales o casi iguales al español):
+# se dan por conocidas desde la semana 1.
+"T": """
+gato calmo animal antigo planta enorme perfeito rápido história designer escuro sanduíche
+desaparecer on-line disco durar incrível álbum colonial chocolate condensado plano ritual músico
+programa adorar emocionado iluminar simples habitante pizza funcionar sistema wi-fi altura armado
+metro triângulo melodia discutir futebol explicar prático abolicionista reparar resolver silêncio
+militar método preceder década morte pintar remoto anotar aparecer diário pobre página traduzir
+campanha crise dividir instituir petróleo reunir admirar cadáver causa dúvida associar criticar
+idealizar indígena modo publicar racial sociólogo violência confundir cordialidade detalhe latino
+privado resistir chileno moda transformar cruz desenhar palácio título participar assumir direto
+eleger governar indireto votar artigo atual biblioteca crime natureza ocasião ocupar bebê capítulo
+completar considerar imaginar apresentar consultar célebre disponível edição integrar narrar
+dedicar descrever europeu origem processo marcar devorar tupi filosofia fingir inventar pronome
+absurdo ambíguo analisar burocracia comum hierarquia ignorar tema defender depender importar
+incluir organizar tensão distribuir vídeo áudio atribuir cuidar desastre maremoto redesenhar
+resumir tragédia conceito formar líder documento exame receita esculpir terminar contar voz
+língua assado turista surfista família foto show táxi hotel trânsito problema cultura natural
 """,
 }
 
@@ -513,8 +540,8 @@ class Lexicon:
         self.level = {}
         for lv, txt in VOCAB.items():
             for w in txt.split():
-                self.level.setdefault(w, LEVEL_WEEK[lv])
-        verbs = [w for w in self.level if re.search(r"(ar|er|ir|pôr|por)$", w) and len(w) > 2]
+                self.level[w] = min(self.level.get(w, 99), LEVEL_WEEK[lv])
+        verbs = [w for w in self.level if re.search(r"(ar|er|ir|pôr|por)$", w) and len(w) > 2 and w not in NOUNS_R]
         verbs += list(IRR) + list(DERIV)
         self.forms = {}       # forma → {tiempos}
         self.verb_of = {}     # forma → {infinitivos}
@@ -530,6 +557,11 @@ class Lexicon:
             self.verb_of.setdefault("pôr" if v == "pôr" else v, set()).add(v)
         for f, ts in node_conj_forms(verbs).items():
             self.forms.setdefault(f, set()).update(ts)
+        # Una forma de subjuntivo presente también se lee como imperativo
+        # (fale, vá, faça): cuenta desde la semana del imperativo.
+        for f, ts in self.forms.items():
+            if "subjPresente" in ts:
+                ts.add("imperativo")
         self.lessons = self._lesson_words()
 
     def _lesson_words(self):
@@ -647,9 +679,10 @@ def grammar(text, lex):
 
 def names_in(text):
     """Nombres propios: con mayúscula dentro de la oración, o siempre con mayúscula."""
-    caps = re.findall(r"(?<![.!?:\n\"—] )(?<!^)(?<!\n)\b([A-ZÀ-Ý][a-zà-ÿ]+(?:-[A-Za-zÀ-ÿ]+)*)", text)
+    caps = re.findall(r"(?<![.!?:\n\"—] )(?<!^)(?<!\n)\b([A-ZÀ-Ý][A-Za-zà-ÿ]+(?:-[A-Za-zÀ-ÿ]+)*)", text)
     out = {w.lower() for w in caps}
-    for w in set(re.findall(r"\b([A-ZÀ-Ý][a-zà-ÿ]+)", text)):
+    out |= {w.lower() for w in re.findall(r"\b([A-Z]{2,}s?)\b", text)}      # siglas: CLT, JK, XIX
+    for w in set(re.findall(r"\b([A-ZÀ-Ý][A-Za-zà-ÿ]+)", text)):
         if not re.search(r"\b" + w.lower() + r"\b", text):
             out.add(w.lower())
     return out
@@ -709,7 +742,7 @@ def main():
         names = names_in(text)
         unknown = []
         for t in toks:
-            if t in gloss or t in names:
+            if t in gloss or t in names or t in FOREIGN:
                 continue
             parts = t.split("-")
             if len(parts) > 1 and all(p in gloss or p in names or lex.week_of(p) <= week or
@@ -719,7 +752,7 @@ def main():
                 continue
             if lex.week_of(t) <= week or seen_gloss.get(t, 99) < week:
                 continue
-            if any(seen_gloss.get(c, 99) < week for c in lemma_candidates(t)):
+            if any(seen_gloss.get(c, 99) < week for c in lemma_candidates(t) | lex.verb_of.get(t, set())):
                 continue
             unknown.append(t)
         unk = sorted(set(unknown))
@@ -750,7 +783,8 @@ def main():
         if ep.get("level") != curriculo.WEEKS[week - 1]["level"]:
             probs.append("nivel %s ≠ %s del temario" % (ep.get("level"), curriculo.WEEKS[week - 1]["level"]))
         for g in gloss:
-            seen_gloss.setdefault(g, week)
+            for c in lemma_candidates(g) | lex.verb_of.get(g, set()):
+                seen_gloss.setdefault(c, week)
         if not ep["id"].startswith(only):
             continue
         bad += bool(probs)

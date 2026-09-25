@@ -1,114 +1,209 @@
 /*
- * Duelli: dos formas que compiten, mezcladas en la misma sesión.
+ * Duelos: dos formas que compiten, mezcladas en la misma sesión.
  *
  * Intercalar funciona cuando las categorías se parecen entre sí (Brunmair &
  * Richter 2019, g = 0,42, y más cuanto más parecidas); pedir que expliques
  * por qué suma (Bisra et al. 2018, g = 0,55).  Cada oración trae la pista
  * que decide («cue», un pedazo de la oración): después de elegir la forma,
  * «¿qué te lo dijo?».  Cada duelo se abre cuando las dos formas ya se
- * enseñaron («week»).
+ * enseñaron («week», según tools/curriculo.py).
+ *
+ * Los ocho duelos del portugués para hispanohablantes: ser/estar, por/para,
+ * perfeito/imperfeito, perfeito simples/composto, seu/dele, indicativo/
+ * subjuntivo, futuro do subjuntivo/infinitivo pessoal y la crase (à/a).
  */
 (function (root) {
   "use strict";
 
   // s: la oración con ___; a: la forma correcta; b: la que compite;
-  // cue: lo que decide (un pedazo de la oración); why: la regla en una línea.
+  // cue: lo que decide (un pedazo de la oración); why: la regla en una línea;
+  // k: el lado del duelo (0 = la primera forma del título, 1 = la segunda).
+  function A(s, a, b, cue, why) { return { s: s, a: a, b: b, cue: cue, why: why, k: 0 }; }
+  function B(s, a, b, cue, why) { return { s: s, a: a, b: b, cue: cue, why: why, k: 1 }; }
+
   var DUELLI = [
-    { id: "ausiliare", week: 11, title: "essere o avere", sub: "el auxiliar del passato prossimo", items: [
-      { s: "Ieri ___ andato al cinema.", a: "sono", b: "ho", cue: "andato", why: "«andare» es movimiento: essere." },
-      { s: "Ieri ___ visto un bel film.", a: "ho", b: "sono", cue: "visto", why: "«vedere» tiene objeto: avere." },
-      { s: "Maria ___ partita alle otto.", a: "è", b: "ha", cue: "partita", why: "«partire» es movimiento: essere, y el participio concuerda (-a)." },
-      { s: "Maria ___ mangiato una pizza.", a: "ha", b: "è", cue: "mangiato", why: "«mangiare» tiene objeto: avere." },
-      { s: "Noi ___ rimasti a casa.", a: "siamo", b: "abbiamo", cue: "rimasti", why: "«rimanere» (quedarse): essere." },
-      { s: "Noi ___ dormito poco.", a: "abbiamo", b: "siamo", cue: "dormito", why: "«dormire»: avere, aunque no tenga objeto." },
-      { s: "Il film ___ finito tardi.", a: "è", b: "ha", cue: "Il film", why: "«finire» sin objeto (la cosa termina): essere." },
-      { s: "___ finito il lavoro alle sei.", a: "Ho", b: "Sono", cue: "il lavoro", why: "«finire» con objeto (terminás algo): avere." },
-      { s: "I ragazzi ___ nati a Roma.", a: "sono", b: "hanno", cue: "nati", why: "«nascere»: essere." },
-      { s: "I ragazzi ___ studiato tutto il giorno.", a: "hanno", b: "sono", cue: "studiato", why: "«studiare»: avere." }
+    { id: "serestar", week: 1, title: "ser o estar", sub: "lo que algo es o cómo está", items: [
+      A("Eu ___ argentino, mas moro no Rio.", "sou", "estou", "argentino", "Nacionalidad y origen: ser."),
+      A("A Bia ___ médica num hospital de Botafogo.", "é", "está", "médica", "Profesión: ser."),
+      A("O Rio ___ uma cidade muito bonita.", "é", "está", "cidade", "Definir, clasificar: ser."),
+      A("Nós ___ irmãos e moramos juntos em Niterói.", "somos", "estamos", "irmãos", "Parentesco: ser."),
+      A("A reunião ___ às três, na sala grande.", "é", "está", "às três", "La hora de un evento: ser."),
+      A("Hoje ___ sábado, dia de feira.", "é", "está", "sábado", "Días y fechas: ser (*hoje é sábado*)."),
+      A("Vocês ___ de Salvador ou de Recife?", "são", "estão", "de Salvador", "Origen: ser de."),
+      A("Meu irmão ___ alto e muito simpático.", "é", "está", "simpático", "Rasgos de carácter y de aspecto: ser."),
+      A("Essa casa amarela ___ do meu avô.", "é", "está", "do meu avô", "Posesión: ser de."),
+      A("O show ___ no sábado, na Lapa.", "é", "está", "no sábado", "Cuándo y dónde es un evento: ser."),
+      B("Eu ___ muito cansado hoje.", "estou", "sou", "hoje", "Un estado de ahora: estar."),
+      B("Onde você ___ agora? No metrô?", "está", "é", "agora", "Dónde está alguien: estar."),
+      B("A sopa ___ fria, pode esquentar?", "está", "é", "fria", "Un estado que cambió (se enfrió): estar."),
+      B("Eles ___ na praia de Ipanema agora.", "estão", "são", "na praia", "Ubicación de personas: estar."),
+      B("Cuidado, o café ___ muito quente!", "está", "é", "Cuidado", "Cómo está algo en este momento: estar."),
+      B("Hoje o mar ___ calmo, dá para nadar.", "está", "é", "Hoje", "El mar de hoy, no el de siempre: estar."),
+      B("Nós ___ com fome, vamos comer?", "estamos", "somos", "com fome", "*Estar com* fome, sede, frio, sono."),
+      B("A Bia ___ doente e fica em casa hoje.", "está", "é", "doente", "Salud: estar."),
+      B("O banco ___ fechado por causa do feriado.", "está", "é", "fechado", "Resultado, estado: estar + participio."),
+      B("Hoje o céu ___ nublado sobre o Corcovado.", "está", "é", "nublado", "El tiempo de hoy: estar.")
     ] },
-    { id: "pronomi", week: 10, title: "lo / la o gli / le", sub: "directo o indirecto", items: [
-      { s: "Vedi Marco? Sì, ___ vedo stasera.", a: "lo", b: "gli", cue: "Vedi Marco", why: "«vedere qualcuno», sin «a»: directo, lo." },
-      { s: "Telefoni a Marco? Sì, ___ telefono stasera.", a: "gli", b: "lo", cue: "a Marco", why: "«telefonare a qualcuno»: indirecto, gli." },
-      { s: "Conosci Anna? Sì, ___ conosco bene.", a: "la", b: "le", cue: "Conosci Anna", why: "«conoscere qualcuno»: directo, la." },
-      { s: "Scrivi ad Anna? Sì, ___ scrivo domani.", a: "le", b: "la", cue: "ad Anna", why: "«scrivere a qualcuno»: indirecto, le." },
-      { s: "Aiuti tuo fratello? Sì, ___ aiuto sempre.", a: "lo", b: "gli", cue: "Aiuti tuo fratello", why: "«aiutare qualcuno» es directo en italiano (en castellano, «le ayudo»)." },
-      { s: "Chiedi a tuo padre? Sì, ___ chiedo stasera.", a: "gli", b: "lo", cue: "a tuo padre", why: "«chiedere a qualcuno»: indirecto, gli." },
-      { s: "Inviti Giulia? Sì, ___ invito alla festa.", a: "la", b: "le", cue: "Inviti Giulia", why: "«invitare qualcuno»: directo, la." },
-      { s: "Rispondi alla professoressa? Sì, ___ rispondo subito.", a: "le", b: "la", cue: "alla professoressa", why: "«rispondere a qualcuno»: indirecto, le." },
-      { s: "Ascolti la radio? Sì, ___ ascolto ogni mattina.", a: "la", b: "le", cue: "Ascolti la radio", why: "«ascoltare qualcosa»: directo, la." },
-      { s: "Dai il libro a Paolo? Sì, ___ do il libro.", a: "gli", b: "lo", cue: "a Paolo", why: "El libro es el directo; «a Paolo», el indirecto: gli." }
+
+    { id: "porpara", week: 9, title: "por o para", sub: "por dónde y por qué, o hacia dónde y para qué", items: [
+      A("Vamos passear ___ Santa Teresa?", "por", "para", "passear", "Recorrer un lugar: por."),
+      A("Obrigado ___ tudo, de verdade!", "por", "para", "Obrigado", "Agradecer: *obrigado por*."),
+      A("Compro esse quadro ___ cem reais.", "por", "para", "cem reais", "Precio, intercambio: por."),
+      A("Eu passo ___ Copacabana todos os dias.", "por", "para", "passo", "Pasar por un lugar: por."),
+      A("Trabalho oito horas ___ dia.", "por", "para", "dia", "Distribución (por día, por persona): por."),
+      A("Esse ônibus passa ___ Botafogo?", "por", "para", "passa", "El recorrido: por."),
+      A("Troco o meu livro ___ um café.", "por", "para", "Troco", "Cambiar una cosa por otra: por."),
+      A("Viajamos ___ todo o Nordeste de carro.", "por", "para", "todo o Nordeste", "Recorrer una región: por."),
+      A("Desculpa ___ não ligar ontem.", "por", "para", "Desculpa", "La causa: *desculpa por*."),
+      A("Estou aqui ___ acaso, sem querer.", "por", "para", "acaso", "*Por acaso* = por casualidad."),
+      B("Esse presente é ___ você, feliz aniversário!", "para", "por", "presente", "El destinatario: para."),
+      B("Amanhã eu vou ___ São Paulo de ônibus.", "para", "por", "vou", "El destino: *ir para*."),
+      B("Estudo português ___ morar no Brasil.", "para", "por", "morar", "Finalidad + infinitivo: para."),
+      B("___ mim, o melhor bairro é Botafogo.", "Para", "Por", "mim", "Opinión: *para mim*."),
+      B("Preciso do relatório ___ sexta-feira sem falta.", "para", "por", "sexta-feira", "El plazo: para."),
+      B("Esse ônibus vai ___ o Centro?", "para", "por", "vai", "La dirección: *ir para*."),
+      B("As flores são ___ a sua mãe.", "para", "por", "flores", "El destinatario: para."),
+      B("Ele trabalha ___ uma empresa alemã.", "para", "por", "trabalha", "Para quién trabajás: para."),
+      B("Esse remédio é ___ dor de cabeça.", "para", "por", "remédio", "Para qué sirve algo: para."),
+      B("Falta pouco ___ o Carnaval chegar.", "para", "por", "Falta pouco", "*Falta pouco para* = falta poco para.")
     ] },
-    { id: "dida", week: 9, title: "di o da", sub: "origen, desde, posesión", items: [
-      { s: "Sono ___ Roma, ma vivo a Milano.", a: "di", b: "da", cue: "Sono", why: "«essere di» + ciudad: de dónde sos." },
-      { s: "Vengo ___ Roma in treno.", a: "da", b: "di", cue: "Vengo", why: "«venire da»: de dónde llegás." },
-      { s: "Studio italiano ___ tre anni.", a: "da", b: "di", cue: "tre anni", why: "«da» + tiempo: desde hace." },
-      { s: "Il libro ___ Marco è sul tavolo.", a: "di", b: "da", cue: "Il libro", why: "Posesión: di." },
-      { s: "Stasera vado ___ Luca.", a: "da", b: "di", cue: "vado", why: "A casa de alguien: da + persona." },
-      { s: "È la macchina ___ mio padre.", a: "di", b: "da", cue: "la macchina", why: "Posesión: di." },
-      { s: "Abito qui ___ gennaio.", a: "da", b: "di", cue: "gennaio", why: "«da»: desde un momento." },
-      { s: "Domani parto ___ Milano.", a: "da", b: "di", cue: "parto", why: "«partire da»: el punto de partida." },
-      { s: "Oggi vado ___ medico.", a: "dal", b: "del", cue: "vado", why: "Ir a lo de un profesional: da + artículo, dal medico." },
-      { s: "Stasera ho voglia ___ un gelato.", a: "di", b: "da", cue: "voglia", why: "«avere voglia di»: ganas de." }
+
+    { id: "passado", week: 15, title: "perfeito o imperfeito", sub: "el hecho o el fondo", items: [
+      A("Ontem eu ___ à praia com a Bia.", "fui", "ia", "Ontem", "Un hecho puntual y terminado: perfeito."),
+      A("De repente, ___ a luz no prédio todo.", "acabou", "acabava", "De repente", "Lo que pasa de golpe: perfeito."),
+      A("Em 2014, a Copa do Mundo ___ no Brasil.", "foi", "era", "Em 2014", "Un hecho fechado en el pasado: perfeito."),
+      A("Semana passada nós ___ uma feijoada.", "comemos", "comíamos", "Semana passada", "Un hecho terminado: perfeito."),
+      A("Enquanto eu cozinhava, o telefone ___.", "tocou", "tocava", "Enquanto eu cozinhava", "Lo que interrumpe la acción en curso: perfeito."),
+      A("Ele ___ três anos em Lisboa.", "morou", "morava", "três anos", "Un período cerrado, con su duración: perfeito."),
+      A("Ontem à noite a gente ___ até tarde.", "dançou", "dançava", "Ontem à noite", "Un hecho terminado: perfeito."),
+      A("Naquele dia, ___ tudo errado.", "deu", "dava", "Naquele dia", "Lo que pasó una vez: perfeito."),
+      A("Ano passado eu ___ Machado de Assis pela primeira vez.", "li", "lia", "pela primeira vez", "Una vez, terminado: perfeito."),
+      A("O Brasil ___ independente em 1822.", "ficou", "ficava", "em 1822", "Un cambio en una fecha: perfeito."),
+      B("Quando eu era criança, ___ à praia todo domingo.", "ia", "fui", "todo domingo", "Hábito en el pasado: imperfeito."),
+      B("Antigamente, a gente ___ em Niterói.", "morava", "morou", "Antigamente", "Cómo era antes: imperfeito."),
+      B("Enquanto eu ___, o telefone tocou.", "cozinhava", "cozinhei", "Enquanto", "La acción en curso que otra interrumpe: imperfeito."),
+      B("A casa dos meus avós ___ enorme e cheia de plantas.", "era", "foi", "enorme", "Una descripción: imperfeito."),
+      B("Todo verão, nós ___ para Búzios.", "íamos", "fomos", "Todo verão", "Lo que se repetía: imperfeito."),
+      B("Naquela época, ela sempre ___ cedo.", "acordava", "acordou", "sempre", "Hábito: imperfeito."),
+      B("Eram oito horas e ___ muito no Centro.", "chovia", "choveu", "Eram oito horas", "El fondo de la escena: imperfeito."),
+      B("Quando eu ___ pequeno, tinha medo do mar.", "era", "fui", "pequeno", "Edad y descripción en el pasado: imperfeito."),
+      B("Naquela época, ele ___ na padaria da esquina.", "trabalhava", "trabalhou", "Naquela época", "Cómo eran las cosas: imperfeito."),
+      B("O dia ___ lindo e o mar estava calmo.", "estava", "esteve", "o mar estava calmo", "Descripción del escenario: imperfeito.")
     ] },
-    { id: "passato", week: 15, title: "passato prossimo o imperfetto", sub: "el hecho o el fondo", items: [
-      { s: "Da bambino ___ sempre a calcio.", a: "giocavo", b: "ho giocato", cue: "sempre", why: "Hábito en el pasado: imperfetto." },
-      { s: "Ieri ___ a calcio con gli amici.", a: "ho giocato", b: "giocavo", cue: "Ieri", why: "Un hecho puntual y terminado: passato prossimo." },
-      { s: "Mentre ___, è suonato il telefono.", a: "cucinavo", b: "ho cucinato", cue: "Mentre", why: "La acción en curso que otra interrumpe: imperfetto." },
-      { s: "All'improvviso ___ il telefono di casa.", a: "è suonato", b: "suonava", cue: "All'improvviso", why: "Lo que pasa de golpe: passato prossimo." },
-      { s: "La casa dei nonni ___ grande e luminosa.", a: "era", b: "è stata", cue: "grande e luminosa", why: "Una descripción: imperfetto." },
-      { s: "Nel 2010 ___ in Italia per un mese.", a: "sono stato", b: "stavo", cue: "per un mese", why: "Un período cerrado, con duración: passato prossimo." },
-      { s: "Ogni estate ___ al mare con i nonni.", a: "andavamo", b: "siamo andati", cue: "Ogni estate", why: "Lo que se repetía: imperfetto." },
-      { s: "Sabato scorso ___ al mare con Luca.", a: "siamo andati", b: "andavamo", cue: "Sabato scorso", why: "Una vez, en un momento dado: passato prossimo." },
-      { s: "Non sono uscito perché ___ la febbre.", a: "avevo", b: "ho avuto", cue: "perché", why: "La causa, el estado de fondo: imperfetto." },
-      { s: "___ il libro di Eco in due giorni.", a: "Ho letto", b: "Leggevo", cue: "in due giorni", why: "Una acción completa, con su límite: passato prossimo." }
+
+    { id: "composto", week: 21, title: "perfeito simples o composto", sub: "comi o tenho comido", items: [
+      A("Ontem eu ___ até as dez da noite.", "trabalhei", "tenho trabalhado", "Ontem", "Un hecho fechado: perfeito simples."),
+      A("Você já ___ feijoada alguma vez?", "comeu", "tem comido", "já", "«¿Alguna vez…?», «ya…»: perfeito simples (*já comeu*), no «ha comido»."),
+      A("Este ano eu ___ três vezes ao Rio.", "fui", "tenho ido", "três vezes", "Veces contadas: perfeito simples (*fui três vezes*)."),
+      A("Hoje de manhã eu ___ um e-mail do chefe.", "recebi", "tenho recebido", "Hoje de manhã", "Una vez, hoy: perfeito simples («he recibido» = *recebi*)."),
+      A("Ainda não ___ o filme novo do Walter Salles.", "vi", "tenho visto", "Ainda não", "*Ainda não* + perfeito simples: *ainda não vi*."),
+      A("Nunca ___ tão bem como aqui!", "comi", "tenho comido", "Nunca", "*Nunca* + perfeito simples: «nunca he comido» = *nunca comi*."),
+      A("Em 2019 eu ___ em Lisboa.", "morei", "tenho morado", "Em 2019", "Un período cerrado: perfeito simples."),
+      A("Semana passada ___ com a Bia no telefone.", "falei", "tenho falado", "Semana passada", "Un hecho terminado: perfeito simples."),
+      A("Quando você ___ ao Brasil pela primeira vez?", "veio", "tem vindo", "pela primeira vez", "Una vez: perfeito simples."),
+      A("Já ___ ao Nordeste três vezes.", "fui", "tenho ido", "três vezes", "Veces contadas: perfeito simples."),
+      B("Ultimamente ___ muito, estou exausto.", "tenho trabalhado", "trabalhei", "Ultimamente", "Algo que se repite hasta hoy: perfeito composto."),
+      B("Nos últimos meses, a gente ___ muito ao cinema.", "tem ido", "foi", "Nos últimos meses", "Una repetición que llega hasta hoy: perfeito composto."),
+      B("Ele ___ muito cansado esses dias.", "tem estado", "esteve", "esses dias", "Un estado que dura hasta hoy: perfeito composto."),
+      B("Você ___ o jornal ultimamente?", "tem lido", "leu", "ultimamente", "Hábito reciente: perfeito composto."),
+      B("Desde janeiro, ___ português todos os dias.", "tenho estudado", "estudei", "Desde janeiro", "*Desde* + algo que sigue pasando: perfeito composto."),
+      B("A inflação ___ bastante nos últimos anos.", "tem subido", "subiu", "nos últimos anos", "Un proceso que sigue: perfeito composto."),
+      B("O que você ___ de bom ultimamente?", "tem feito", "fez", "ultimamente", "«¿Qué andás haciendo?»: perfeito composto."),
+      B("Desde que cheguei ao Rio, ___ todo fim de semana.", "tem chovido", "choveu", "Desde que cheguei", "*Desde que* + repetición hasta hoy: perfeito composto."),
+      B("Ultimamente a gente ___ pouco, né?", "tem se falado", "se falou", "Ultimamente", "Algo que viene pasando: perfeito composto."),
+      B("Desde o Carnaval, ela ___ muito na academia.", "tem malhado", "malhou", "Desde o Carnaval", "*Desde* + hábito que sigue: perfeito composto.")
     ] },
-    { id: "futcond", week: 20, title: "futuro o condizionale", sub: "lo que va a pasar o lo que pasaría", items: [
-      { s: "Domani ___ alle otto.", a: "partirò", b: "partirei", cue: "Domani", why: "Un hecho futuro: futuro." },
-      { s: "___ un caffè macchiato, per favore.", a: "Vorrei", b: "Vorrò", cue: "per favore", why: "Un pedido cortés: condizionale." },
-      { s: "Al posto tuo ___ con lui.", a: "parlerei", b: "parlerò", cue: "Al posto tuo", why: "Un consejo: condizionale." },
-      { s: "L'anno prossimo ___ a Roma con mia sorella.", a: "andrò", b: "andrei", cue: "L'anno prossimo", why: "Un plan futuro: futuro." },
-      { s: "Con più soldi ___ una casa al mare.", a: "comprerei", b: "comprerò", cue: "Con più soldi", why: "Una hipótesis: condizionale." },
-      { s: "Stasera ___ tardi dal lavoro.", a: "tornerò", b: "tornerei", cue: "Stasera", why: "Un hecho futuro: futuro." },
-      { s: "___ volentieri alla festa, ma non posso.", a: "Verrei", b: "Verrò", cue: "ma non posso", why: "Un deseo que no se cumple: condizionale." },
-      { s: "Quando arriverai alla stazione, ti ___.", a: "chiamerò", b: "chiamerei", cue: "Quando arriverai", why: "Después de «quando» + futuro, futuro." },
-      { s: "Scusi, mi ___ dire l'ora?", a: "saprebbe", b: "saprà", cue: "Scusi", why: "Una pregunta cortés: condizionale." },
-      { s: "Fra dieci minuti ___ il treno per Napoli.", a: "arriverà", b: "arriverebbe", cue: "Fra dieci minuti", why: "Un hecho futuro: futuro." }
+
+    { id: "seudele", week: 10, title: "seu o dele", sub: "de você o de otro", items: [
+      A("Martín, essa mochila é ___?", "sua", "dela", "Martín", "Le hablás a Martín (você): *sua*."),
+      A("Senhor, esse guarda-chuva é ___?", "seu", "dele", "Senhor", "Con *o senhor* también va *seu*: le hablás a él."),
+      A("Bia, esses óculos são ___?", "seus", "dela", "Bia", "Le hablás a Bia: *seus* (de você)."),
+      A("Dona Ana, essa bolsa é ___?", "sua", "dela", "Dona Ana", "Le hablás a la señora: *sua*."),
+      A("Você tem caneta? Essa caneta azul é ___?", "sua", "dele", "Você tem", "Hablás con você: *sua*."),
+      A("Moço, esse celular no chão é ___?", "seu", "dele", "Moço", "Le hablás al muchacho: *seu*."),
+      A("Rafa, essas chaves na mesa são ___?", "suas", "dele", "Rafa", "Le hablás a Rafa: *suas*."),
+      A("Oi, Lucas! Esse cachorro lindo é ___?", "seu", "dele", "Lucas", "Le hablás a Lucas: *seu*."),
+      A("Senhora, essa mala grande é ___?", "sua", "dela", "Senhora", "Le hablás a la señora: *sua*."),
+      A("Você está com frio? Esse casaco é ___?", "seu", "dele", "Você está com frio", "Hablás con você: *seu*."),
+      B("A Bia está procurando a mochila. Essa mochila é ___?", "dela", "sua", "A Bia está procurando", "Hablás de Bia, no con ella: *dela* (evita la ambigüedad de *sua*)."),
+      B("O João mora aqui. Esse carro é ___.", "dele", "seu", "O João mora aqui", "Hablás de João: *dele*."),
+      B("Os meninos jogam bola na praia. A bola é ___.", "deles", "sua", "Os meninos", "De ellos: *deles*."),
+      B("A Ana e a Clara estão no quiosque. As cadeiras são ___.", "delas", "suas", "A Ana e a Clara", "De ellas: *delas*."),
+      B("Meu vizinho tem um cachorro enorme. O cachorro é ___.", "dele", "seu", "Meu vizinho", "De él: *dele*."),
+      B("A professora está na sala. Esse livro é ___.", "dela", "seu", "A professora", "De ella: *dela*."),
+      B("Meus pais têm uma casa em Búzios. A casa é ___.", "deles", "sua", "Meus pais", "De ellos: *deles*."),
+      B("Aquele moço ali procura o celular. O celular é ___.", "dele", "seu", "Aquele moço", "De él: *dele*."),
+      B("A Sofía toca violão. Esse violão é ___.", "dela", "seu", "A Sofía", "De ella: *dela*."),
+      B("Os turistas procuram as malas. As malas são ___.", "deles", "suas", "Os turistas", "De ellos: *deles*.")
     ] },
-    { id: "cine", week: 21, title: "ci o ne", sub: "el lugar o «de eso»", items: [
-      { s: "Vai a Roma? Sì, ___ vado domani.", a: "ci", b: "ne", cue: "a Roma", why: "«ci» reemplaza un lugar: a Roma." },
-      { s: "Quanti fratelli hai? ___ ho due.", a: "Ne", b: "Ci", cue: "Quanti", why: "«ne» con una cantidad: de eso, dos." },
-      { s: "Pensi all'esame? Sì, ___ penso sempre.", a: "ci", b: "ne", cue: "all'esame", why: "«pensare a qualcosa»: ci." },
-      { s: "Parli del problema? Sì, ___ parlo domani.", a: "ne", b: "ci", cue: "del problema", why: "«parlare di qualcosa»: ne." },
-      { s: "Vuoi del pane? Sì, ___ voglio un po'.", a: "ne", b: "ci", cue: "un po'", why: "«ne» con una cantidad." },
-      { s: "Sei mai stato in Sicilia? Sì, ___ sono stato l'anno scorso.", a: "ci", b: "ne", cue: "in Sicilia", why: "«ci» reemplaza un lugar." },
-      { s: "Quanti caffè bevi? ___ bevo tre al giorno.", a: "Ne", b: "Ci", cue: "tre", why: "«ne» con una cantidad." },
-      { s: "Credi ai fantasmi? No, non ___ credo.", a: "ci", b: "ne", cue: "ai fantasmi", why: "«credere a qualcosa»: ci." },
-      { s: "Che ___ pensi di questo film?", a: "ne", b: "ci", cue: "di questo film", why: "«pensare di» (qué opinás de): ne." },
-      { s: "Vivi a Milano? Sì, ___ vivo da due anni.", a: "ci", b: "ne", cue: "a Milano", why: "«ci» reemplaza un lugar." }
+
+    { id: "subjuntivo", week: 23, title: "indicativo o subjuntivo", sub: "lo que se afirma o lo que se desea", items: [
+      A("Acho que ele ___ razão.", "tem", "tenha", "Acho que", "*Achar que* afirmativo: indicativo (a diferencia de *não acho que*)."),
+      A("Sei que você ___ ocupado hoje.", "está", "esteja", "Sei que", "Un hecho que sabés: indicativo."),
+      A("Tenho certeza de que ela ___ amanhã.", "vem", "venha", "Tenho certeza", "Certeza: indicativo."),
+      A("É verdade que o Rio ___ lindo no inverno.", "é", "seja", "É verdade", "Un hecho: indicativo."),
+      A("Parece que ___ chover mais tarde.", "vai", "vá", "Parece que", "*Parece que* + indicativo."),
+      A("Vejo que vocês ___ cansados hoje.", "estão", "estejam", "Vejo que", "Lo que ves: indicativo."),
+      A("Com certeza ele ___ amanhã cedo.", "vem", "venha", "Com certeza", "Certeza: indicativo."),
+      A("Acredito que o show ___ às nove.", "começa", "comece", "Acredito que", "*Acreditar que* afirmativo: indicativo."),
+      A("É claro que a gente ___ ir junto.", "pode", "possa", "É claro", "Evidencia: indicativo."),
+      A("Ele diz que ___ muito cansado.", "está", "esteja", "diz que", "Lo que alguien afirma: indicativo."),
+      B("Espero que você ___ bem.", "esteja", "está", "Espero que", "Deseo: subjuntivo."),
+      B("Quero que vocês ___ cedo amanhã.", "cheguem", "chegam", "Quero que", "Querer que otro haga algo: subjuntivo."),
+      B("Talvez ela ___ hoje à noite.", "venha", "vem", "Talvez", "*Talvez* antes del verbo: subjuntivo."),
+      B("Duvido que ele ___ a verdade.", "saiba", "sabe", "Duvido que", "Duda: subjuntivo."),
+      B("É importante que a gente ___ junto.", "fique", "fica", "É importante que", "Juicio de valor: subjuntivo."),
+      B("Não acho que ___ uma boa ideia.", "seja", "é", "Não acho", "*Achar* negado: subjuntivo."),
+      B("Tomara que não ___ no fim de semana!", "chova", "chove", "Tomara", "*Tomara que* + subjuntivo."),
+      B("É possível que o voo ___ atrasado.", "esteja", "está", "É possível", "Posibilidad: subjuntivo."),
+      B("Peço que você ___ a porta, por favor.", "feche", "fecha", "Peço que", "Pedido: subjuntivo."),
+      B("Sinto muito que você ___ doente.", "esteja", "está", "Sinto muito", "Sentimiento sobre algo: subjuntivo.")
     ] },
-    { id: "congiuntivo", week: 25, title: "indicativo o congiuntivo", sub: "lo que sabés o lo que opinás", items: [
-      { s: "Penso che Marco ___ stanco.", a: "sia", b: "è", cue: "Penso che", why: "Una opinión: congiuntivo." },
-      { s: "So che Marco ___ stanco.", a: "è", b: "sia", cue: "So che", why: "Algo que sabés: indicativo." },
-      { s: "Spero che tu ___ bene in Italia.", a: "stia", b: "stai", cue: "Spero che", why: "Un deseo: congiuntivo." },
-      { s: "È vero che Anna ___ a Roma.", a: "abita", b: "abiti", cue: "È vero che", why: "Una certeza: indicativo." },
-      { s: "Credo che ___ tardi per uscire.", a: "sia", b: "è", cue: "Credo che", why: "Una opinión: congiuntivo." },
-      { s: "Sono sicuro che Marco ___ ragione.", a: "ha", b: "abbia", cue: "Sono sicuro che", why: "Una certeza: indicativo." },
-      { s: "Voglio che tu ___ con me al cinema.", a: "venga", b: "vieni", cue: "Voglio che", why: "Querer que otro haga algo: congiuntivo." },
-      { s: "Vedo che oggi ___ molto stanco.", a: "sei", b: "sia", cue: "Vedo che", why: "Lo que ves: indicativo." },
-      { s: "Benché ___ tardi, esco.", a: "sia", b: "è", cue: "Benché", why: "«benché» pide siempre congiuntivo." },
-      { s: "Dico che ___ una buona idea.", a: "è", b: "sia", cue: "Dico che", why: "Lo que afirmás: indicativo." }
+
+    { id: "futinf", week: 29, title: "futuro do subjuntivo o infinitivo pessoal", sub: "quando vocês fizerem o para vocês fazerem", items: [
+      A("Quando você ___ ao Rio, me avisa.", "for", "ir", "Quando", "*Quando* + futuro: futuro do subjuntivo (*for*)."),
+      A("Se vocês ___ tempo, passem lá em casa.", "tiverem", "terem", "Se", "*Se* + futuro: futuro do subjuntivo (*tiverem*)."),
+      A("Assim que eu ___ o resultado, te ligo.", "souber", "saber", "Assim que", "*Assim que* + futuro: futuro do subjuntivo."),
+      A("Faça como você ___, tanto faz.", "quiser", "querer", "como", "*Como* + futuro: futuro do subjuntivo (*como quiser*)."),
+      A("Se a gente ___, a gente vai.", "puder", "poder", "Se", "*Se* + futuro: futuro do subjuntivo (*puder*)."),
+      A("Quem ___ a resposta levanta a mão.", "souber", "saber", "Quem", "*Quem* + futuro: futuro do subjuntivo."),
+      A("Sempre que você ___ ao Brasil, fique aqui em casa.", "vier", "vir", "Sempre que", "*Sempre que* + futuro: futuro do subjuntivo de *vir* (*vier*)."),
+      A("Enquanto eu ___ aqui, pode contar comigo.", "estiver", "estar", "Enquanto", "*Enquanto* + futuro: futuro do subjuntivo."),
+      A("Se ele ___ isso de novo, vou embora.", "disser", "dizer", "Se", "*Se* + futuro: futuro do subjuntivo (*disser*)."),
+      A("Quando vocês ___ o trabalho, me mandem.", "fizerem", "fazerem", "Quando", "*Quando* + futuro: futuro do subjuntivo (*fizerem*)."),
+      B("Liguei para vocês ___ as notícias por mim.", "saberem", "souberem", "para", "Después de preposición: infinitivo pessoal."),
+      B("Antes de nós ___ embora, vamos jantar.", "irmos", "formos", "Antes de", "*Antes de* + infinitivo pessoal."),
+      B("É melhor vocês ___ o que aconteceu.", "saberem", "souberem", "É melhor", "*É melhor* + infinitivo pessoal."),
+      B("Comprei ingressos para nós ___ o show.", "vermos", "virmos", "para", "*Para* + infinitivo pessoal de *ver* (*vermos*); *virmos* es el futuro do subjuntivo."),
+      B("Depois de vocês ___ o trabalho, podem sair.", "fazerem", "fizerem", "Depois de", "*Depois de* + infinitivo pessoal."),
+      B("Sem eles ___ nada, a gente não decide.", "dizerem", "disserem", "Sem", "*Sem* + infinitivo pessoal."),
+      B("É importante os alunos ___ presentes.", "estarem", "estiverem", "É importante", "*É importante* + infinitivo pessoal."),
+      B("Até vocês ___ a resposta, esperem aqui.", "terem", "tiverem", "Até", "*Até* + infinitivo pessoal (o *até que* + subjuntivo presente)."),
+      B("O professor pediu para os alunos ___ cedo.", "virem", "vierem", "pediu para", "*Pedir para* + infinitivo pessoal de *vir* (*virem*)."),
+      B("Ao ___ a notícia, eles ficaram felizes.", "saberem", "souberem", "Ao", "*Ao* + infinitivo pessoal = al + infinitivo.")
     ] },
-    { id: "relativi", week: 34, title: "che o cui", sub: "con o sin preposición", items: [
-      { s: "Il libro ___ leggo è bello.", a: "che", b: "cui", cue: "leggo", why: "Objeto directo, sin preposición: che." },
-      { s: "Il libro di ___ ti ho parlato è bello.", a: "cui", b: "che", cue: "di", why: "Después de preposición: cui." },
-      { s: "La ragazza ___ abita qui è spagnola.", a: "che", b: "cui", cue: "abita", why: "Sujeto: che." },
-      { s: "La ragazza con ___ esco è spagnola.", a: "cui", b: "che", cue: "con", why: "Después de preposición: cui." },
-      { s: "La città in ___ vivo è piccola.", a: "cui", b: "che", cue: "in", why: "Después de preposición: cui." },
-      { s: "Il film ___ abbiamo visto era lungo.", a: "che", b: "cui", cue: "abbiamo visto", why: "Objeto directo: che." },
-      { s: "L'amico a ___ scrivo vive a Roma.", a: "cui", b: "che", cue: "a", why: "Después de preposición: cui." },
-      { s: "Le persone ___ lavorano qui sono gentili.", a: "che", b: "cui", cue: "lavorano", why: "Sujeto: che." },
-      { s: "Il motivo per ___ sono qui è semplice.", a: "cui", b: "che", cue: "per", why: "Después de preposición: cui." },
-      { s: "La casa ___ ho comprato è vecchia.", a: "che", b: "cui", cue: "ho comprato", why: "Objeto directo: che." }
+
+    { id: "crase", week: 36, title: "à o a", sub: "la crase: a + a", items: [
+      A("Vou ___ praia de Ipanema no domingo.", "à", "a", "praia", "*Ir a* + *a praia*: à."),
+      A("Cheguei ___ reunião meia hora atrasado.", "à", "a", "reunião", "*Chegar a* + *a reunião*: à."),
+      A("A loja abre ___ nove horas.", "às", "as", "nove horas", "La hora exacta: às."),
+      A("Entreguei o documento ___ secretária.", "à", "a", "secretária", "*Entregar a* + *a secretária*: à."),
+      A("Fomos ___ festa da Bia no sábado.", "à", "a", "festa", "*Ir a* + *a festa*: à."),
+      A("Assisti ___ peça no teatro municipal.", "à", "a", "Assisti", "*Assistir a* + *a peça*: à."),
+      A("Refiro-me ___ situação atual do país.", "à", "a", "Refiro-me", "*Referir-se a* + *a situação*: à."),
+      A("Todos devem obedecer ___ lei.", "à", "a", "obedecer", "*Obedecer a* + *a lei*: à."),
+      A("Fui ___ Bahia no Carnaval.", "à", "a", "Bahia", "*A Bahia* lleva artículo: *vou à Bahia*."),
+      A("Pedi um bife ___ milanesa com arroz.", "à", "a", "milanesa", "*À moda de*: à milanesa, à baiana."),
+      B("Vou ___ Lisboa em julho.", "a", "à", "Lisboa", "*Lisboa* no lleva artículo (*venho de Lisboa*): sin crase."),
+      B("De repente, começou ___ chover.", "a", "à", "chover", "Ante verbo nunca hay crase."),
+      B("Fiquei cara ___ cara com ele.", "a", "à", "cara", "Entre palabras repetidas, sin crase."),
+      B("Ela chegou ___ pé na praia.", "a", "à", "pé", "Ante masculino no hay crase."),
+      B("Entreguei o livro ___ ela ontem.", "a", "à", "ela", "Ante pronombre personal, sin crase."),
+      B("Estou disposto ___ ajudar vocês.", "a", "à", "ajudar", "Ante infinitivo, sin crase."),
+      B("Vendem roupas ___ preços baixos.", "a", "à", "preços", "Ante masculino plural, sin crase."),
+      B("Daqui ___ duas semanas começa o curso.", "a", "à", "Daqui", "*Daqui a* + tiempo: sin artículo, sin crase."),
+      B("Ele foi ___ uma festa ontem.", "a", "à", "uma", "Ante *uma* (artículo indefinido), sin crase."),
+      B("Escrevi ___ você ontem à noite.", "a", "à", "você", "Ante *você*, sin crase.")
     ] }
   ];
 
@@ -145,18 +240,7 @@
   // Which of the two forms an item asks for (0 or 1), so that a session
   // brings both in the same measure.
   function side(d, x) {
-    var a = x.a.toLowerCase();
-    switch (d.id) {
-      case "ausiliare": return /essere/.test(x.why) ? 0 : 1;
-      case "pronomi": return /indirecto/.test(x.why) ? 1 : 0;
-      case "dida": return /^da/.test(a) ? 0 : 1;
-      case "passato": return /imperfetto/.test(x.why) ? 0 : 1;
-      case "futcond": return /condizionale/.test(x.why) ? 1 : 0;
-      case "cine": return a === "ci" ? 0 : 1;
-      case "congiuntivo": return /congiuntivo/.test(x.why) ? 0 : 1;
-      case "relativi": return a === "che" ? 0 : 1;
-    }
-    return 0;
+    return x && x.k ? 1 : 0;
   }
 
   // A session: eight sentences, four of each side, each one followed by its

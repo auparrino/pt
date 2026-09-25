@@ -212,9 +212,10 @@
       } catch (e) { tts(); }
       return null;
     }
-    // A pair of Sons: a real speaker of Lingua Libre when there is one
-    // (not for open/closed vowels: the file name cannot tell pèsca from pésca).
-    if (window.Voci && it.type === "coppia" && it.cat !== "vocali" && Voci.usable(it.say)) {
+    // A pair of Sons: a real speaker of Lingua Libre when there is one (the
+    // Portuguese spelling writes the accents, so avó / avô can be told apart
+    // by the file name; Voci.usable decides).
+    if (window.Voci && it.type === "coppia" && Voci.usable(it.say)) {
       if (state.silent && !force) return null;
       if (window.speechSynthesis) speechSynthesis.cancel();
       Voci.play(it.say, { rate: rate && rate < 0.9 ? 0.75 : 1, onplay: function (who) {
@@ -1790,7 +1791,7 @@
 
     if (!items.length) { toast("No hay preguntas para este modo todavía."); return; }
     // the real voices of the pairs, looked up while the round starts
-    if (window.Voci) Voci.prefetch(items.filter(function (x) { return x.type === "coppia" && x.cat !== "vocali"; })
+    if (window.Voci) Voci.prefetch(items.filter(function (x) { return x.type === "coppia"; })
       .map(function (x) { return x.say; }));
 
     round = {
@@ -2102,17 +2103,13 @@
     settle(verdict, given, useful ? diagHtml(d, false) : "");
   }
 
-  // The pair after the answer: both words, their meanings and, for a pair
-  // of length (the category «geminate», if Sons has one), a bar that shows
-  // the longer sound.
+  // The pair after the answer: both words and their meanings.
   function pairHtml(it) {
     var p = it.pair, shown = p.written || [p.a, p.b];
-    var bar = function (w, k) {
-      var gem = p.cat === "geminate" && /([bcdfglmnprstvz])\1/.test(w);
-      return '<div class="pairrow"><b>' + esc(shown[k]) + "</b> <span class=\"muted\">" + esc((p.es || [])[k] || "") + "</span>" +
-        (p.cat === "geminate" ? '<i class="dur' + (gem ? " long" : "") + '"></i>' : "") + "</div>";
+    var row = function (k) {
+      return '<div class="pairrow"><b>' + esc(shown[k]) + "</b> <span class=\"muted\">" + esc((p.es || [])[k] || "") + "</span></div>";
     };
-    return '<div class="pairbox">' + bar(p.a, 0) + bar(p.b, 1) + "</div>";
+    return '<div class="pairbox">' + row(0) + row(1) + "</div>";
   }
 
   /* -------------------------------------------- producción y corrección */
@@ -3044,7 +3041,7 @@
         return '<div class="card"><h2>🎙️ Voces reales</h2><p class="muted small">Sons usa grabaciones de hablantes reales para ' + Voci.count() +
           " palabras. Voces de Lingua Libre (Wikimedia Commons), licencia CC BY-SA 4.0: " + Object.keys(cr).map(esc).join(", ") + ".</p></div>";
       })() : "") +
-      (window.VociCV ? '<div class="card"><h2>🗣️ Oraciones grabadas</h2><p class="muted small">El dictado de Sons y «¿Qué forma escuchaste?» usan ' +
+      (window.VociCV && (VociCV.ALL || []).length ? '<div class="card"><h2>🗣️ Oraciones grabadas</h2><p class="muted small">El dictado de Sons y «¿Qué forma escuchaste?» usan ' +
         VociCV.ALL.length + " oraciones leídas por voluntarios de Common Voice (Mozilla), de dominio público (CC0).</p></div>" : "") +
       '<div class="card"><h2>Medallas</h2><div class="badges">' +
         Engine.BADGES.map(function (b) {

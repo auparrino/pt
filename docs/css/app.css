@@ -474,18 +474,17 @@ html[data-theme="dark"] .hud .muted { color: var(--mar); }
 .combo { font-weight: 800; color: var(--coral); white-space: nowrap; }
 .combo.pop { animation: pop .35s ease; display: inline-block; }
 @keyframes pop { 0% { transform: scale(.4); } 70% { transform: scale(1.3); } }
-/* la via: una linea sottile che avanza */
+/* el rumbo: una línea que avanza, del sol al atardecer */
 .progressline { flex: 1 1 140px; height: 8px; background: color-mix(in srgb, var(--papel) 55%, transparent); border-radius: 99px;
   overflow: hidden; min-width: 0; }
 .progressline i { display: block; height: 100%; background: linear-gradient(90deg, var(--sol), var(--coral)); border-radius: 99px;
   transition: width .5s cubic-bezier(.2,.8,.2,1); }
 #quit, #lesquit { padding: 6px 12px; border: none; background: transparent; font-size: 1.1rem; color: var(--cinza); }
 
-/* la scheda dell'esercizio: carta da menù col filetto in alto */
+/* la tarjeta del ejercicio: con el filete del calçadão arriba */
 body.ingame #app > .card { padding: 22px 20px 20px; border-top: none; position: relative; overflow: hidden; }
-/* il filetto del sole: limone e corallo */
-body.ingame #app > .card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px;
-  background: linear-gradient(90deg, var(--sol), var(--coral)); }
+body.ingame #app > .card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px;
+  background: var(--calcadao) repeat-x 0 0 / 40px 6px; opacity: .9; }
 .prompt { color: var(--cinza); font-size: .9rem; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
 .prompt .tab { padding: 4px 8px; }
 .stem { font-size: 1.5rem; font-weight: 700; line-height: 1.4; letter-spacing: -.005em; margin: 8px 0 20px; }
@@ -567,14 +566,14 @@ html[data-theme="dark"] .opt.right { color: var(--mata-claro); } html[data-theme
 .intro h2 { margin-top: 4px; }
 .intro ul.exs li { grid-template-columns: 1fr 1fr; }
 
-/* il verdetto: un foglio che sale dal basso, con il «Bravo!» in Bodoni */
+/* el veredicto: una hoja que sube desde abajo, con el «Muito bem!» en Fraunces */
 .feedback { margin-top: 16px; padding: 14px 16px; border-radius: 12px;
             border-left: 4px solid var(--cinza); background: var(--areia); animation: slide .22s ease; }
 @keyframes slide { from { transform: translateY(8px); opacity: 0; } }
 .feedback.giusto { border-color: var(--mata); }
 .feedback.quasi { border-color: var(--sol); }
 .feedback.sbagliato { border-color: var(--coral); }
-.feedback .verdict { font-size: 1.45rem; font-weight: 800;
+.feedback .verdict { font-family: var(--serif); font-size: 1.45rem; font-weight: 800;
   letter-spacing: -.005em; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .feedback .sol { font-size: 1.2rem; font-weight: 700; }
 .feedback .note { font-size: .88rem; margin-top: 6px; }
@@ -585,18 +584,19 @@ body.ingame .feedback:not(.prompt) {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; margin: 0;
   border: none; border-top: 4px solid transparent; border-radius: 18px 18px 0 0; max-height: 72vh; overflow-y: auto;
   padding: 20px 20px calc(18px + env(safe-area-inset-bottom));
-  box-shadow: 0 -8px 30px rgba(40,20,10,.14);
+  box-shadow: 0 -8px 30px rgba(10,40,50,.16);
   animation: sheet .32s cubic-bezier(.2,.9,.25,1.05);
 }
 @media (min-width: 700px) { body.ingame .feedback:not(.prompt) { left: 50%; width: 660px; margin-left: -330px; } }
 @keyframes sheet { from { transform: translateY(100%); } }
-body.ingame .feedback.giusto { background: #dcf6e6; color: #0f5b34; border-top-color: var(--mata); }
-body.ingame .feedback.quasi { background: #fff1bf; color: #5c4200; border-top-color: var(--sol); }
-body.ingame .feedback.sbagliato { background: #ffe4da; color: #7d2a13; border-top-color: var(--coral); }
+/* correcto: la mata; casi: la arena al sol; incorrecto: el coral del atardecer */
+body.ingame .feedback.giusto { background: #dcf5e4; color: #0e5530; border-top-color: var(--mata); }
+body.ingame .feedback.quasi { background: #fff0c4; color: #5a4100; border-top-color: var(--sol); }
+body.ingame .feedback.sbagliato { background: #ffe2d6; color: #7a2811; border-top-color: var(--coral); }
 @media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) body.ingame .feedback.giusto { background: #123f28; color: #d9f7e5; } html:not([data-theme="light"]) body.ingame .feedback.quasi { background: #3d3010; color: #ffeec0; } html:not([data-theme="light"]) body.ingame .feedback.sbagliato { background: #46201a; color: #ffdfd3; }
+  html:not([data-theme="light"]) body.ingame .feedback.giusto { background: #0f3b2a; color: #d6f6e3; } html:not([data-theme="light"]) body.ingame .feedback.quasi { background: #3a2f10; color: #ffefc2; } html:not([data-theme="light"]) body.ingame .feedback.sbagliato { background: #44201a; color: #ffdccf; }
 }
-html[data-theme="dark"] body.ingame .feedback.giusto { background: #123f28; color: #d9f7e5; } html[data-theme="dark"] body.ingame .feedback.quasi { background: #3d3010; color: #ffeec0; } html[data-theme="dark"] body.ingame .feedback.sbagliato { background: #46201a; color: #ffdfd3; }
+html[data-theme="dark"] body.ingame .feedback.giusto { background: #0f3b2a; color: #d6f6e3; } html[data-theme="dark"] body.ingame .feedback.quasi { background: #3a2f10; color: #ffefc2; } html[data-theme="dark"] body.ingame .feedback.sbagliato { background: #44201a; color: #ffdccf; }
 body.ingame .feedback:not(.prompt) .note, body.ingame .feedback:not(.prompt) .muted { color: inherit; opacity: .78; }
 body.ingame .feedback .verdict { font-size: 1.75rem; margin-bottom: 8px; }
 body.ingame .feedback .sol { font-size: 1.2rem; }
@@ -612,7 +612,7 @@ body.ingame:has(.feedback:not(.prompt)) .wrap { padding-bottom: 62vh; }
   background: color-mix(in srgb, var(--sol) 12%, var(--papel)); }
 .feedback.prompt .verdict { font-size: 1.05rem; font-weight: 800; }
 
-/* +xp che vola verso l'anello */
+/* +xp que vuela hacia el anillo */
 .xpfloat { position: fixed; z-index: 80; pointer-events: none; font-weight: 900; color: var(--sol-escuro);
   font-size: 1.3rem; text-shadow: 0 2px 0 rgba(255,255,255,.7); animation: xpfly .9s cubic-bezier(.2,.8,.3,1) forwards; }
 @media (prefers-color-scheme: dark) { html:not([data-theme="light"]) .xpfloat { color: var(--sol); text-shadow: 0 2px 0 rgba(0,0,0,.6); } }
@@ -620,7 +620,7 @@ html[data-theme="dark"] .xpfloat { color: var(--sol); text-shadow: 0 2px 0 rgba(
 @keyframes xpfly { 0% { opacity: 0; transform: translateY(10px) scale(.6); } 25% { opacity: 1; transform: translateY(0) scale(1.15); }
   100% { opacity: 0; transform: translateY(-70px) scale(.9); } }
 
-/* diagnosi e correzione */
+/* diagnóstico y corrección */
 .diag { margin: 6px 0 8px; }
 .diag .tag { display: inline-block; font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
   background: color-mix(in srgb, var(--coral) 12%, transparent); color: var(--coral-escuro);
@@ -637,20 +637,20 @@ html[data-theme="dark"] .diag .tag { color: var(--coral-claro); }
 .fixerr { margin: 8px 0 12px; font-size: 1.12rem; }
 .fixerr .w.missed { background: color-mix(in srgb, var(--sol) 35%, transparent); }
 
-/* ---------------------------------------------------------------- risultato */
+/* ---------------------------------------------------------------- resultado */
 
 .scorebig { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; justify-content: center; }
-.scorebig b { font-size: 3.4rem; line-height: 1; font-weight: 800; letter-spacing: -.03em; color: var(--mar); }
+.scorebig b { font-family: var(--serif); font-size: 3.4rem; line-height: 1; font-weight: 900; letter-spacing: -.02em; color: var(--mar); }
 .scorebig span { color: var(--cinza); font-weight: 700; background: var(--areia); padding: 4px 12px; border-radius: 99px; }
 .lesdone .bigstar { font-size: 5rem; line-height: 1; color: var(--sol); animation: starpop .7s cubic-bezier(.3,1.6,.5,1); }
 @keyframes starpop { from { transform: scale(0) rotate(-60deg); } }
 .lesdone .scorebig { justify-content: center; }
 
-/* lampo */
+/* relâmpago */
 .lsec { font-weight: 800; font-size: 1.5rem; min-width: 42px; }
 .lampobar i { background: linear-gradient(90deg, var(--coral), var(--sol)); transition: width .1s linear; }
 
-/* ------------------------------------------------------------------- teoria */
+/* ------------------------------------------------------------------- teoría */
 
 .lesson { background: var(--papel); border-radius: var(--raio); border: 1px solid var(--cinza-claro);
           box-shadow: var(--sombra); padding: 20px 18px; margin-top: 14px; line-height: 1.62; }
@@ -705,7 +705,7 @@ ul.vocab .say { padding: 2px 6px; }
 @media (prefers-color-scheme: dark) { html:not([data-theme="light"]) .call.tip b { color: var(--sol); } }
 html[data-theme="dark"] .call.tip b { color: var(--sol); }
 
-/* ----------------------------------------------------------------- letture */
+/* ----------------------------------------------------------------- lecturas */
 
 .text { font-size: 1.08rem; line-height: 1.75; }
 .text p { margin: 0 0 12px; }
@@ -723,7 +723,7 @@ html[data-theme="dark"] .call.tip b { color: var(--sol); }
   font-weight: 600; max-width: 92vw; transition: all .18s ease; }
 .glossbox.on { opacity: 1; transform: translate(-50%, 0); }
 
-/* ------------------------------------------------------------------ scrivi */
+/* ------------------------------------------------------------------ escreva */
 
 ul.reqs { list-style: none; padding: 0; margin: 10px 0 6px; }
 ul.reqs li { padding: 3px 0; color: var(--cinza); }
@@ -750,14 +750,17 @@ details.aibox input, .card input#aikey, .card input#gemkey { display: block; wid
 ul.ainotes { padding-left: 18px; margin: 8px 0; }
 ul.ainotes li { margin: 4px 0; }
 
-/* ------------------------------------------------------------------- varie */
+/* ------------------------------------------------------------------- varios */
 
 .toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%);
   background: var(--tinta); color: var(--areia); padding: 11px 18px; border-radius: 12px; font-weight: 700;
   box-shadow: var(--sombra); z-index: 60; max-width: 90vw; text-align: center; animation: rise .3s cubic-bezier(.2,.8,.2,1); }
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 70; overflow: hidden; }
 .confetti span { position: absolute; top: -40px; animation: fall 2.2s ease-in forwards; }
-@keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: .7; } }
+.confetti span.bit { border-radius: 2px; box-shadow: 0 0 0 .5px rgba(0,0,0,.08); }
+.confetti span.bit.round { border-radius: 50%; }
+@keyframes fall { 0% { transform: translateY(0) rotate(0); } 50% { transform: translateY(55vh) translateX(18px) rotate(280deg); }
+  100% { transform: translateY(110vh) translateX(-10px) rotate(560deg); opacity: .75; } }
 
 /* ------------------------------------------------------------------ mobile */
 
@@ -770,6 +773,7 @@ ul.ainotes li { margin: 4px 0; }
   .ring { width: 36px; height: 36px; } .ring b { width: 28px; height: 28px; font-size: .68rem; }
   .placa { padding: 4px 9px 3px; } .placa .p-rua { font-size: 1rem; } .placa .p-sup { font-size: .52rem; }
   h1 { font-size: 1.85rem; margin-top: 16px; }
+  h1.hello { font-size: 2rem; }
   .card { padding: 16px; }
   .stem { font-size: 1.38rem; }
 }
@@ -780,18 +784,16 @@ ul.ainotes li { margin: 4px 0; }
     animation: none !important; }
 }
 
-/* --- stanchezza --- */
+/* --- cansancio --- */
 .note.fatigue { background: var(--pedra); margin: 0 0 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .keyword { margin-top: 12px; }
 .keyword .typed input { flex: 1; min-width: 0; }
 .stem.big { font-size: 1.9rem; text-align: center; }
 
-/* --- suoni, dictogloss, leggi e ascolta --- */
+/* --- sons, dictogloss, leia e ouça --- */
 .options.pair .opt { font-size: 1.35rem; }
 .pairbox { margin: 8px 0; }
 .pairrow { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
-.pairrow i.dur { display: inline-block; height: 8px; width: 34px; border-radius: 4px; background: var(--mar); }
-.pairrow i.dur.long { width: 68px; background: var(--coral); }
 .karbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
 .seg { display: inline-flex; gap: 4px; }
 .seg .tab.on { background: var(--mar); color: #fff; border-color: var(--mar); }
@@ -805,20 +807,20 @@ body.kar-audio .text { filter: blur(6px); pointer-events: none; }
 .lead-ex.data ol.exs li { display: list-item; font-size: 1.05rem; margin: 4px 0; }
 .options.rules .opt { text-align: left; white-space: normal; line-height: 1.35; }
 
-/* --- parla --- */
+/* --- fale --- */
 .chat { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
 .bubble { max-width: 88%; padding: 10px 14px; border-radius: 16px; line-height: 1.4; }
 .bubble.ia { align-self: flex-start; background: var(--pedra); border-bottom-left-radius: 4px; }
 .bubble.me { align-self: flex-end; background: color-mix(in srgb, var(--mar) 18%, transparent); border-bottom-right-radius: 4px; }
 
-/* --- abitudine e mete --- */
+/* --- hábito y metas --- */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
 .chips .tab.on { background: var(--mar); color: #fff; border-color: var(--mar); }
 .planline { margin: -4px 0 12px; }
 .card.goalweek { padding-bottom: 12px; }
 .weekcard.ritorno { border-left: 4px solid var(--sol); }
 
-/* --- esame --- */
+/* --- exame --- */
 .equestions { padding-left: 20px; }
 .equestions li { margin: 10px 0; }
 .eopt { display: block; padding: 4px 0; }
