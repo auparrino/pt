@@ -33,7 +33,21 @@ def lexicon():
 # Formas que el alumno conoce desde la semana 1 aunque sean de un tiempo
 # posterior o irregulares: saludos y fórmulas.
 FIXED = {"chamo", "chama", "chamas", "gosto", "gosta", "gostaria", "obrigado", "obrigada",
-         "tudo", "bem", "prazer", "desculpe", "desculpa", "licença", "tchau", "oi", "olá"}
+         "tudo", "bem", "prazer", "desculpe", "desculpa", "licença", "tchau", "oi", "olá",
+         # expresiones fijas y formas que casi siempre son otra cosa
+         # (sustantivos, contracciones): tomara que, há, deste, o trabalho
+         "tomara", "oxalá", "há", "deste", "desse", "neste", "nesse", "casa", "trabalho",
+         "passeio", "mate", "vira", "quer", "queres", "viras"}
+
+
+_IMP = None
+
+
+def _imperatives():
+    global _IMP
+    if _IMP is None:
+        _IMP = set(lexicon().get("imperatives", []))
+    return _IMP
 
 
 def tokens(text):
@@ -52,6 +66,12 @@ def tense_weeks(text):
         ts = [t for t in simple.get(tok, []) if t in TENSE_WEEK]
         if not ts:
             continue
+        # falar es infinitivo antes que futuro do subjuntivo o infinitivo
+        # pessoal; fale / vá, imperativo desde la semana 12
+        if tok in lex.get("lemmas", {}).get(tok, []):
+            continue
+        if tok in _imperatives() and "subjPresente" in ts:
+            ts = [t for t in ts if t != "subjPresente"] + ["imperativo"]
         t = min(ts, key=lambda x: TENSE_WEEK[x])
         wk = TENSE_WEEK[t]
         # ser, estar y ter en presente se enseñan en la semana 1

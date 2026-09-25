@@ -146,9 +146,9 @@
     44: { t: "Describí tu barrio con diminutivos, aumentativos y sustantivos derivados (cafezinho, casarão, jornaleiro…).", min: 50,
           use: [["sufixos", 6, "6 palabras con sufijo (-inho, -zinho, -ão, -aço, -eiro…)"]],
           model: "Todo domingo tomo um cafezinho na padaria da esquina e compro um pãozinho quentinho. Na frente mora um senhor bonachão num casarão antigo de Santa Teresa. O jornaleiro sabe todas as notícias do bairro, e o sorveteiro passa pela praça às quatro. Ontem, no Maracanã, vi um golaço do Flamengo." },
-    45: { t: "Contale a un amigo un malentendido con falsos amigos (vaso, embaraçada, esquisito, borracha…), usándolos bien.", min: 50,
+    45: { t: "Contale a un amigo tu primer mes en Río usando bien falsos amigos (vaso, copo, esquisito, embaraçada, borracha, escritório…).", min: 50,
           use: [["falsos", 3, "3 falsos amigos bien usados"]],
-          model: "Quando cheguei ao Rio, pedi num restaurante um vaso de água, e o garçom me olhou com uma cara esquisita: vaso é para plantas; eu queria um copo. Depois, na praia, disse que estava embaraçada por causa do meu português, e todo mundo entendeu: embaraçada quer dizer envergonhada, não grávida. No escritório, uma colega me emprestou uma borracha para apagar o rascunho." },
+          model: "No meu primeiro mês no Rio, uma vizinha me deu um vaso com uma orquídea, e eu servi suco de caju num copo de vidro. Achei a comida do bar da esquina meio esquisita, mas depois me acostumei. Na praia, fiquei embaraçada quando não entendi uma piada. No escritório, uma colega me emprestou uma borracha para apagar o rascunho." },
     46: { t: "Contá un viaje a Lisboa y a Maputo: qué palabras cambian, qué te llamó la atención, qué autor leíste.", min: 60,
           use: [["variantes", 3, "3 palabras del portugués europeo o africano (autocarro, comboio, pequeno-almoço…)"]],
           model: "Em Lisboa, em vez de ônibus, peguei o autocarro, e para ir a Sintra tomei o comboio. No pequeno-almoço, que é o nosso café da manhã, pedi uma bica, o cafezinho deles. Fernando Pessoa, pela voz de Bernardo Soares, escreveu que a sua pátria era a língua portuguesa. Em Maputo li contos de Mia Couto, que inventa palavras novas com o português de Moçambique." },
@@ -328,6 +328,15 @@
     if (/(ções|dades|agens)$/.test(w)) return { g: "f", n: "p" };
     if (/(ção|dade|agem)$/.test(w)) return { g: "f", n: "s" };
     return null;
+  }
+  // A likely gender and number from the ending, for words the lexicon lacks.
+  function guessGN(w) {
+    if (!w || w.length < 3 || NOT_F.test(w) || NOT_M.test(w)) return nounGN(w);
+    if (/as$/.test(w)) return { g: "f", n: "p" };
+    if (/os$/.test(w)) return { g: "m", n: "p" };
+    if (/a$/.test(w)) return { g: "f", n: "s" };
+    if (/o$/.test(w)) return { g: "m", n: "s" };
+    return nounGN(w);
   }
   function isNoun(w) { return !!(w && (DATA.nouns[w] || DATA.nounsByPlural[w] || (U.HETERO && U.HETERO[w]))); }
 
@@ -615,6 +624,8 @@
     if (/(ãos|ães|ões|ãoes|aos|ãos)$/.test(w)) { var st = w.replace(/(ãos|ães|ões|ãoes|aos)$/, ""); cands.push(st + "ões", st + "ães", st + "ãos"); }
     if (/ones$/.test(w)) cands.push(w.replace(/ones$/, "ões"));
     for (var i = 0; i < cands.length; i++) if (cands[i] !== w && (known(cands[i]) || DATA.nounsByPlural[cands[i]])) return cands[i];
+    // Portuguese never ends in -ls or -ms: the plural is surely wrong.
+    if (/[aeiou](l|m)s$/.test(w) && cands.length) return cands[0];
     return null;
   }
 
@@ -629,7 +640,9 @@
     week = week || 52;
     var tk = toks(text), out = [];
     var push = function (i, n, cat, msg, soft) {
-      if (out.some(function (f) { return i < f.i + f.n && f.i < i + (n || 1); })) return;
+      var over = out.filter(function (f) { return i < f.i + f.n && f.i < i + (n || 1); });
+      if (over.length && (soft || over.some(function (f) { return !f.soft; }))) return;
+      if (over.length) out = out.filter(function (f) { return over.indexOf(f) < 0; });
       out.push({ i: i, n: n || 1, cat: cat, msg: msg, soft: !!soft });
     };
     var it = function (s) { return "*" + s + "*"; };
@@ -663,6 +676,12 @@
         return push(i, 1, "espanol", it(t.o) + " es español; en portugués: " + it(tr) + ".");
       }
       if (/^(y)$/.test(w)) return push(i, 1, "espanol", it("y") + " es español: la conjunción es " + it("e") + ".");
+
+      if (/^(he|ha|han|hemos|has|habia|había|habían)$/.test(w) && PP(n)) {
+        var pp0 = PP(n), pers0 = { he: 0, has: 2, ha: 2, hemos: 3, han: 5, habia: 0, "había": 0, "habían": 5 }[w];
+        var sf0 = /^hab/.test(w) ? "tinha " + n : conjForm(pp0, "perfeito", pers0);
+        return push(i, 2, "perfeito_composto", it(t.o + " " + n) + " es un calco del español: " + (/^hab/.test(w) ? "«había…» es " : "«he…» se dice con el perfeito simple, ") + it(sf0 || "comi") + ".");
+      }
 
       /* 2. Palabra que no existe: tilde, nasal, cedilla, grafía española, tipeo */
       if (!proper && !t.cap && /^[a-zà-ÿ-]+$/.test(w) && w.length > 1 && !known(w) && !LOAN[w] && !menteOK(w) && !suffixed(w) && !(/[aei]ndo$/.test(w) && isInf(w.replace(/ndo$/, "r")))) {
@@ -703,7 +722,6 @@
         }
         if (near && bd <= lim && lexiN < 5000) push(i, 1, "tipeo", "¿Quisiste decir " + it(near) + "?", true);
         else if (lexiN < 5000) push(i, 1, "lexico", "No conozco " + it(t.o) + ": revisá cómo se escribe.", true);
-        return;
       }
 
       /* 3. Contracciones sin hacer: em o → no, de ele → dele, a a → à */
@@ -741,12 +759,12 @@
       /* 5. muito */
       if (/^(muito|muita|muitos|muitas|pouco|pouca|poucos|poucas)$/.test(w) && ni === i + 1) {
         var base = w.replace(/(o|a|os|as)$/, "");
-        var gnM = nounGN(n);
+        var gnM = nounGN(n) || (!isAdj(n) && !V(n).length && !PP(n) ? guessGN(n) : null);
         if (isAdj(n) && !isNoun(n) && w !== base + "o" && !nounGN(n) && !(/^(muitos|muitas|poucos|poucas)$/.test(w) && (/s$/.test(n))) ) push(i, 1, "muito", "Delante de un adjetivo es invariable: " + it(base + "o " + n) + ".");
         else if (gnM && gnM.n && base + { ms: "o", fs: "a", mp: "os", fp: "as" }[gnM.g + gnM.n] !== w && !isAdj(n))
           push(i, 1, "muito", "Delante de un sustantivo concuerda: " + it(base + { ms: "o", fs: "a", mp: "os", fp: "as" }[gnM.g + gnM.n] + " " + n) + ".");
       }
-      if (/^(mais|más)$/.test(w) && /^(grande|grandes|bom|boa|bons|boas|mau|má|ruim)$/.test(n) && !/^(do|que)$/.test(n2)) {
+      if (/^(mais|más)$/.test(w) && /^(grande|grandes|bom|boa|bons|boas|mau|má|ruim)$/.test(n) && ni === i + 1) {
         var cmp = { grande: "maior", grandes: "maiores", bom: "melhor", boa: "melhor", bons: "melhores", boas: "melhores", mau: "pior", "má": "pior", ruim: "pior" }[n];
         push(i, 2, "regularizacion", "Comparativo irregular: " + it(cmp) + " (no " + it(w + " " + n) + ").");
       }
@@ -764,7 +782,7 @@
       /* 7. «a» personal */
       if (/^(a|ao|aos)$/.test(w) && pi >= 0 && (lemmas(p).some(function (l) { return DO_VERB.test(l); }) || DO_VERB.test(PP(p) || "")) && ni >= 0) {
         var isP = (w !== "a" && (tk[ni].cap || PERSON_N.test(n) || POSS.test(n))) || (w === "a" && (/^(meu|meus|teu|seu|seus|nosso|nossos|minhas|suas|nossas|ele|eles|você|vocês|todos|ninguém|alguém|o|os)$/.test(n)));
-        if (isP && !/^(casa|pé)$/.test(n) && !isInf(n)) push(i, 1, "a_personal", "Sin «a»: el objeto directo de persona va directo (" + it(p + (w === "ao" ? " o" : w === "aos" ? " os" : "") + " " + tk[ni].o) + ").");
+        if (isP && !/^(casa|pé)$/.test(n) && !isInf(n)) push(i, 1, "a_personal", "Sin «a»: el objeto directo de persona va directo (" + it(p + (w === "ao" ? " o" : w === "aos" ? " os" : "") + " " + tk[ni].o + (POSS.test(n) && W(wi(ni, 1)) ? " " + W(wi(ni, 1)) : "")) + ").");
       }
 
       /* 8. perfeito composto con un pasado cerrado; «he comido» */
@@ -917,7 +935,7 @@
       }
 
       /* 21. falsos amigos en contexto */
-      if (/^(vaso|vasos)$/.test(w) && /^(de|com)$/.test(n) && /^(água|suco|vinho|cerveja|leite|refrigerante)$/.test(n2)) push(i, 1, "falso_amigo", "El vaso para tomar es el " + it(w === "vaso" ? "copo" : "copos") + " (" + it("vaso") + " es una maceta o un florero).", true);
+      if (/^(vaso|vasos)$/.test(w) && /^(de|com)$/.test(n) && /^(água|suco|vinho|cerveja|leite|refrigerante)$/.test(n2)) push(i, 1, "falso_amigo", "El vaso para tomar es el " + it(w === "vaso" ? "copo" : "copos") + " (" + it("vaso") + " es una maceta o un florero).");
       if (/^(borracho|borracha|borrachos|borrachas)$/.test(w) && /^(estava|está|estou|ficou|fiquei|ficaram|estavam|muito|meio|completamente)$/.test(p)) push(i, 1, "falso_amigo", "«Borracho» es " + it(w.replace(/borrach/, "bêbad")) + " (" + it("borracha") + " es la goma).");
       if (/^(pelo|pelos)$/.test(w) && (ART.test(p) || POSS.test(p)) && /^(longo|curto|comprido|loiro|castanho|preto|liso|cacheado|ruivo|crespo|lindo|bonito)$/.test(n)) push(i, 1, "falso_amigo", "El pelo de la cabeza es el " + it("cabelo") + " (" + it("pelo") + " es el vello o el pelaje).");
       if (w === "acordo" && p === "me" && /^(de|do|da|dos|das|que)$/.test(n)) push(pi, 2, "falso_amigo", "«Me acuerdo de» es " + it("lembro de") + " o " + it("me lembro de") + " (acordar = despertarse).");
@@ -932,7 +950,7 @@
       if (w === "logo" && /^(e)$/.test(p) && false) { /* */ }
 
       /* 22. regencia */
-      if (hasLem(w, /^namorar$/) && n === "com") push(ni, 1, "regencia", it("Namorar") + " va sin preposición: " + it(w + " " + n2) + ".", true);
+      if (hasLem(w, /^namorar$/) && n === "com") push(ni, 1, "regencia", it("Namorar") + " va sin preposición: " + it(w + " " + n2) + " (*namorar com* es del habla).");
       if (hasLem(w, /^(pensar|acreditar|confiar)$/) && ni === i + 1 && !/^(em|no|na|nos|nas|num|numa|nele|nela|nisso|nisto|naquilo|que|se|bem|muito|melhor|sobre|,)$/.test(n) && !finite(n) && !isInf(n) && (SUBJ_PRON[n] != null || /^(você|ele|ela|mim|ti)$/.test(n) || tk[ni].cap || isNoun(n) || ART.test(n))) {
         var lPen = lemmas(w).filter(function (l) { return /^(pensar|acreditar|confiar)$/.test(l); })[0];
         if (!(lPen === "pensar" && ART.test(n))) push(i, 2, "regencia", it(lPen) + " lleva " + it("em") + ": " + it(w + " em " + n) + ".");

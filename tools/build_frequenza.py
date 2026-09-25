@@ -95,6 +95,7 @@ FORCE = {
     "morto": "morto", "morta": "morto", "mortos": "morto", "mortas": "morto",
     "feito": "fazer", "dito": "dizer", "visto": "ver", "posto": "pôr", "aberto": "aberto",
     "vocês": "você", "senhores": "senhor", "senhoras": "senhora", "meninas": "menina",
+    "deus": "deus", "antes": "antes", "depois": "depois", "atrás": "atrás", "jesus": "jesus",
     "melhor": "melhor", "pior": "pior", "maior": "maior", "menor": "menor",
     "os": "o", "as": "a", "uma": "um", "umas": "um", "uns": "um", "sua": "seu", "suas": "seu",
     "seus": "seu", "minhas": "meu", "meus": "meu", "nossos": "nosso", "nossas": "nosso",
@@ -386,13 +387,14 @@ def main():
             lemma = max(bank_forms[w], key=lambda l: (freq(l), l))
         else:
             lemma = w
-            cand = {c for c in stems(w) if c != w and (c in counts or c in bank)}
+            cand = {c for c in stems(w) if c != w and (
+                c in counts or c in bank or (re.search(r"(ar|er|ir)$", c) and VERBISH.search(w)))}
             if cand:
                 best = max(cand, key=lambda l: (freq(l), l))
                 verbish = re.search(r"(ar|er|ir)$", best) and w != best
                 if (re.search(r"(ado|ada|ido|ida)$", w) and w in stems(w) and freq(w) > freq(best)):
                     pass            # a noun of its own, more frequent (sentido / sentir, pedido)
-                elif verbish and freq(best) * 20 < freq(w):
+                elif verbish and freq(best) * 20 < freq(w) and w.endswith("s") and singular(w):
                     # hunspell files many nouns under a verb (drogas → drogar,
                     # soldados → soldar): a verb whose infinitive is that rare
                     # is not the lemma of so frequent a form
@@ -404,7 +406,7 @@ def main():
                     lemma = resolve(best, depth + 1) if depth < 3 and best in counts else best
                     if verbish and VERBISH.search(w):
                         verb_stems.add(best)
-            elif singular(w) and depth < 2 and not dic:
+            elif singular(w) and depth < 2:
                 lemma = resolve(singular(w)[0], depth + 1)
             if lemma == w:
                 # diminutives and superlatives: cafezinho → café, lindíssimo → lindo
