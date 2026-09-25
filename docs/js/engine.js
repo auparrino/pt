@@ -1,19 +1,28 @@
 /*
- * Il motore del gioco: correzione delle risposte, ripetizione dilazionata,
- * punti esperienza e salvataggio.  Nessuna dipendenza esterna.
+ * Rumo C1 — el motor del juego: corrección de las respuestas, repetición
+ * espaciada (FSRS), xp, meta diaria, racha y escudos, cofre, medallas y
+ * guardado.  Sin dependencias externas.
+ *
+ * Todo lo que se guarda en el teléfono lleva el prefijo «rumoc1.»: la app de
+ * italiano (La Via C1) vive en el mismo origen de GitHub Pages
+ * (auparrino.github.io/It y /pt) y sus claves no se tocan.
  */
 (function (root) {
   "use strict";
 
-  /* ------------------------------------------------------------ correzione */
+  /* ------------------------------------------------------------ corrección */
 
-  // Accents are meaningful in Italian (parlerò ≠ parlero), so they are kept.
-  // Everything else that only reflects typing habits is normalised away.
+  // En portugués las tildes cuentan (avó ≠ avô, é ≠ e, está ≠ esta) y la
+  // cedilla también (caça ≠ caca): se conservan.  Lo que es solo costumbre
+  // de tipeo (mayúsculas, puntuación, espacios, comillas, el espacio
+  // alrededor del guion de «chama-se») se normaliza.
   function normalise(s) {
     return String(s == null ? "" : s)
+      .normalize("NFC")
       .toLowerCase()
       .replace(/[’‘`´]/g, "'")
-      .replace(/[“”]/g, '"')
+      .replace(/[“”«»]/g, '"')
+      .replace(/([a-zà-ÿ])\s*[-‐‑]\s*([a-zà-ÿ])/g, "$1-$2")
       .replace(/\s+/g, " ")
       .replace(/^[\s.,;:!?]+|[\s.,;:!?]+$/g, "")
       .trim();
@@ -43,6 +52,10 @@
     return prev[b.length];
   }
 
+  /* Los veredictos son fichas internas que comparten todos los módulos
+     (diagnosi.js, frasi.js, letture.js, las clases CSS .feedback.giusto…):
+     se dejaron con los nombres de la app hermana para no romper ese
+     protocolo.  RIGHT = correcto, CLOSE = casi, WRONG = incorrecto. */
   var VERDICT = { RIGHT: "giusto", CLOSE: "quasi", WRONG: "sbagliato" };
 
   function grade(given, item) {
@@ -53,7 +66,7 @@
       .map(normalise)
       .filter(Boolean);
 
-    // Some book answers are a list of equally valid words ("grandi, buone").
+    // Some answers are a list of equally valid words ("grandes, bons").
     var expanded = accepted.slice();
     accepted.forEach(function (a) {
       // Only a list of single words is a list of alternatives; a sentence
@@ -72,15 +85,17 @@
 
     if (expanded.indexOf(g) >= 0) return VERDICT.RIGHT;
 
-    // Right word, missing accent (parlero for parlerò): worth partial credit
-    // and an explicit correction, never a silent pass.
+    // Right word, missing accent or cedilla (voce for você, cabeca for
+    // cabeça): worth partial credit and an explicit correction, never a
+    // silent pass.  The hyphen of the enclitic (chama se for chama-se) too.
+    var flat = function (x) { return deaccent(x).replace(/-/g, " "); };
     for (var k = 0; k < expanded.length; k++) {
-      if (deaccent(g) === deaccent(expanded[k])) return VERDICT.CLOSE;
+      if (deaccent(g) === deaccent(expanded[k]) || flat(g) === flat(expanded[k])) return VERDICT.CLOSE;
     }
 
     // Typo tolerance scales with length.  On a single word a one-letter
     // difference is usually the grammatical ending the drill is testing
-    // (parla vs parli), so short answers must match exactly.
+    // (fala vs falo), so short answers must match exactly.
     for (var i = 0; i < expanded.length; i++) {
       var want = expanded[i];
       var budget = want.length > 20 ? 2 : want.length > 8 ? 1 : 0;
@@ -89,22 +104,22 @@
     return VERDICT.WRONG;
   }
 
-  /* ------------------------------------------------- ripetizione dilazionata */
+  /* ------------------------------------------------- repetición espaciada */
 
   /* FSRS (Free Spaced Repetition Scheduler, Jarrett Ye / open-spaced-
-     repetition, versione 5) con i parametri predefiniti, che nel benchmark
-     pubblico (519 M di ripassi) predicono meglio di SM-2 e dell'HLR di
-     Duolingo.  Ogni scheda tiene: s (stabilità in giorni: quanto ci vuole
-     perché la probabilità di ricordo scenda al 90 %), d (difficoltà 1-10),
-     due, last, reps (successi di fila), lapses, ok, state.
-     Niente si «ritira»: dopo quattro successi la scheda passa a
-     «mantenimento» (Rawson & Dunlosky 2022; Bahrick 1993) e torna a
-     intervalli di mesi, con un tetto giornaliero (drills.dueList). */
+     repetition, versión 5) con los parámetros por defecto, que en el
+     benchmark público (519 M de repasos) predice mejor que SM-2 y que el HLR
+     de Duolingo.  Cada ficha guarda: s (estabilidad en días: cuánto tarda la
+     probabilidad de recordarla en bajar al 90 %), d (dificultad 1-10), due,
+     last, reps (aciertos seguidos), lapses, ok, state.
+     Nada se «retira»: después de unos aciertos la ficha pasa a
+     «mantenimiento» (Rawson & Dunlosky 2022; Bahrick 1993) y vuelve a
+     intervalos de meses, con un tope diario (drills.dueList). */
   var DAY = 86400000;
   var W = [0.40255, 1.18385, 3.173, 15.69105, 7.1949, 0.5345, 1.4604, 0.0046, 1.54575, 0.1192,
            1.01925, 1.9395, 0.11, 0.29605, 2.2698, 0.2315, 2.9898, 0.51655, 0.6621];
   var DECAY = -0.5, FACTOR = 19 / 81;
-  var MAINT_S = 60;          // stabilità (giorni) da cui la scheda è in mantenimento
+  var MAINT_S = 60;          // estabilidad (días) desde la que la ficha está en mantenimiento
   var RETENTIONS = [0.85, 0.9, 0.95];
 
   // Probability of recall after t days for a card of stability s.
@@ -174,7 +189,7 @@
     return d.getTime();
   }
 
-  /* schedule(card, quality, opts): quality 0 sbagliato, 1 quasi, 2 giusto.
+  /* schedule(card, quality, opts): quality 0 incorrecto, 1 casi, 2 correcto.
      opts: kind (slip/vocab/rule), light (right at first sight in the
      training), retry, hint, conf ("seguro"/"creo"/"adivino"), fast,
      rating (1-4, overrides), now, id, state (for the review log, the
@@ -242,7 +257,7 @@
     return !!card && (card.state === "maint" || (card.s == null && ((card.interval || 0) >= 45 || ((card.ok || 0) >= 3 && (card.ease || 0) >= 2.5))));
   }
 
-  /* ------------------------------------------------ registro dei ripassi */
+  /* ------------------------------------------------ registro de repasos */
 
   /* Every review is logged (id, minute, rating, days elapsed, stability
      before, kind): with it the app fits, on the phone, how fast this
@@ -309,7 +324,7 @@
     return out;
   }
 
-  /* ----------------------------------------------------- calibrazione */
+  /* ----------------------------------------------------- calibración */
 
   // conf: "seguro" | "creo" | "adivino"; right: boolean.
   function noteConfidence(state, conf, right, now) {
@@ -337,7 +352,7 @@
              guesses: cur.guesses, guessRight: cur.guessRight };
   }
 
-  /* ------------------------------------------------- abitudine e mete */
+  /* ------------------------------------------------- hábito y metas */
 
   /* Sessions a day (frequency predicts gains better than minutes: Sudina &
      Plonsky 2024) and the weekly streak: weeks in a row with at least
@@ -415,7 +430,7 @@
     return null;
   }
 
-  /* --------------------------------------------- la regola come scheda */
+  /* --------------------------------------------- la regla como ficha */
 
   /* A grammar rule is consolidated after productive practice on three
      different days (Serfaty & Serrano 2024; Suzuki 2019): each week keeps
@@ -458,7 +473,7 @@
     return out;
   }
 
-  /* --------------------------------------------------------------- progressi */
+  /* --------------------------------------------------------------- progreso */
 
   // Level curve: each level costs a bit more than the last.
   function levelFor(xp) {
@@ -482,9 +497,9 @@
     return 0;
   }
 
-  /* --------------------------------------------------------------- salvataggio */
+  /* --------------------------------------------------------------- guardado */
 
-  var KEY = "laviac1.save.v1";
+  var KEY = "rumoc1.save.v1";
 
   function blankSave() {
     return {
@@ -494,41 +509,39 @@
       unlocked: 1,
       streak: 0,
       lastPlayed: null,
-      cards: {},          // itemId -> scheda SRS
-      read: {},           // week -> timestamp della lezione letta
-      lessonScore: {},    // week -> miglior % nei controlli della lezione giocata
-      weekStats: {},      // week -> { attempts, right, bossPassed }
-      challengeLog: {},   // challengeId -> autovalutazione
+      cards: {},          // itemId -> ficha SRS
+      read: {},           // semana -> momento en que se leyó la lección
+      lessonScore: {},    // semana -> mejor % en los chequeos de la lección jugada
+      weekStats: {},      // semana -> { attempts, right, bossPassed }
+      challengeLog: {},   // challengeId -> autoevaluación
       badges: [],
       totals: { attempts: 0, right: 0, close: 0, wrong: 0 },
-      days: {},           // "aaaa-m-g" -> xp guadagnata quel giorno
-      goal: 200,          // obiettivo di xp al giorno (~2 pause caffè)
-      goalV: 2,           // versione della scala dell'obiettivo
-      syllabusV: 2,       // versione dell'ordine delle settimane (v. migrateSyllabus)
-      partsV3: 6,         // la settimana 3 in sei parti (v. migrateParts)
-      shields: 1,         // scudi che salvano la serie se salti un giorno
-      chest: null,        // giorno in cui hai aperto il forziere
-      best: {},           // record personali: lampo, combo
-      silent: false,      // modalità ufficio: niente audio automatico
-      theme: "",          // "" come il telefono, "light" o "dark"
-      written: 0,         // frasi scritte a memoria senza errori
-      letture: {},        // puntata -> { pct, at } delle letture fatte
-      errs: {},           // categoria d'errore -> { n, fixed, last }
-      errLog: [],         // ultimi errori: { cat, g, e, at }
-      srsV: 2,            // versione dello scheduler (2 = FSRS)
-      retention: 0.9,     // ritenzione desiderata (0.85 / 0.9 / 0.95)
-      notte: true,        // nuovo di sera, ripasso al mattino
-      log: [],            // registro dei ripassi: [id, minuto, voto, giorni, s, tipo]
-      speed: {},          // velocità d'oblio stimate: { v: {k, n}, g: {k, n} }
-      conf: {},           // "aaaa-m-g" -> { seguro: [n, errori], creo: [..], adivino: [..] }
-      sessions: {},       // "aaaa-m-g" -> sessioni giocate quel giorno
-      plan: null,         // intenzione d'implementazione: { when, where, at }
-      ideal: null,        // il «yo ideal»: { why, text, at }
-      goals: null,        // sotto-obiettivi settimanali: { words, rules, weeks, start }
-      reflect: {},        // chiusura settimanale: "aaaa-w" -> { hard, change, when }
-      records: {},        // record personali per metrica
-      pauses: [],         // pause di 3+ giorni: { from, to, why }
-      keywords: {}        // parola -> immagine mnemonica scritta dall'alunno
+      days: {},           // "aaaa-m-d" -> xp ganada ese día
+      goal: 200,          // meta de xp por día (~4 cafezinhos)
+      syllabusV: 1,       // versión del orden de las semanas (ver migrateSyllabus)
+      shields: 1,         // escudos que salvan la racha si faltás un día
+      chest: null,        // día en que abriste el cofre
+      best: {},           // récords: relâmpago, combo
+      silent: false,      // modo oficina: nada suena solo
+      theme: "",          // "" como el teléfono, "light" u "dark"
+      written: 0,         // frases escritas de memoria sin errores
+      letture: {},        // lectura -> { pct, at } de las lecturas hechas
+      errs: {},           // categoría de error -> { n, fixed, last }
+      errLog: [],         // últimos errores: { cat, g, e, at }
+      srsV: 2,            // versión del programador (2 = FSRS)
+      retention: 0.9,     // retención deseada (0.85 / 0.9 / 0.95)
+      notte: true,        // lo nuevo de noche se repasa a la mañana
+      log: [],            // registro de repasos: [id, minuto, nota, días, s, tipo]
+      speed: {},          // velocidades de olvido estimadas: { v: {k, n}, g: {k, n} }
+      conf: {},           // "aaaa-m-d" -> { seguro: [n, errores], creo: [..], adivino: [..] }
+      sessions: {},       // "aaaa-m-d" -> sesiones jugadas ese día
+      plan: null,         // intención de implementación: { when, where, at }
+      ideal: null,        // el «yo ideal»: { why, text, at }
+      goals: null,        // submetas semanales: { words, rules, weeks, start }
+      reflect: {},        // cierre semanal: "aaaa-m-d" (lunes) -> { hard, change, when }
+      records: {},        // récords personales por métrica
+      pauses: [],         // pausas de 3+ días: { from, to, why }
+      keywords: {}        // palabra -> imagen mnemónica escrita por el alumno
     };
   }
 
@@ -607,50 +620,13 @@
     return s;
   }
 
-  /* Il programma è stato riordinato secondo la guida (passato prossimo nel
-     primo trimestre; ci/ne, pronomi combinati e congiuntivo nel secondo).
-     Chi aveva già giocato ha le settimane numerate col vecchio ordine: le
-     rinumeriamo, e la settimana sbloccata diventa la prima del nuovo ordine
-     che non aveva ancora fatto (niente salti di teoria). */
-  var OLD_TO_NEW = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 7, 6: 5, 7: 6, 8: 10, 9: 12, 10: 14, 11: 8, 12: 9, 13: 13,
-    14: 17, 15: 28, 16: 27, 17: 11, 18: 15, 19: 16, 20: 19, 21: 20, 22: 23, 23: 18, 24: 46, 25: 47, 26: 26,
-    27: 24, 28: 25, 29: 29, 30: 30, 31: 32, 32: 33, 33: 31, 34: 35, 35: 36, 36: 22, 37: 21, 38: 34, 39: 39,
-    40: 40, 41: 41, 42: 42, 43: 43, 44: 44, 45: 37, 46: 45, 47: 38, 48: 48, 49: 49, 50: 50, 51: 51, 52: 52 };
-
-  /* Week 3 (articles) went from four lesson parts to six: determinati →
-     «genere, il, la, l'» and «lo, gli, plurale»; indeterminati → 3;
-     preposizioni → 5; partitivo e usi → «dove va» and «partitivo». */
-  function migrateParts(s) {
-    if (!isObj(s) || s.partsV3 === 6) return s;
-    var rp = isObj(s.readParts) ? s.readParts[3] : null;
-    if (isObj(rp)) {
-      var n = {};
-      if (rp[0]) n[0] = n[1] = true;
-      if (rp[1]) n[2] = true;
-      if (rp[2]) n[4] = true;
-      if (rp[3]) n[3] = n[5] = true;
-      s.readParts[3] = n;
-    }
-    s.partsV3 = 6;
-    return s;
-  }
-
+  /* El temario de Rumo C1 nace en su versión 1 (tools/curriculo.py).  Si
+     algún día se reordenan las semanas, la migración de las partidas viejas
+     va acá, como en la app hermana: renumerar read, lessonScore y weekStats
+     y abrir la primera semana del orden nuevo que no se hizo.  Por ahora
+     solo marca la versión. */
   function migrateSyllabus(s) {
-    s = migrateParts(s);
-    if (!isObj(s) || s.syllabusV === 2) return s;
-    ["read", "lessonScore", "weekStats"].forEach(function (k) {
-      if (!isObj(s[k])) return;
-      var out = {};
-      Object.keys(s[k]).forEach(function (w) { if (OLD_TO_NEW[w]) out[OLD_TO_NEW[w]] = s[k][w]; });
-      s[k] = out;
-    });
-    var done = {};
-    for (var w = 1; w < (+s.unlocked || 1); w++) done[OLD_TO_NEW[w]] = true;
-    var u = 1;
-    while (u < 52 && done[u]) u++;
-    s.unlocked = u;
-    s.week = OLD_TO_NEW[s.week] || 1;
-    s.syllabusV = 2;
+    if (isObj(s) && !s.syllabusV) s.syllabusV = 1;
     return s;
   }
 
@@ -659,13 +635,7 @@
     try {
       raw = root.localStorage && root.localStorage.getItem(KEY);
       if (!raw) return blankSave();
-      var s = migrateSyllabus(JSON.parse(raw));
-      if (isObj(s) && s.goalV !== 2) {
-        // The first goal scale (20-150) was reached with a single session.
-        s.goal = { 20: 100, 50: 200, 100: 350, 150: 500 }[s.goal] || 200;
-        s.goalV = 2;
-      }
-      s = sanitize(s);
+      var s = sanitize(migrateSyllabus(JSON.parse(raw)));
       // The SM-2 cards get a stability and a difficulty (nothing is lost).
       if (s.srsV !== 2) {
         Object.keys(s.cards).forEach(function (id) { upgradeCard(s.cards[id]); });
@@ -751,8 +721,8 @@
     return out;
   }
 
-  /* Il forziere: una volta al giorno, raggiunto l'obiettivo, una ricompensa
-     a sorpresa.  La varietà è ciò che fa tornare. */
+  /* El cofre: una vez por día, cumplida la meta, un premio sorpresa.  La
+     variedad es lo que hace volver. */
   function openChest(state, rnd, now) {
     var k = dayKey(now);
     if (state.chest === k) return null;
@@ -777,13 +747,14 @@
     return prize;
   }
 
-  /* I gradi: un titolo per ogni tappa, da turista a madrelingua. */
+  /* Los rangos: un título por etapa, del turista que baja en el Galeão al
+     carioca da gema (el nacido y criado en Río).  Calibrados sobre una
+     carrera entera: quien juega todo el curso llega al nivel 40
+     (tools/sim_carriera.js); Carioca da gema es el final del curso. */
   var RANKS = [
-    // Calibrati su una carriera intera: chi gioca tutto il corso arriva al
-    // livello 40 (tools/sim_carriera.js).  Madrelingua è la fine del corso.
-    [1, "Turista"], [3, "Viaggiatore"], [6, "Studente Erasmus"],
-    [10, "Pendolare"], [14, "Cittadino"], [18, "Chiacchierone"],
-    [23, "Oratore"], [28, "Poeta"], [34, "Dantesco"], [40, "Madrelingua"]
+    [1, "Turista"], [3, "Gringo"], [6, "Visitante"],
+    [10, "Morador"], [14, "Local"], [18, "Bom de papo"],
+    [23, "Sambista"], [28, "Poeta"], [34, "Carioca"], [40, "Carioca da gema"]
   ];
   function rankFor(level) {
     var r = RANKS[0][1];
@@ -793,75 +764,83 @@
 
   /* ----------------------------------------------------------------- badge */
 
+  // The last episode of «Martín no Rio» (letture.js), ep13 if it is not loaded.
+  function lastMartin() {
+    var L = root.Letture, eps = L && L.ofSeries ? L.ofSeries("martin") : [];
+    return eps.length ? eps[eps.length - 1].id : "ep13";
+  }
+
+  /* Las medallas: nombres en portugués, descripción en castellano.  Los id
+     son los de la app hermana (quedan en las partidas guardadas). */
   var BADGES = [
-    { id: "primo-passo", name: "Primo passo", desc: "Contestá tu primera pregunta.",
+    { id: "primo-passo", name: "Primeiro passo", desc: "Contestá tu primera pregunta.",
       test: function (s) { return s.totals.attempts >= 1; } },
-    { id: "centurione", name: "Centurione", desc: "100 respuestas correctas.",
+    { id: "centurione", name: "Cem na mosca", desc: "100 respuestas correctas.",
       test: function (s) { return s.totals.right >= 100; } },
-    { id: "mille", name: "Mille", desc: "1000 respuestas correctas.",
+    { id: "mille", name: "Mil e uma", desc: "1000 respuestas correctas.",
       test: function (s) { return s.totals.right >= 1000; } },
-    { id: "settimana", name: "Sette giorni", desc: "Racha de 7 días.",
+    { id: "settimana", name: "Sete dias", desc: "Racha de 7 días.",
       test: function (s) { return s.streak >= 7; } },
-    { id: "mese", name: "Trenta giorni", desc: "Racha de 30 días.",
+    { id: "mese", name: "Trinta dias", desc: "Racha de 30 días.",
       test: function (s) { return s.streak >= 30; } },
-    { id: "a2", name: "Livello A2", desc: "Vencé al jefe de la semana 13.",
+    { id: "a2", name: "Nível A2", desc: "Vencé al jefe de la semana 13.",
       test: function (s) { return !!(s.weekStats[13] || {}).bossPassed; } },
-    { id: "b1", name: "Livello B1", desc: "Vencé al jefe de la semana 26.",
+    { id: "b1", name: "Nível B1", desc: "Vencé al jefe de la semana 26.",
       test: function (s) { return !!(s.weekStats[26] || {}).bossPassed; } },
-    { id: "b2", name: "Livello B2", desc: "Vencé al jefe de la semana 39.",
+    { id: "b2", name: "Nível B2", desc: "Vencé al jefe de la semana 39.",
       test: function (s) { return !!(s.weekStats[39] || {}).bossPassed; } },
-    { id: "c1", name: "Livello C1", desc: "Superá el examen final.",
+    { id: "c1", name: "Nível C1", desc: "Superá el examen final.",
       test: function (s) { return !!(s.weekStats[52] || {}).bossPassed; } },
-    { id: "congiuntivo", name: "Maestro del congiuntivo",
+    { id: "congiuntivo", name: "Mestre do subjuntivo",
       desc: "Vencé al jefe de la semana 39 sin perder vidas.",
       test: function (s) { return (s.weekStats[39] || {}).perfect === true; } },
-    { id: "sfidante", name: "Sfidante", desc: "50 desafíos del Soluzioni resueltos.",
+    { id: "sfidante", name: "Desafiante", desc: "50 desafíos resueltos.",
       test: function (s) { return Object.keys(s.challengeLog).length >= 50; } },
-    { id: "studioso", name: "Studioso", desc: "Leé la teoría de 10 semanas.",
+    { id: "studioso", name: "Estudioso", desc: "Leé la teoría de 10 semanas.",
       test: function (s) { return Object.keys(s.read || {}).length >= 10; } },
     { id: "erudito", name: "Erudito", desc: "Leé la teoría de las 52 semanas.",
       test: function (s) { return Object.keys(s.read || {}).length >= 52; } },
-    { id: "penna", name: "Prima penna", desc: "Escribí de memoria tu primera frase.",
+    { id: "penna", name: "Primeira frase", desc: "Escribí de memoria tu primera frase.",
       test: function (s) { return (s.written || 0) >= 1; } },
-    { id: "scrittore", name: "Scrittore", desc: "100 frases escritas de memoria.",
+    { id: "scrittore", name: "Escritor", desc: "100 frases escritas de memoria.",
       test: function (s) { return (s.written || 0) >= 100; } },
-    { id: "fulmine", name: "Fulmine", desc: "20 aciertos en un Lampo de 60 segundos.",
+    { id: "fulmine", name: "Raio", desc: "20 aciertos en un Relâmpago de 60 segundos.",
       test: function (s) { return ((s.best || {}).lampo || 0) >= 20; } },
-    { id: "frasario", name: "Frasario", desc: "100 frases de conversación aprendidas.",
+    { id: "frasario", name: "Conversador", desc: "100 frases de conversación aprendidas.",
       test: function (s) {
         return Object.keys(s.cards).filter(function (k) {
           return k.indexOf("frase:") === 0;
         }).length >= 100;
       } },
-    { id: "lettore", name: "Lettore", desc: "Terminá 5 lecturas.",
+    { id: "lettore", name: "Leitor", desc: "Terminá 5 lecturas.",
       test: function (s) { return Object.keys(s.letture || {}).length >= 5; } },
-    { id: "bologna", name: "Bolognese", desc: "Terminá la historia de Martín.",
-      test: function (s) { return !!(s.letture || {}).ep13; } },
-    { id: "umanista", name: "Umanista", desc: "Leé las 10 lecturas de cultura.",
+    { id: "bologna", name: "Aplauso no Arpoador", desc: "Terminá la historia de Martín no Rio.",
+      test: function (s) { return !!(s.letture || {})[lastMartin()]; } },
+    { id: "umanista", name: "Humanista", desc: "Leé las 10 lecturas de cultura.",
       test: function (s) {
         return Object.keys(s.letture || {}).filter(function (k) {
           return k.indexOf("c-") === 0;
         }).length >= 10;
       } },
-    { id: "ponte", name: "Pontiere", desc: "50 cognados pasados al italiano.",
+    { id: "ponte", name: "Ponte Rio–Niterói", desc: "50 cognados pasados al portugués.",
       test: function (s) {
         return Object.keys(s.cards).filter(function (k) {
           return k.indexOf("ponte:") === 0;
         }).length >= 50;
       } },
-    { id: "perfetta", name: "Settimana perfetta", desc: "Completá todas las misiones de una semana.",
+    { id: "perfetta", name: "Semana perfeita", desc: "Completá todas las misiones de una semana.",
       test: function (s) { return Object.keys(s.perfectWeeks || {}).length >= 1; } },
-    { id: "dieci-perfette", name: "Dieci perfette", desc: "Diez semanas con todas las misiones.",
+    { id: "dieci-perfette", name: "Dez perfeitas", desc: "Diez semanas con todas las misiones.",
       test: function (s) { return Object.keys(s.perfectWeeks || {}).length >= 10; } },
-    { id: "equilibrio", name: "Quattro corde", desc: "Un día con las cuatro destrezas: input, output, forma y fluidez.",
+    { id: "equilibrio", name: "Quatro cordas", desc: "Un día con las cuatro destrezas (como las cuatro cuerdas del cavaquinho): input, output, forma y fluidez.",
       test: function (s) { return !!s.balancedDay; } },
-    { id: "cinquecento", name: "Cinquecento parole", desc: "500 palabras practicadas.",
+    { id: "cinquecento", name: "Quinhentas palavras", desc: "500 palabras practicadas.",
       test: function (s) {
         return Object.keys(s.cards).filter(function (k) { return k.indexOf("v:") === 0 || k.indexOf("b:voc:") === 0; }).length >= 500;
       } },
-    { id: "giornaliera", name: "Sfidante del giorno", desc: "Diez sfide del giorno ganadas.",
+    { id: "giornaliera", name: "Desafiante do dia", desc: "Diez desafíos del día ganados.",
       test: function (s) { return (s.dailyWon || 0) >= 10; } },
-    { id: "costante", name: "Costante", desc: "Cumplí la meta diaria 5 días.",
+    { id: "costante", name: "Constante", desc: "Cumplí la meta diaria 5 días.",
       test: function (s) {
         var g = s.goal || 200;
         return Object.keys(s.days || {}).filter(function (k) {

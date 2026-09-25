@@ -1,192 +1,205 @@
-/* Esame finale C1 (settimana 52): ascolto, lettura e scrittura.
- * Solo dati: la logica sta in app.js.  La parte di strutture e lessico
- * (cloze, formazione di parole, trasformazioni, registro) è in
- * tools/authored/esame_c1.py.
+/* Exame final C1 (semana 52): compreensão oral, leitura y produção escrita.
+ * Solo datos: la lógica está en app.js.  Estruturas y léxico (huecos,
+ * transformaciones, formación de palabras, registro, colocaciones, falsos
+ * amigos) están en tools/authored/esame_c1.py.
  *
- * ascolto[]:  due ascolti lunghi a due voci (turns: "A" = primo speaker,
- *             "B" = secondo; l'app li legge con due altezze TTS diverse),
- *             8 domande a scelta multipla in castellano (4 opzioni) e
- *             4 frasi da completare con una parola dell'audio.
- * lettura[]:  due testi di 6 paragrafi; 8 titoli (6 giusti + 2 distrattori)
- *             da abbinare (match[i] = indice del titolo del paragrafo i);
- *             8 vero/falso con la frase del testo che giustifica.
- * scrittura[]: due consegne con griglia di valutazione. */
+ * Modelo: Celpe-Bras (nivel Avançado Superior) y exámenes C1.  Contenido
+ * cultural de Brasil y Portugal (historia, sociología, literatura); los
+ * datos son verificables y lo que la tradición cuenta sin prueba firme se
+ * presenta como tal («conta-se»).  Todo en PB; la única cita en portugués
+ * europeo (Sophia de Mello Breyner) tiene la misma grafía en ambas normas.
+ *
+ * ascolto[]:  dos entrevistas largas a dos voces (turns: "A" = primer
+ *             hablante, "B" = segundo; la app las lee con dos alturas TTS),
+ *             8 preguntas de opción múltiple en castellano (4 opciones) y
+ *             4 frases para completar con una palabra del audio.
+ * lettura[]:  dos textos de 6 párrafos (~600 palabras); 8 títulos (6 buenos
+ *             + 2 distractores) para asignar (match[i] = índice del título
+ *             del párrafo i); 8 verdadeiro/falso con la frase que lo prueba.
+ * scrittura[]: dos consignas con la grilla del Celpe-Bras.  `kind` conserva
+ *             los valores del módulo italiano ("argomentativo", "formale")
+ *             porque app.js los usa.  rubric: [clave, descripción]; las
+ *             claves (contexto, discursiva, linguistica, lexico) son las
+ *             tres adequações del Celpe-Bras, con la lingüística partida en
+ *             gramática y léxico para conservar los cuatro puntajes de 0-5. */
 (function (root) { "use strict";
   var ESAME = {
     ascolto: [
-      { id: "asc-1", title: "Intervista: il lavoro da remoto", speakers: ["Giornalista", "Esperta"],
+      { id: "asc-1", title: "Entrevista: o «homem cordial» e o jeitinho", speakers: ["Jornalista", "Historiadora"],
         turns: [
-          ["A", "Buongiorno e benvenuti. Oggi parliamo di lavoro da remoto con la professoressa Livia Sartori, sociologa del lavoro. Professoressa, a distanza di qualche anno dall'emergenza sanitaria, che cosa è rimasto del cosiddetto smart working?"],
-          ["B", "Meno di quanto si pensasse nei momenti di entusiasmo, ma più di quanto temessero gli scettici. La maggior parte delle aziende che lo avevano introdotto in fretta è tornata a chiedere presenza, però quasi nessuna è tornata al modello precedente: prevale la formula ibrida, due o tre giorni a casa e gli altri in ufficio."],
-          ["A", "Chi ne ha tratto maggior vantaggio?"],
-          ["B", "Le persone con figli piccoli e chi vive lontano dai grandi centri. Per loro il risparmio di tempo negli spostamenti si è tradotto in una qualità della vita nettamente migliore. Il rovescio della medaglia è che i benefici si concentrano sui lavori d'ufficio: un operaio, un'infermiera o un commesso non hanno avuto alcuna scelta."],
-          ["A", "E i rischi?"],
-          ["B", "Il principale, a mio avviso, è l'isolamento. Non tanto la solitudine in sé, quanto la perdita di quelle conversazioni informali in cui si imparano le cose che nessuno mette per iscritto. I più giovani, che devono ancora costruirsi una rete di relazioni, sono i più penalizzati."],
-          ["A", "Le aziende se ne sono rese conto?"],
-          ["B", "Alcune sì. Le più attente hanno introdotto giornate comuni obbligatorie, in cui tutta la squadra è presente, e hanno formato i dirigenti a gestire persone che non vedono. Altre si sono limitate a contare le ore di connessione, che è il modo più sicuro per distruggere la fiducia."],
-          ["A", "Un'ultima domanda: il diritto alla disconnessione è davvero garantito?"],
-          ["B", "Sulla carta sì; nella pratica dipende dalla cultura di ogni ufficio. Finché rispondere a un'email alle dieci di sera sarà considerato un segno di dedizione, nessuna legge basterà. Sarebbe necessario che fossero i capi, per primi, a dare l'esempio."],
-          ["A", "Professoressa Sartori, grazie."],
-          ["B", "Grazie a voi."]
+          ["A", "Boa noite. Você está ouvindo o Conversa de Botequim, gravado hoje num bar da Lapa, aqui no Rio. Minha convidada é a historiadora Regina Aguiar, que acaba de lançar um livro sobre as chamadas interpretações do Brasil. Regina, em 1936 Sérgio Buarque de Holanda publicou Raízes do Brasil e popularizou uma expressão que todo mundo cita: o «homem cordial». O que ele queria dizer com isso?"],
+          ["B", "Obrigada pelo convite. Antes de mais nada, uma correção: a expressão não foi inventada por ele. O próprio Sérgio Buarque explica que a tomou emprestada do escritor Ribeiro Couto. E quase todo mundo a entende mal. «Cordial», aqui, não quer dizer gentil nem bem-educado. A palavra vem do latim cor, cordis, que significa coração. O homem cordial é aquele que age movido pelo coração, pelas emoções, tanto na amizade quanto na inimizade."],
+          ["A", "Ou seja, não é exatamente um elogio."],
+          ["B", "Não é. Para Sérgio Buarque, o brasileiro tem dificuldade em separar o público do privado. Trata o Estado como se fosse uma extensão da família, prefere as relações pessoais às regras impessoais e desconfia de tudo o que é formal. Ele dá exemplos do cotidiano: o gosto pelos diminutivos e a mania de chamar as pessoas pelo primeiro nome, deixando de lado o sobrenome."],
+          ["A", "E como isso se liga ao famoso jeitinho brasileiro?"],
+          ["B", "Um dos que mais escreveram sobre isso foi o antropólogo Roberto DaMatta, a partir do fim dos anos setenta. O jeitinho é uma forma de contornar a regra sem confrontá-la: você conversa, é simpático, conta a sua história e consegue o que queria. Tem um lado criativo e solidário, mas tem também um lado perverso, que aparece quando alguém, em vez de pedir, ameaça: «Você sabe com quem está falando?» Aí a simpatia vira hierarquia."],
+          ["A", "Sérgio Buarque também comparou a colonização portuguesa com a espanhola, não é?"],
+          ["B", "Sim, no capítulo «O semeador e o ladrilhador». As cidades da América espanhola, como Lima ou Buenos Aires, foram traçadas com régua, em quadras regulares a partir de uma praça central: o espanhol seria o ladrilhador. O português, ao contrário, teria semeado as cidades ao longo do litoral, adaptando-se ao terreno, com certo desleixo. Basta subir até Santa Teresa e olhar as ruas tortas lá embaixo para entender a metáfora."],
+          ["A", "Essas interpretações ainda valem hoje?"],
+          ["B", "Como hipóteses, sim; como retratos fiéis, não. O próprio Sérgio Buarque via na urbanização o fim lento das nossas raízes rurais e ibéricas. Críticos posteriores mostraram que esses traços não são uma essência nacional, mas o resultado de uma história concreta: o latifúndio, a escravidão, o uso privado do Estado. Eu diria que o livro continua sendo lido não porque tenha acertado em tudo, mas porque nos obriga a fazer as perguntas certas."],
+          ["A", "Regina Aguiar, muito obrigado pela conversa."],
+          ["B", "Eu que agradeço."]
         ],
         questions: [
-          ["Según la experta, ¿qué quedó del trabajo remoto después de la emergencia sanitaria?",
-           ["Menos de lo que se pensaba, pero más de lo que temían los escépticos", "Prácticamente nada: todas las empresas volvieron al modelo anterior", "Todo: la mayoría de las empresas mantuvo el trabajo remoto total", "Solo quedó en el sector público"],
-           "Menos de lo que se pensaba, pero más de lo que temían los escépticos"],
-          ["¿Qué modelo predomina hoy en las empresas?",
-           ["Uno híbrido: dos o tres días en casa y el resto en la oficina", "Trabajo remoto cinco días por semana", "Presencia obligatoria todos los días", "Un día en casa por mes"],
-           "Uno híbrido: dos o tres días en casa y el resto en la oficina"],
-          ["¿Quiénes sacaron mayor provecho?",
-           ["Las personas con hijos chicos y quienes viven lejos de las grandes ciudades", "Los operarios y el personal sanitario", "Los jóvenes recién ingresados", "Los directivos"],
-           "Las personas con hijos chicos y quienes viven lejos de las grandes ciudades"],
-          ["¿Cuál es el «reverso de la medalla» que menciona?",
-           ["Que los beneficios se concentran en los trabajos de oficina", "Que se gasta más en transporte", "Que las empresas pagan sueldos más bajos", "Que los hijos rinden peor en la escuela"],
-           "Que los beneficios se concentran en los trabajos de oficina"],
-          ["¿Por qué el aislamiento es el riesgo principal?",
-           ["Porque se pierden las conversaciones informales en las que se aprende lo que nadie escribe", "Porque la gente se deprime cuando está sola", "Porque la conexión a internet falla seguido", "Porque se pierden las reuniones formales"],
-           "Porque se pierden las conversaciones informales en las que se aprende lo que nadie escribe"],
-          ["¿Qué hicieron las empresas «más atentas»?",
-           ["Fijaron días comunes obligatorios y formaron a los directivos", "Contaron las horas de conexión de cada empleado", "Cerraron las oficinas", "Redujeron los sueldos"],
-           "Fijaron días comunes obligatorios y formaron a los directivos"],
-          ["¿Qué opina la experta de contar las horas de conexión?",
-           ["Que es la forma más segura de destruir la confianza", "Que es una medida necesaria", "Que sirve solo con los jóvenes", "Que la exige la ley"],
-           "Que es la forma más segura de destruir la confianza"],
-          ["¿De qué depende, en la práctica, que funcione el derecho a la desconexión?",
-           ["De la cultura de cada oficina y del ejemplo que den los jefes", "De una ley más severa", "De los sindicatos", "De la cantidad de emails que se reciben"],
-           "De la cultura de cada oficina y del ejemplo que den los jefes"]
+          ["¿Qué corrige la historiadora al principio?",
+           ["Que Sérgio Buarque no inventó la expresión: la tomó del escritor Ribeiro Couto", "Que el libro se publicó en 1946 y no en 1936", "Que Sérgio Buarque era antropólogo y no historiador", "Que la expresión viene del portugués medieval"],
+           "Que Sérgio Buarque no inventó la expresión: la tomó del escritor Ribeiro Couto"],
+          ["¿Qué significa «cordial» en el sentido de Sérgio Buarque?",
+           ["Que actúa movido por el corazón, por las emociones", "Amable y bien educado", "Que respeta las normas por convicción", "Hospitalario con los extranjeros"],
+           "Que actúa movido por el corazón, por las emociones"],
+          ["Según Sérgio Buarque, ¿qué le cuesta al brasileño?",
+           ["Separar lo público de lo privado", "Hablar con desconocidos", "Aceptar la jerarquía familiar", "Expresar sus emociones"],
+           "Separar lo público de lo privado"],
+          ["¿Qué ejemplos cotidianos da el libro?",
+           ["El gusto por los diminutivos y llamar a la gente por el nombre de pila", "La impuntualidad y las filas en los bancos", "El uso de «o senhor» entre amigos", "El fútbol y el carnaval"],
+           "El gusto por los diminutivos y llamar a la gente por el nombre de pila"],
+          ["¿Cuándo muestra el jeitinho su lado perverso?",
+           ["Cuando alguien, en vez de pedir, amenaza con «¿Sabe con quién está hablando?»", "Cuando alguien cuenta su historia para conseguir un favor", "Cuando se cumple la regla sin excepciones", "Cuando la gente ayuda a desconocidos"],
+           "Cuando alguien, en vez de pedir, amenaza con «¿Sabe con quién está hablando?»"],
+          ["En «O semeador e o ladrilhador», ¿quién es el «ladrilhador»?",
+           ["El colonizador español, que trazaba las ciudades en cuadrícula", "El colonizador portugués, que se adaptaba al terreno", "El bandeirante que abría caminos en el interior", "El urbanista que proyectó Brasília"],
+           "El colonizador español, que trazaba las ciudades en cuadrícula"],
+          ["¿Qué imagen de Río usa la historiadora para explicar la metáfora?",
+           ["Las calles torcidas que se ven desde Santa Teresa", "La cuadrícula de las calles de Copacabana", "Los túneles entre la Zona Sul y el Centro", "La playa de Ipanema vista desde el Arpoador"],
+           "Las calles torcidas que se ven desde Santa Teresa"],
+          ["¿Por qué se sigue leyendo Raízes do Brasil, según ella?",
+           ["Porque obliga a hacer las preguntas correctas", "Porque acertó en todo", "Porque describe fielmente el Brasil de hoy", "Porque es lectura obligatoria en la escuela"],
+           "Porque obliga a hacer las preguntas correctas"]
         ],
         completa: [
-          ["Secondo l'esperta, il rischio principale è l'___.", "isolamento"],
-          ["Oggi prevale la formula ___: due o tre giorni a casa e gli altri in ufficio.", "ibrida"],
-          ["I più ___ sono i più penalizzati, perché devono ancora costruirsi una rete di relazioni.", "giovani"],
-          ["Il diritto alla disconnessione è garantito sulla ___, ma nella pratica dipende dalla cultura di ogni ufficio.", "carta"]
+          ["A palavra «cordial» vem do latim cor, cordis, que significa ___.", "coração"],
+          ["O jeitinho é uma forma de contornar a ___ sem confrontá-la.", "regra"],
+          ["O espanhol seria o ___; o português, o semeador.", "ladrilhador"],
+          ["O brasileiro trata o Estado como se fosse uma extensão da ___.", "família"]
         ] },
 
-      { id: "asc-2", title: "Conferenza: quando gli italiani impararono l'italiano", speakers: ["Moderatrice", "Storico"],
+      { id: "asc-2", title: "Conversa: 1808, a corte chega ao Rio", speakers: ["Apresentadora", "Historiador"],
         turns: [
-          ["A", "Buonasera a tutti. Prosegue il nostro ciclo di incontri sulla storia della lingua. Stasera abbiamo con noi il professor Andrea Colombo, storico della lingua italiana. Professore, cominciamo da una domanda provocatoria: nel 1861, quando l'Italia fu unificata, quanti italiani parlavano italiano?"],
-          ["B", "Pochissimi. Le stime variano molto, e gli studiosi discutono ancora sui criteri, ma si va da poco più del due per cento a circa il dieci. In ogni caso, la stragrande maggioranza della popolazione parlava esclusivamente il dialetto della propria zona, e l'italiano era una lingua quasi soltanto scritta, patrimonio di una ristretta minoranza colta."],
-          ["A", "Eppure la lingua letteraria esisteva da secoli."],
-          ["B", "Certo: dal Trecento, con Dante, Petrarca e Boccaccio, il fiorentino colto era diventato il modello. Ma era un modello per chi scriveva, non per chi parlava. Lo stesso Manzoni, nell'Ottocento, sentì il bisogno di andare a Firenze per, come disse lui, «risciacquare i panni in Arno», cioè per rendere più viva e naturale la lingua dei Promessi sposi."],
-          ["A", "Che cosa cambiò, allora, dopo l'Unità?"],
-          ["B", "Diversi fattori, lentamente. La scuola dell'obbligo, per quanto frequentata in modo irregolare; il servizio militare, che metteva insieme giovani di regioni diverse costretti a capirsi; le migrazioni interne verso le città industriali; la burocrazia dello Stato. Ma il vero salto avvenne nel secondo dopoguerra."],
-          ["A", "Si riferisce alla televisione?"],
-          ["B", "Esattamente. A partire dagli anni Cinquanta la televisione entrò nelle case, nei bar, nei circoli, e per la prima volta milioni di persone ascoltarono ogni giorno la stessa lingua parlata. Ci fu persino una trasmissione, «Non è mai troppo tardi», con il maestro Alberto Manzi, che insegnava a leggere e a scrivere agli adulti analfabeti."],
-          ["A", "Quindi i dialetti sono destinati a scomparire?"],
-          ["B", "Non necessariamente. Oggi quasi tutti gli italiani sanno parlare italiano, ma molti continuano ad alternarlo con il dialetto a seconda della situazione. Il dialetto, da lingua della necessità, è diventato lingua dell'affetto e dell'identità."],
-          ["A", "Grazie, professore. Apriamo ora le domande del pubblico."]
+          ["A", "Estamos na Praça Quinze, no Centro do Rio, em frente ao Paço Imperial. Meu convidado é o historiador Paulo Menezes. Paulo, foi aqui que tudo começou em 1808?"],
+          ["B", "Foi aqui perto, sim. Em março de 1808 desembarcou no Rio o príncipe regente Dom João, com a mãe, a rainha Dona Maria I, e boa parte da corte portuguesa. Eles tinham saído de Lisboa no fim de novembro de 1807, praticamente na véspera de as tropas de Napoleão, comandadas pelo general Junot, entrarem na cidade. Antes de chegar ao Rio, tinham passado por Salvador."],
+          ["A", "Por que a corte foi embora de Portugal?"],
+          ["B", "Porque Portugal estava entre a cruz e a espada. Napoleão exigia que o país fechasse os portos aos navios ingleses; a Inglaterra, velha aliada, podia tomar as colônias se isso acontecesse. A transferência da corte, escoltada pela marinha inglesa, foi a saída encontrada. Há quem fale em fuga covarde, há quem fale em manobra genial. Provavelmente foi as duas coisas."],
+          ["A", "E como a cidade recebeu tanta gente de uma vez?"],
+          ["B", "Com dificuldade. Não se sabe ao certo quantas pessoas vieram: as estimativas variam muito, de alguns milhares a mais de dez mil, numa cidade que tinha uns sessenta mil habitantes. Para alojar os recém-chegados, muitas casas foram requisitadas, e nas portas se pintavam as letras P.R., de Príncipe Regente. Conta-se que o povo, com o humor carioca de sempre, lia «Ponha-se na Rua»."],
+          ["A", "Mas a presença da corte também trouxe mudanças importantes."],
+          ["B", "Enormes. Ainda em Salvador, Dom João decretou a abertura dos portos às nações amigas, o que acabou, na prática, com o monopólio comercial de Portugal. No Rio foram criados a Imprensa Régia, o Banco do Brasil, o Jardim Botânico e a Biblioteca Real, cujo acervo deu origem à atual Biblioteca Nacional. Em 1815, o Brasil foi elevado a Reino Unido de Portugal, Brasil e Algarves: a antiga colônia passava a ser sede da monarquia."],
+          ["A", "E a volta para Portugal?"],
+          ["B", "Em 1820 estourou no Porto uma revolução liberal que exigia o retorno do rei. Dom João, já Dom João VI, voltou para Lisboa em 1821 e deixou aqui o filho, Pedro. As Cortes de Lisboa queriam reduzir a autonomia do Brasil e exigiam também a volta do príncipe. Pedro decidiu ficar: é o famoso Dia do Fico, em janeiro de 1822. Em setembro daquele ano, veio a independência."],
+          ["A", "Uma independência bem peculiar, feita por um príncipe português."],
+          ["B", "Exatamente. Muitos historiadores observam que o Brasil é o único caso nas Américas em que a antiga colônia se tornou uma monarquia governada por um membro da família real da própria metrópole. Isso ajudou a manter o território unido, ao contrário do que aconteceu na América espanhola, mas também ajudou a conservar a escravidão por mais sessenta e seis anos."],
+          ["A", "Paulo Menezes, obrigada. E você, que está nos ouvindo, aproveite para visitar o Paço Imperial."]
         ],
         questions: [
-          ["Según el historiador, ¿qué porcentaje de italianos hablaba italiano en 1861?",
-           ["Entre poco más del 2 % y alrededor del 10 %, según las estimaciones", "Alrededor de la mitad", "Casi todos, salvo en el sur", "Menos del 1 %"],
-           "Entre poco más del 2 % y alrededor del 10 %, según las estimaciones"],
-          ["¿Qué hablaba la gran mayoría de la población?",
-           ["Exclusivamente el dialecto de su zona", "Italiano y dialecto por igual", "Latín en la iglesia e italiano en casa", "Francés en las ciudades"],
-           "Exclusivamente el dialecto de su zona"],
-          ["¿Qué era el italiano antes de la unificación?",
-           ["Una lengua casi solo escrita, patrimonio de una minoría culta", "La lengua que se hablaba en las escuelas", "La lengua del ejército", "Un dialecto más entre otros"],
-           "Una lengua casi solo escrita, patrimonio de una minoría culta"],
-          ["¿Para qué fue Manzoni a Florencia?",
-           ["Para hacer más viva y natural la lengua de su novela", "Para estudiar la obra de Dante", "Para lavar la ropa en el río", "Para fundar una escuela"],
-           "Para hacer más viva y natural la lengua de su novela"],
-          ["¿Cuál de estos factores NO menciona entre los que difundieron el italiano después de la Unidad?",
-           ["La radio", "La escuela obligatoria", "El servicio militar", "Las migraciones internas"],
-           "La radio"],
-          ["¿Cuándo se produjo «el verdadero salto»?",
-           ["En la segunda posguerra, con la televisión", "Con la unificación de 1861", "En el siglo XIV, con Dante", "Con la Primera Guerra Mundial"],
-           "En la segunda posguerra, con la televisión"],
-          ["¿Qué era «Non è mai troppo tardi»?",
-           ["Un programa de televisión que enseñaba a leer y escribir a adultos analfabetos", "Una novela de Manzoni", "Un diario para emigrantes", "Un curso por radio para soldados"],
-           "Un programa de televisión que enseñaba a leer y escribir a adultos analfabetos"],
-          ["¿Qué pasó con el dialecto, según el historiador?",
-           ["De lengua de la necesidad pasó a ser lengua del afecto y de la identidad", "Desapareció por completo", "Fue prohibido por el Estado", "Se volvió la lengua de la escuela"],
-           "De lengua de la necesidad pasó a ser lengua del afecto y de la identidad"]
+          ["¿Cuándo llegó la corte a Río de Janeiro?",
+           ["En marzo de 1808, después de pasar por Salvador", "En noviembre de 1807, directamente desde Lisboa", "En 1815, cuando Brasil se volvió reino", "En enero de 1822"],
+           "En marzo de 1808, después de pasar por Salvador"],
+          ["¿Por qué la corte dejó Lisboa?",
+           ["Porque estaba atrapada entre las exigencias de Napoleón y las de Inglaterra", "Porque estalló una revolución liberal en Oporto", "Porque la reina quería conocer Brasil", "Porque Inglaterra había invadido Portugal"],
+           "Porque estaba atrapada entre las exigencias de Napoleón y las de Inglaterra"],
+          ["¿Cómo juzga el historiador la partida de la corte?",
+           ["Algunos la ven como fuga cobarde y otros como maniobra genial; probablemente fue las dos cosas", "Como una fuga cobarde, sin más", "Como una maniobra genial de Dom João", "Como un error que hizo perder las colonias"],
+           "Algunos la ven como fuga cobarde y otros como maniobra genial; probablemente fue las dos cosas"],
+          ["¿Cuántas personas llegaron con la corte?",
+           ["No se sabe con certeza: las estimaciones van de algunos miles a más de diez mil", "Unas sesenta mil", "Poco más de quinientas", "Cien mil, más que los habitantes de la ciudad"],
+           "No se sabe con certeza: las estimaciones van de algunos miles a más de diez mil"],
+          ["Según se cuenta, ¿cómo leía el pueblo las letras P.R. pintadas en las puertas?",
+           ["«Ponha-se na Rua» (póngase en la calle)", "«Príncipe Real»", "«Porto do Rio»", "«Propriedade Régia»"],
+           "«Ponha-se na Rua» (póngase en la calle)"],
+          ["¿Qué decretó Dom João cuando todavía estaba en Salvador?",
+           ["La apertura de los puertos a las naciones amigas", "La creación del Banco do Brasil", "La elevación de Brasil a reino", "El fin del tráfico de esclavos"],
+           "La apertura de los puertos a las naciones amigas"],
+          ["¿Qué fue el «Dia do Fico»?",
+           ["El día en que Pedro decidió quedarse en Brasil", "El día en que Dom João volvió a Lisboa", "El día de la independencia", "El día en que la corte desembarcó en Río"],
+           "El día en que Pedro decidió quedarse en Brasil"],
+          ["¿Qué consecuencias tuvo que la independencia la hiciera un príncipe portugués?",
+           ["Ayudó a mantener unido el territorio, pero también a conservar la esclavitud", "Dividió el país en varias repúblicas", "Aceleró la abolición de la esclavitud", "Hizo que Brasil volviera a ser colonia"],
+           "Ayudó a mantener unido el territorio, pero también a conservar la esclavitud"]
         ],
         completa: [
-          ["Nel 1861 l'italiano era una lingua quasi soltanto ___.", "scritta"],
-          ["Manzoni andò a Firenze per «risciacquare i panni in ___».", "Arno"],
-          ["Il servizio ___ metteva insieme giovani di regioni diverse costretti a capirsi.", "militare"],
-          ["Il maestro Alberto Manzi insegnava a leggere e a scrivere agli adulti ___.", "analfabeti"]
+          ["Em março de 1808 desembarcou no Rio o príncipe ___ Dom João.", "regente"],
+          ["Para alojar os recém-chegados, muitas casas foram ___.", "requisitadas"],
+          ["O acervo da Biblioteca Real deu origem à atual Biblioteca ___.", "Nacional"],
+          ["Em 1820 estourou no Porto uma revolução ___ que exigia o retorno do rei.", "liberal"]
         ] }
     ],
 
     lettura: [
-      { id: "let-1", title: "I paesi che si svuotano",
+      { id: "let-1", title: "Do cortiço à favela: o Rio que se reinventou",
         paragraphs: [
-          "Chi percorra le strade secondarie dell'Appennino, dalla Liguria alla Calabria, si imbatte con frequenza crescente in un paesaggio che sembra fermo nel tempo: borghi arroccati, case di pietra dalle persiane chiuse, piazze in cui l'unico bar ha rinunciato da anni a tenere aperto la sera. Non si tratta di un'impressione: gran parte dei comuni italiani conta meno di cinquemila abitanti e molti di essi, soprattutto nelle aree montane e interne, perdono popolazione da decenni, al punto che in alcune vallate il numero degli abitanti si è ridotto a un terzo rispetto all'inizio del Novecento. Lo spopolamento non è un evento improvviso, bensì un lento processo che comincia con la partenza dei giovani e si conclude, spesso, con la chiusura della scuola.",
-          "Le ragioni sono note e si intrecciano. L'industrializzazione del secondo dopoguerra attirò verso le città del Nord milioni di persone in cerca di lavoro; l'agricoltura di montagna, faticosa e poco redditizia, fu abbandonata; i servizi, dalla sanità ai trasporti, furono progressivamente concentrati nei centri maggiori, con la conseguenza che vivere in paese divenne sempre più scomodo. A ciò si aggiunge un fattore culturale: per generazioni, andarsene è stato considerato l'unico modo di riuscire nella vita, mentre restare equivaleva a una rinuncia. Chi rimaneva lo faceva, il più delle volte, perché non aveva alternative.",
-          "Gli effetti non riguardano soltanto chi resta. Un territorio abbandonato è un territorio che nessuno cura: i terrazzamenti crollano, i boschi avanzano sui campi, i sentieri scompaiono e il rischio di frane e incendi aumenta. Il patrimonio architettonico, privo di manutenzione, si deteriora. Si perdono inoltre saperi che non sono scritti da nessuna parte: come si costruisce un muro a secco, quando si semina una certa varietà di grano, come si chiama in dialetto un certo vento. Quando l'ultimo anziano se ne va, con lui se ne va un'intera biblioteca.",
-          "Da alcuni anni lo Stato ha cominciato a occuparsi della questione con una strategia dedicata alle cosiddette aree interne, ossia ai territori lontani dai centri che offrono i servizi essenziali. L'idea di fondo è semplice: nessuno resta in un luogo in cui non ci sono una scuola, un medico e un mezzo per raggiungere il resto del mondo. Alcuni comuni, dal canto loro, hanno tentato la strada delle case vendute a prezzi simbolici, purché l'acquirente si impegni a ristrutturarle: iniziative che hanno avuto grande eco sui giornali, ma i cui risultati, a detta di molti osservatori, restano modesti: una casa comprata per pochi euro non serve a nulla se poi manca il lavoro per chi dovrebbe abitarla.",
-          "Accanto agli interventi pubblici si osserva un fenomeno nuovo, ancora limitato ma significativo: persone che hanno lasciato la città per scelta, giovani che tornano al paese dei nonni per aprire un'azienda agricola o un laboratorio, lavoratori da remoto in cerca di affitti bassi e aria pulita. Non sono molti, e non tutti resistono al primo inverno, ma la loro presenza basta talvolta a riaprire un negozio o a far sì che la scuola raggiunga il numero minimo di alunni. Alcuni sindaci hanno capito che accogliere questi nuovi abitanti, anche stranieri, è l'unica alternativa all'estinzione, e hanno cominciato a offrire incentivi a chi apre un'attività o iscrive i figli alla scuola del paese.",
-          "Sarebbe ingenuo pensare che i borghi possano tornare a essere ciò che erano: l'economia che li faceva vivere non esiste più. La domanda, semmai, è se sapranno diventare qualcos'altro senza trasformarsi in scenografie per turisti, belle da fotografare e vuote per undici mesi all'anno. La risposta dipenderà da quanto la società italiana nel suo insieme sarà disposta a considerare quei luoghi non come un residuo del passato, bensì come una parte del proprio futuro."
+          "No fim do século XIX, o centro do Rio de Janeiro era uma das áreas mais densamente povoadas do país. Capital da recém-proclamada República, a cidade recebia libertos da escravidão, abolida em 1888, migrantes do interior e imigrantes europeus, que se amontoavam em cortiços: casarões antigos divididos em dezenas de cômodos, ou fileiras de pequenas casas em torno de um pátio, com banheiro e tanque coletivos. Aluísio Azevedo fez de uma dessas habitações o cenário de O Cortiço, romance publicado em 1890. Para as elites, os cortiços eram focos de doença e de desordem; para quem morava neles, eram a única maneira de viver perto do trabalho, no porto e no comércio do Centro.",
+          "O mais famoso deles, o Cabeça de Porco, ficava perto da atual estação Central do Brasil e chegou a abrigar, segundo algumas estimativas da época, milhares de pessoas. Em janeiro de 1893, o prefeito Barata Ribeiro mandou demoli-lo numa operação que durou pouco mais de um dia e foi acompanhada por soldados e bombeiros. Os moradores foram expulsos sem ter para onde ir. Conta-se que alguns deles, aproveitando a madeira dos escombros, subiram o morro que ficava logo atrás e começaram a construir ali seus barracos.",
+          "O morro, conhecido como Providência, ganharia pouco depois outro nome. Em 1897, terminada a Guerra de Canudos, no sertão da Bahia, soldados que haviam lutado contra os seguidores de Antônio Conselheiro chegaram ao Rio à espera de moradias prometidas pelo governo ou, segundo outras versões, do pagamento dos soldos atrasados. Instalaram-se no morro e o chamaram de Morro da Favela, em lembrança de um morro de Canudos coberto por uma planta resistente chamada favela. Com o tempo, o nome próprio virou substantivo comum, e «favela» passou a designar qualquer aglomeração de moradias precárias. A guerra, que terminou com a destruição do arraial, foi narrada por Euclides da Cunha em Os Sertões, de 1902.",
+          "No início do século XX, o presidente Rodrigues Alves e o prefeito Pereira Passos decidiram transformar a capital numa vitrine da modernidade, inspirada na Paris redesenhada pelo barão Haussmann. Entre 1903 e 1906, centenas de prédios foram derrubados para abrir largas avenidas, entre elas a Avenida Central, atual Rio Branco, e para modernizar o porto. O povo, que via suas casas desaparecerem, apelidou a reforma de «bota-abaixo». Ao mesmo tempo, o médico sanitarista Oswaldo Cruz comandava campanhas contra a febre amarela, a peste bubônica e a varíola, com brigadas que entravam nas casas para desinfetá-las.",
+          "Em novembro de 1904, a lei que tornava obrigatória a vacinação contra a varíola foi a gota d'água. Durante cerca de uma semana, a cidade viveu uma revolta popular: bondes foram virados, lampiões quebrados e barricadas erguidas em bairros como a Saúde. A chamada Revolta da Vacina não se explica apenas pelo medo da injeção, então pouco compreendida, mas pelo acúmulo de ressentimentos de uma população que via suas casas demolidas e sua vida regulada por decisões tomadas sem ela. O governo decretou estado de sítio, reprimiu duramente os revoltosos e, por fim, suspendeu a obrigatoriedade da vacina.",
+          "Mais de um século depois, a cidade continua marcada por essa história. As favelas, que o poder público tentou durante décadas remover ou ignorar, abrigam hoje uma parte considerável da população carioca e produziram boa parte da cultura que o mundo associa ao Rio, do samba ao funk. O geógrafo Milton Santos insistia em que o espaço urbano não é um cenário neutro, mas o produto de relações sociais e decisões políticas. Quem caminha hoje pela Pedra do Sal, na região que ficou conhecida como Pequena África e onde o samba ganhou forma no início do século XX, anda sobre camadas de uma disputa que ainda não terminou: quem tem direito ao centro da cidade?"
         ],
         titles: [
-          "Chi arriva controcorrente",
-          "Il turismo di massa nelle città d'arte",
-          "Perché la gente se n'è andata",
-          "Un lento svuotamento",
-          "Né museo né scenografia: quale futuro",
-          "Le nuove tecnologie in agricoltura",
-          "Ciò che si perde con gli ultimi abitanti",
-          "Le politiche pubbliche e le case a prezzo simbolico"
+          "Uma planta do sertão dá nome ao morro",
+          "A vacina e a revolta",
+          "O Rio que vive dos turistas",
+          "Morar perto do trabalho",
+          "Paris nos trópicos",
+          "Uma demolição em pouco mais de um dia",
+          "A chegada do metrô à Zona Sul",
+          "Uma disputa que continua"
         ],
-        match: [3, 2, 6, 7, 0, 4],
+        match: [3, 5, 0, 4, 1, 7],
         vf: [
-          ["Lo spopolamento dei borghi è un processo lento che comincia con la partenza dei giovani.", true, "«un lento processo che comincia con la partenza dei giovani e si conclude, spesso, con la chiusura della scuola»"],
-          ["L'industrializzazione del dopoguerra spinse milioni di persone verso le città del Sud.", false, "«attirò verso le città del Nord milioni di persone in cerca di lavoro»"],
-          ["Secondo il testo, restare in paese è stato a lungo considerato una rinuncia.", true, "«andarsene è stato considerato l'unico modo di riuscire nella vita, mentre restare equivaleva a una rinuncia»"],
-          ["L'abbandono del territorio riduce il rischio di frane e incendi.", false, "«i sentieri scompaiono e il rischio di frane e incendi aumenta»"],
-          ["La strategia dello Stato parte dall'idea che senza servizi essenziali nessuno resta.", true, "«nessuno resta in un luogo in cui non ci sono una scuola, un medico e un mezzo per raggiungere il resto del mondo»"],
-          ["Secondo molti osservatori, le case vendute a prezzi simbolici hanno dato risultati eccellenti.", false, "«i cui risultati, a detta di molti osservatori, restano modesti»"],
-          ["Tutti i nuovi abitanti resistono al primo inverno.", false, "«Non sono molti, e non tutti resistono al primo inverno»"],
-          ["L'autore ritiene che i borghi non possano tornare a essere ciò che erano.", true, "«Sarebbe ingenuo pensare che i borghi possano tornare a essere ciò che erano»"]
+          ["Os cortiços permitiam que os mais pobres morassem perto do trabalho.", true, "«eram a única maneira de viver perto do trabalho, no porto e no comércio do Centro»"],
+          ["A demolição do Cabeça de Porco levou vários meses.", false, "«numa operação que durou pouco mais de um dia»"],
+          ["Os soldados de Canudos foram ao Rio à espera de moradias ou do pagamento dos soldos.", true, "«à espera de moradias prometidas pelo governo ou, segundo outras versões, do pagamento dos soldos atrasados»"],
+          ["«Favela» era originalmente o nome de uma planta.", true, "«coberto por uma planta resistente chamada favela»"],
+          ["A reforma de Pereira Passos se inspirou em Londres.", false, "«inspirada na Paris redesenhada pelo barão Haussmann»"],
+          ["Segundo o texto, a Revolta da Vacina se explica apenas pelo medo da injeção.", false, "«não se explica apenas pelo medo da injeção […] mas pelo acúmulo de ressentimentos»"],
+          ["Depois da revolta, a vacinação obrigatória foi mantida.", false, "«por fim, suspendeu a obrigatoriedade da vacina»"],
+          ["O texto apresenta o direito ao centro da cidade como uma questão ainda em aberto.", true, "«uma disputa que ainda não terminou: quem tem direito ao centro da cidade?»"]
         ] },
 
-      { id: "let-2", title: "Il Grand Tour: quando l'Italia divenne una meta",
+      { id: "let-2", title: "Abril em Lisboa: o fim da ditadura e do império",
         paragraphs: [
-          "Tra il Seicento e i primi decenni dell'Ottocento, per un giovane aristocratico inglese, tedesco o francese il viaggio in Italia costituì una tappa quasi obbligata dell'educazione. Lo si chiamava Grand Tour e poteva durare mesi o anni: si partiva accompagnati da un precettore, si attraversavano le Alpi e si scendeva lungo la penisola toccando Torino o Milano, Venezia, Firenze, Roma e, per i più intraprendenti, Napoli e la Sicilia. Lo scopo dichiarato era completare la formazione classica sui luoghi stessi in cui l'antichità aveva lasciato le sue tracce; quello reale, spesso, era anche divertirsi lontano dagli occhi della famiglia. Al ritorno, il giovane avrebbe dovuto saper conversare di arte antica e di musica, e portare con sé il gusto raffinato che ci si aspettava da un gentiluomo.",
-          "Roma era il cuore dell'itinerario. Vi si arrivava con in mano guide e lettere di presentazione, e vi si trascorrevano settimane fra rovine, chiese e collezioni private, alle quali si accedeva grazie a una rete di ciceroni, antiquari e artisti disposti a fare da intermediari. Molti viaggiatori si facevano ritrarre da pittori del posto con sullo sfondo il Colosseo o il Foro, e acquistavano statue, monete e vedute da riportare a casa: le grandi dimore inglesi si riempirono così di frammenti d'Italia, veri o, non di rado, abilmente contraffatti.",
-          "Dalla metà del Settecento un evento contribuì a spostare il baricentro del viaggio più a sud: gli scavi di Ercolano e di Pompei, le città sepolte dal Vesuvio nel 79 dopo Cristo, riportavano alla luce per la prima volta non soltanto templi e statue, ma la vita quotidiana degli antichi, con le sue case, le botteghe, le pitture e gli oggetti. Napoli, con il vulcano ancora attivo e il golfo, divenne una meta irrinunciabile, e la Sicilia, con i templi greci di Agrigento e di Segesta, cominciò ad attirare i più audaci, disposti ad affrontare strade pessime e alloggi di fortuna pur di vedere ciò che pochi avevano visto.",
-          "Il viaggiatore più celebre fu forse Goethe, che tra il 1786 e il 1788 percorse l'Italia da Verona alla Sicilia e ne ricavò il Viaggio in Italia, pubblicato molti anni dopo. La sua affermazione di considerare il giorno in cui mise piede a Roma come una seconda nascita riassume un atteggiamento diffuso: l'Italia non era soltanto un luogo da vedere, ma un'esperienza che trasformava chi la faceva. Stendhal, alcuni decenni più tardi, descrisse lo sconvolgimento fisico che provò a Firenze davanti a tante opere d'arte, e a questo episodio si è ispirata, nel Novecento, la definizione di una vera e propria sindrome.",
-          "Non mancavano, tuttavia, le voci critiche. Molti viaggiatori annotavano con fastidio le locande sporche, le strade insicure, i doganieri avidi, e guardavano gli abitanti con la condiscendenza di chi ammira le rovine ma disprezza chi ci vive intorno. Ne nacque un'immagine ambivalente, destinata a durare a lungo: un paese meraviglioso e al tempo stesso arretrato, in cui il passato glorioso serviva da contrasto per giudicare un presente considerato indolente.",
-          "Con l'arrivo della ferrovia e, più tardi, del turismo organizzato, il Grand Tour nella sua forma aristocratica scomparve. Ne rimane però un'eredità profonda: l'idea dell'Italia come museo a cielo aperto, gli itinerari che ancora oggi i turisti seguono quasi senza variazioni, e una certa immagine del paese, fatta di luce, rovine e sensualità, che gli italiani stessi hanno finito per adottare. Molto di ciò che il mondo crede di sapere sull'Italia fu scritto, in fondo, da stranieri di passaggio, che vi cercavano ciò che avevano già deciso di trovare."
+          "Durante quase meio século, Portugal viveu sob uma ditadura. Depois do golpe militar de 1926, António de Oliveira Salazar, professor de economia da Universidade de Coimbra, tornou-se ministro das Finanças em 1928 e, em 1932, chefe do governo. No ano seguinte, uma nova Constituição instituiu o Estado Novo, um regime autoritário, católico e corporativista, resumido no lema «Deus, Pátria, Família». Havia censura prévia à imprensa, um único partido legal e uma polícia política, conhecida a partir de 1945 como PIDE, que vigiava, prendia e torturava os opositores.",
+          "Enquanto outras potências europeias abriam mão de suas colônias, o regime insistia em que Portugal era uma só nação, «do Minho a Timor», espalhada por vários continentes. A partir de 1961, eclodiram movimentos armados de libertação em Angola e, pouco depois, na Guiné-Bissau e em Moçambique. A guerra colonial durou treze anos, mobilizou centenas de milhares de jovens e consumiu uma parte enorme do orçamento. Muitos rapazes emigraram clandestinamente, sobretudo para a França, para escapar do serviço militar. Em 1968, Salazar foi afastado do poder por motivos de saúde e substituído por Marcello Caetano, que prometeu uma abertura que nunca chegou a se concretizar.",
+          "Na madrugada de 25 de abril de 1974, um grupo de oficiais de patente intermediária, os capitães do Movimento das Forças Armadas, pôs em marcha um golpe cuidadosamente planejado. Os sinais foram dados pelo rádio: pouco antes das onze da noite do dia 24, tocou a canção «E Depois do Adeus»; passada a meia-noite, «Grândola, Vila Morena», de Zeca Afonso, um cantor perseguido pelo regime. Era a confirmação de que as operações tinham começado. Ao longo do dia, as tropas do capitão Salgueiro Maia cercaram o quartel do Carmo, em Lisboa, onde Marcello Caetano se refugiara. No fim da tarde, Caetano entregou o poder ao general António de Spínola.",
+          "O povo não ficou em casa, como pediam os comunicados dos revoltosos: saiu às ruas e se misturou aos soldados. Conta-se que Celeste Caeiro, funcionária de um restaurante de Lisboa, levava para casa os cravos que seriam oferecidos aos clientes numa comemoração que acabou cancelada. Quando um soldado lhe pediu um cigarro, ela lhe ofereceu um cravo, e ele o colocou no cano do fuzil. O gesto se espalhou. Houve poucas vítimas, quase todas baleadas por agentes da polícia política diante da sede dela, e os cravos vermelhos deram nome à revolução.",
+          "A revolução abriu caminho para a independência das colônias: a da Guiné-Bissau foi reconhecida em 1974; as de Moçambique, Cabo Verde, São Tomé e Príncipe e Angola vieram em 1975. O fim do império trouxe para Portugal centenas de milhares de pessoas, os chamados «retornados», muitas das quais nunca tinham pisado na metrópole. Marcello Caetano, por sua vez, partiu para o exílio no Brasil e morreu no Rio de Janeiro em 1980. Em 25 de abril de 1975, os portugueses votaram nas primeiras eleições livres em quase cinquenta anos, e em 1976 foi aprovada uma nova Constituição.",
+          "A poeta Sophia de Mello Breyner Andresen resumiu o sentimento daquela manhã em versos que muitos portugueses sabem de cor: «Esta é a madrugada que eu esperava / O dia inicial inteiro e limpo». Anos depois, o ensaísta Eduardo Lourenço, em O Labirinto da Saudade (1978), propôs uma leitura menos eufórica: para ele, os portugueses tinham vivido séculos com uma imagem irreal e engrandecida de si mesmos, e o fim do império os obrigava a se verem, enfim, como um pequeno país europeu. Em 1986, Portugal entrou na Comunidade Econômica Europeia. A saudade, porém, não desapareceu: talvez só tenha mudado de objeto."
         ],
         titles: [
-          "L'altra faccia dell'ammirazione",
-          "Roma, centro dell'itinerario",
-          "Le ferrovie italiane nell'Ottocento",
-          "Ciò che resta oggi",
-          "Un viaggio di formazione (e di svago)",
-          "La scoperta del Sud",
-          "Le origini dell'archeologia moderna",
-          "Un'esperienza che trasforma"
+          "Uma flor no cano do fuzil",
+          "O terremoto de 1755",
+          "Da euforia à reflexão",
+          "Censura, partido único e polícia política",
+          "Canções no rádio, tropas nas ruas",
+          "A corte parte para o Brasil",
+          "Uma guerra longe de casa",
+          "O fim do império"
         ],
-        match: [4, 1, 5, 7, 0, 3],
+        match: [3, 6, 4, 0, 7, 2],
         vf: [
-          ["Il Grand Tour poteva durare anche anni.", true, "«poteva durare mesi o anni»"],
-          ["Lo scopo reale del viaggio coincideva sempre con quello dichiarato.", false, "«quello reale, spesso, era anche divertirsi lontano dagli occhi della famiglia»"],
-          ["A Roma i viaggiatori accedevano alle collezioni private grazie a intermediari.", true, "«alle quali si accedeva grazie a una rete di ciceroni, antiquari e artisti disposti a fare da intermediari»"],
-          ["Gli scavi di Ercolano e Pompei riportarono alla luce soltanto templi e statue.", false, "«non soltanto templi e statue, ma la vita quotidiana degli antichi»"],
-          ["Goethe pubblicò il suo Viaggio in Italia subito dopo il ritorno.", false, "«pubblicato molti anni dopo»"],
-          ["Stendhal provò un malessere fisico a Firenze davanti alle opere d'arte.", true, "«descrisse lo sconvolgimento fisico che provò a Firenze davanti a tante opere d'arte»"],
-          ["Molti viaggiatori guardavano gli abitanti con ammirazione e rispetto.", false, "«con la condiscendenza di chi ammira le rovine ma disprezza chi ci vive intorno»"],
-          ["Secondo l'autore, gli itinerari turistici attuali ricalcano quelli del Grand Tour.", true, "«gli itinerari che ancora oggi i turisti seguono quasi senza variazioni»"]
+          ["Salazar chegou ao poder como líder do golpe militar de 1926.", false, "«Depois do golpe militar de 1926, […] tornou-se ministro das Finanças em 1928»"],
+          ["A guerra colonial levou muitos jovens a emigrar clandestinamente.", true, "«Muitos rapazes emigraram clandestinamente, sobretudo para a França, para escapar do serviço militar»"],
+          ["O primeiro sinal do golpe foi transmitido pelo rádio na noite de 24 de abril.", true, "«pouco antes das onze da noite do dia 24, tocou a canção «E Depois do Adeus»»"],
+          ["Os revoltosos pediram à população que saísse às ruas.", false, "«O povo não ficou em casa, como pediam os comunicados dos revoltosos»"],
+          ["Celeste Caeiro tinha comprado os cravos para oferecê-los aos soldados.", false, "«levava para casa os cravos que seriam oferecidos aos clientes numa comemoração que acabou cancelada»"],
+          ["Marcello Caetano morreu no exílio, no Rio de Janeiro.", true, "«partiu para o exílio no Brasil e morreu no Rio de Janeiro em 1980»"],
+          ["Eduardo Lourenço fez uma leitura tão eufórica quanto a de Sophia.", false, "«propôs uma leitura menos eufórica»"],
+          ["Portugal entrou na Comunidade Econômica Europeia em 1986.", true, "«Em 1986, Portugal entrou na Comunidade Econômica Europeia»"]
         ] }
     ],
 
     scrittura: [
       { id: "scr-1", kind: "argomentativo", words: 200,
-        t: "Un diario italiano abrió un debate con esta afirmación: «Il lavoro da remoto fa bene alle persone, ma fa male alle città e ai rapporti tra colleghi». Escribí un texto argumentativo en italiano (180-220 palabras) para la sección de opinión: tomá posición a favor o en contra de la tesis, sostenela con al menos dos argumentos y un ejemplo concreto, y cerrá con una conclusión. Registro formal, conectores variados (tuttavia, inoltre, pertanto, sebbene…), párrafos bien organizados y al menos una frase con congiuntivo.",
-        rubric: [["adeguatezza", "Cumple la consigna: toma posición, dos argumentos y un ejemplo; registro formal"],
-                 ["coesione", "Conectores variados y párrafos con una idea cada uno"],
-                 ["correttezza", "Gramática: concordancias, tiempos, congiuntivo, preposiciones"],
-                 ["lessico", "Riqueza y precisión: léxico C1, sin calcos del castellano"]] },
+        t: "Un diario carioca abrió un debate en su sección de opinión con esta tesis: «O jeitinho brasileiro é mais uma virtude criativa do que um problema para o país». Como lector o lectora, escribí un artículo de opinión en portugués (180-220 palabras) para esa sección. Tomá posición a favor o en contra, sostenela con al menos dos argumentos y un ejemplo concreto (de Brasil, de Argentina o de tu experiencia), mencioná al menos una idea de Sérgio Buarque de Holanda («homem cordial») o de Roberto DaMatta («Você sabe com quem está falando?»), y cerrá con una conclusión. Tené en cuenta quién escribe, para quién y con qué fin. Registro formal, conectores variados (além disso, no entanto, ainda que, diante do exposto…), párrafos bien organizados y al menos un futuro do subjuntivo o un infinitivo pessoal.",
+        rubric: [["contexto", "Adequação ao contexto: respeta el género (artículo de opinión), el enunciador, el lector y el propósito; toma posición, da dos argumentos, un ejemplo y la referencia pedida"],
+                 ["discursiva", "Adequação discursiva: coherencia y cohesión; progresión de las ideas, párrafos con una idea cada uno, conectores variados"],
+                 ["linguistica", "Adequação linguística (gramática): concordancias, tiempos, subjuntivo, futuro do subjuntivo, crase, regencias, colocação pronominal"],
+                 ["lexico", "Adequação linguística (léxico): riqueza y precisión, registro culto, sin calcos del español ni falsos amigos"]] },
       { id: "scr-2", kind: "formale", words: 120,
-        t: "Compraste por internet un curso de italiano en línea de una escuela de Milán. Pasaron dos semanas, la plataforma sigue sin funcionar y nadie responde a tus mails. Escribí una carta formal de reclamo en italiano (100-140 palabras) a la dirección de la escuela: presentate e indicá qué compraste y cuándo, explicá el problema, pedí una solución concreta (reembolso o activación inmediata) y fijá un plazo. Usá el «Lei», una apertura y un cierre adecuados (Gentile / Egregio…, Distinti saluti) y fórmulas del registro formal (con la presente, in merito a, pertanto, in attesa di un Suo riscontro).",
-        rubric: [["adeguatezza", "Estructura de carta formal: apertura, presentación, problema, pedido con plazo, cierre"],
-                 ["coesione", "Orden lógico y conectores formales"],
-                 ["correttezza", "Gramática: «Lei» coherente, tiempos, pronombres"],
-                 ["lessico", "Fórmulas del registro formal-burocrático, sin expresiones coloquiales"]] }
+        t: "Estás escribiendo un trabajo sobre la recepción de Camões en Brasil y querés consultar una edición antigua de Os Lusíadas en la biblioteca del Real Gabinete Português de Leitura, en el Centro de Río. Escribí un e-mail formal en portugués (100-140 palabras) a la dirección de la biblioteca: presentate (quién sos, qué estudiás y dónde), explicá el motivo de la consulta, pedí autorización para dos fechas concretas y preguntá qué documentos tenés que presentar. Usá «o senhor / a senhora», una apertura y un cierre adecuados (Prezado/a…, Atenciosamente) y fórmulas del registro formal (venho por meio deste, gostaria de solicitar, agradeceria se, fico no aguardo).",
+        rubric: [["contexto", "Adequação ao contexto: e-mail formal completo (apertura, presentación, motivo, pedido con fechas, pregunta, cierre) dirigido a la institución"],
+                 ["discursiva", "Adequação discursiva: orden lógico y conectores del registro formal"],
+                 ["linguistica", "Adequação linguística (gramática): tratamiento «o senhor / a senhora» coherente con verbo en 3.ª persona, tiempos, pronombres (lhe, o/a)"],
+                 ["lexico", "Adequação linguística (léxico): fórmulas de la correspondencia formal, sin expresiones coloquiales"]] }
     ]
   };
   if (typeof module === "object" && module.exports) module.exports = ESAME; else root.EsameData = ESAME;
