@@ -50,6 +50,7 @@ import math
 import os
 import re
 import sys
+import unicodedata
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -68,6 +69,10 @@ LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"]
 BANDS = [(800, "A1"), (2000, "A2"), (4000, "B1"), (7000, "B2"), (10000, "C1"), (13000, "C2")]
 VERBISH = re.compile(r"(ei|ou|amos|aram|ava|avam|ando|ado|ada|ados|adas|emos|eram|eu|ia|iam|endo|ido|ida|"
                      r"imos|iram|iu|indo|rei|rá|rão|ria|riam|sse|ssem)$")
+# Endings that only a verb has (a lemma absent from the list is accepted
+# for them only: melodia is not a form of «melodiar»).
+STRONG_VERB = re.compile(r"(ou|ei|ava|avam|ávamos|ando|endo|indo|aram|eram|iram|asse|assem|esse|essem|isse|"
+                         r"issem|aremos|eremos|iremos|arão|erão|irão|aria|eria|iria|ariam|eriam|iriam)$")
 # Letters and the English and Spanish that the subtitles let through: never
 # a Portuguese lemma with a level.
 NOT_PT = set("b c d f g h j k l m n p q r s t v w x y z".split()) | {
@@ -235,6 +240,10 @@ def regular_forms(inf):
     return out
 
 
+def plain(s):
+    return unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode()
+
+
 def fetch(folder):
     os.makedirs(folder, exist_ok=True)
     for name, url in SOURCES.items():
@@ -388,16 +397,21 @@ def main():
         elif w in bank:
             lemma = w
         elif w in bank_forms:
-            lemma = max(bank_forms[w], key=lambda l: (freq(l), l))
+            # a noun or adjective reading first (casas → casa, comidas → comida)
+            ls = bank_forms[w]
+            nominal = [l for l in ls if bank.get(l, ("",))[0] in ("n", "a")]
+            lemma = max(nominal or ls, key=lambda l: (freq(l), l))
         else:
             lemma = w
-            cand = {c for c in stems(w) if c != w and (
-                c in counts or c in bank or (re.search(r"(ar|er|ir)$", c) and VERBISH.search(w)))}
+            # hunspell also strips prefixes (revelou → velar, desmaiou → maiar):
+            # a lemma must start like its form
+            cand = {c for c in stems(w) if c != w and plain(c[:2]) == plain(w[:2]) and (
+                c in counts or c in bank or (re.search(r"(ar|er|ir)$", c) and STRONG_VERB.search(w)))}
             if cand:
                 best = max(cand, key=lambda l: (freq(l), l))
                 verbish = re.search(r"(ar|er|ir)$", best) and w != best
                 base = w
-                if verbish and w.endswith("s") and singular(w) and not VERBISH.search(w):
+                if verbish and w.endswith("s") and singular(w) and not re.search(r"(amos|emos|imos|mos)$", w):
                     base = singular(w)[0]           # drogas → droga
                 # BR hardly uses the tu forms in -s: a form whose plural is
                 # frequent is a noun or an adjective (arma / armas, fundo /
@@ -405,7 +419,8 @@ def main():
                 nouny = verbish and not VERBISH.search(base) and counts.get(base + "s", 0) * 10 >= counts.get(base, 1)
                 if (re.search(r"(ado|ada|ido|ida)$", w) and w in stems(w) and freq(w) > freq(best)):
                     pass            # a noun of its own, more frequent (sentido / sentir, pedido)
-                elif nouny or (verbish and not VERBISH.search(w) and (
+                elif nouny or (verbish and re.search(r"(ad|id)(o|a|os|as)$", w) and freq(best) * 20 < freq(w)) or (
+                        verbish and not VERBISH.search(w) and (
                         not freq(best) or freq(best) * (20 if w.endswith("s") else 100) < freq(w))):
                     if base != w and depth < 2:
                         lemma = resolve(base, depth + 1)

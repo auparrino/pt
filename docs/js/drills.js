@@ -540,6 +540,12 @@
       .map(function (n) { return n[3]; });
   }
 
+  /* What the answer shows: how the word is used (tools: the tip of each
+     word of the week), then the example. */
+  function wordNote(v) {
+    return [v[3] || "", v[2] ? "Ejemplo: *" + v[2] + "*" : ""].filter(Boolean).join(" ");
+  }
+
   function vocabItem(word, state) {
     var e = VOC && VOC[word];
     if (!e) return null;
@@ -567,11 +573,11 @@
       ranked.forEach(function (r) { if (opts.length < 4 && opts.indexOf(r.x.v[1]) < 0) opts.push(r.x.v[1]); });
       return { id: id, src: "vocab", type: "choice", topic: "vocabolario",
                prompt: "¿Qué significa?", stem: v[0], options: shuffle(opts), answer: v[1],
-               accept: [v[1]], note: v[2] ? "Ejemplo: *" + v[2] + "*" : "", say: v[0] };
+               accept: [v[1]], note: wordNote(v), say: v[0] };
     }
     return { id: id, src: "vocab", type: "cloze", topic: "vocabolario",
              prompt: "¿Cómo se dice en portugués?", stem: "«" + v[1] + "» → ___", answer: v[0],
-             accept: [v[0]], note: v[2] ? "Ejemplo: *" + v[2] + "*" : "", say: v[0] };
+             accept: [v[0]], note: wordNote(v), say: v[0] };
   }
 
   /* A word is met before it is asked (as the phrases are): a card with the

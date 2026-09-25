@@ -110,7 +110,7 @@
    {
     "wrong": "lápiz",
     "right": "lápis",
-    "cat": "ortografia"
+    "cat": "espanol"
    },
    {
     "wrong": "lampadas",
@@ -281,11 +281,11 @@
  {
   "week": 5,
   "text": "De manhã eu trabalho numa oficina no Centro, com computador e reuniões. Almoço com os meus colegas perto de a Cinelândia. Depois do trabalho, corro em o calçadão. De noche janto em casa e estudio português.",
-  "corrected": "De manhã eu trabalho numa escritório no Centro, com computador e reuniões. Almoço com os meus colegas perto da Cinelândia. Depois do trabalho, corro no calçadão. De noite janto em casa e estudo português.",
+  "corrected": "De manhã eu trabalho num escritório no Centro, com computador e reuniões. Almoço com os meus colegas perto da Cinelândia. Depois do trabalho, corro no calçadão. De noite janto em casa e estudo português.",
   "errors": [
    {
-    "wrong": "oficina",
-    "right": "escritório",
+    "wrong": "numa oficina",
+    "right": "num escritório",
     "cat": "falso_amigo"
    },
    {
@@ -2387,12 +2387,12 @@
  },
  {
   "week": 43,
-  "text": "Estimado Senhor, me dirijo a você para solicitar uma bolsa de estudos. Segue em anexo o meu currículo. Agradeceria se o senhor pudesse me responder até sexta. Atenciosamente, Diego Paz",
+  "text": "Prezado Señor, me dirijo a você para solicitar uma bolsa de estudos. Segue em anexo o meu currículo. Agradeceria se o senhor pudesse me responder até sexta. Atenciosamente, Diego Paz",
   "corrected": "Prezado Senhor, dirijo-me ao senhor para solicitar uma bolsa de estudos. Segue em anexo o meu currículo. Agradeceria se o senhor pudesse me responder até sexta. Atenciosamente, Diego Paz",
   "errors": [
    {
-    "wrong": "Estimado Senhor",
-    "right": "Prezado Senhor",
+    "wrong": "Señor",
+    "right": "Senhor",
     "cat": "espanol"
    },
    {
@@ -2454,7 +2454,7 @@
    {
     "wrong": "sorvetero",
     "right": "sorveteiro",
-    "cat": "ortografia"
+    "cat": "espanol"
    }
   ]
  },
@@ -2741,7 +2741,7 @@
    {
     "wrong": "muitísimo",
     "right": "muitíssimo",
-    "cat": "ortografia"
+    "cat": "espanol"
    },
    {
     "wrong": "lêem",

@@ -258,7 +258,7 @@ def main():
             keep.append(v)
         vocab[w] = keep
     for wk in weeks:
-        wk["vocab"] = [] if wk["boss"] else [list(v[:3]) + [""] * (3 - len(v[:3])) for v in vocab.get(wk["week"], [])]
+        wk["vocab"] = [] if wk["boss"] else [list(v[:4]) + [""] * (4 - len(v[:4])) for v in vocab.get(wk["week"], [])]
         if not wk["boss"] and not wk["vocab"]:
             problems.append("semana %d: sin palabras de la semana" % wk["week"])
 

@@ -186,13 +186,12 @@
     });
     ["um", "uma", "uns", "umas"].forEach(function (a) { CONTR["n" + a] = ["em", a]; CONTR["d" + a] = ["de", a]; });
     ["ele", "ela", "eles", "elas", "este", "esta", "estes", "estas", "esse", "essa", "esses", "essas",
-     "aquele", "aquela", "aqueles", "aquelas", "isto", "isso", "aquilo", "outro", "outra", "outros", "outras"].forEach(function (p) {
+     "aquele", "aquela", "aqueles", "aquelas", "isto", "isso", "aquilo"].forEach(function (p) {
       CONTR["d" + p] = ["de", p];
       CONTR["n" + p] = ["em", p];
     });
     ["aquele", "aquela", "aqueles", "aquelas", "aquilo"].forEach(function (p) { CONTR["à" + p.slice(1)] = ["a", p]; });
     CONTR.daqui = ["de", "aqui"]; CONTR.dali = ["de", "ali"]; CONTR.daí = ["de", "aí"];
-    delete CONTR.doutro; delete CONTR.doutra; delete CONTR.doutros; delete CONTR.doutras;   // rarísimas en Brasil
   })();
 
   function prepInfo(w) {
@@ -408,7 +407,7 @@
    "ano:ano anos:anos mujer:mulher mujeres:mulheres hombre:homem hombres:homens nino:menino/criança nina:menina ninos:crianças/meninos " +
    "hijo:filho hija:filha hijos:filhos hermano:irmão hermana:irmã hermanos:irmãos madre:mãe padres:pais abuela:avó abuelo:avô abuelos:avós " +
    "esposo:marido novio:namorado novia:namorada ciudad:cidade calle:rua pueblo:povo/cidadezinha barrio:bairro playa:praia playas:praias " +
-   "leche:leite queso:queijo huevo:ovo huevos:ovos pan:pão agua:água vino:vinho cerveza:cerveja pollo:frango pescado:peixe " +
+   "leche:leite queso:queijo huevo:ovo huevos:ovos pan:pão agua:água vino:vinho cerveza:cerveja pollo:frango " +
    "manzana:maçã naranja:laranja silla:cadeira ventana:janela puerta:porta libro:livro libros:livros cuaderno:caderno dinero:dinheiro " +
    "plata:dinheiro perro:cachorro perros:cachorros mes:mês cosa:coisa cosas:coisas nadie:ninguém alguien:alguém ningun:nenhum " +
    "ninguno:nenhum ninguna:nenhuma bueno:bom buena:boa buenos:bons buenas:boas malo:mau/ruim pequeno:pequeno nuevo:novo nueva:nova " +
@@ -432,9 +431,16 @@
     var pt = p[1].replace(/_/g, " ");
     if (deaccent(p[0]) !== deaccent(pt.split("/")[0])) ES_PT[p[0]] = pt.replace(/\//g, " / ");
   });
-  ("embarazada:grávida embarazadas:grávidas embarazo:gravidez exquisito:delicioso/gostoso exquisita:deliciosa/gostosa " +
-   "enamorado:apaixonado enamorada:apaixonada crianza:criação sobrenombre:apelido oficina:escritório").split(" ").forEach(function (x) {
-    var p = x.split(":"); ES_PT[p[0]] = p[1].replace(/\//g, " / ");
+  ("contento:contente contenta:contente contentos:contentes mío:meu mía:minha míos:meus tuyo:teu tuya:tua suyo:seu suya:sua " +
+   "ducho:tomo_banho ducha:banho ducharme:tomar_banho divertase:divirta-se diviértase:divirta-se personas:pessoas morir:morrer " +
+   "muero:morro murió:morreu datos:dados una:uma sea:seja dale:bora trae:traz traes:traz traer:trazer estudio:estudo " +
+   "cuarenta:quarenta cuatro:quatro siete:sete ocho:oito nueve:nove diez:dez once:onze trece:treze quince:quinze " +
+   "veinte:vinte treinta:trinta sesenta:sessenta ochenta:oitenta cien:cem ciento:cento " +
+   "primero:primeiro tercero:terceiro después:depois lejos:longe arriba:em_cima abajo:embaixo " +
+   "izquierda:esquerda derecha:direita hijos:filhos llave:chave llaves:chaves lluvioso:chuvoso " +
+   "embarazada:grávida embarazadas:grávidas embarazo:gravidez exquisito:delicioso/gostoso exquisita:deliciosa/gostosa " +
+   "enamorado:apaixonado enamorada:apaixonada crianza:criação sobrenombre:apelido").split(" ").forEach(function (x) {
+    var p = x.split(":"); if (p[0] !== p[1]) ES_PT[p[0]] = p[1].replace(/_/g, " ").replace(/\//g, " / ");
   });
   // Notas para el español que se parece a otra palabra portuguesa.
   var ES_NOTE = dict({ embarazada: "Ojo: *embaraçada* existe, pero es «avergonzada».", embarazadas: "Ojo: *embaraçadas* es «avergonzadas».",
